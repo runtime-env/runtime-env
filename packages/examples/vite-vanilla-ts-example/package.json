@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "name": "vite-vanilla-ts-example",
+  "scripts": {
+    "_test": "node test.js",
+    "dev": "cross-env HELLO=import-meta-env vite",
+    "build": "tsc && vite build",
+    "preview": "cross-env HELLO=import-meta-env import-meta-env -x .env.example.public && vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.8",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
+    "typescript": "^4.4.4",
+    "vite": "^3.1.4"
+  }
+}

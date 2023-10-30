@@ -1,0 +1,29 @@
+[package]
+publish = false
+name = "import_meta_env_swc"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[profile.release]
+lto = true
+
+[dependencies]
+rust-ini = "0.19.0"
+serde = "1.0.189"
+serde_json = "1.0.107"
+string_cache = "0.8.7"
+swc_core = { version = "0.83.42", features = [
+  "ecma_plugin_transform",
+  "ecma_ast_serde",
+] }
+
+[dev-dependencies]
+tempfile = "3.8.0"
+
+# .cargo/config defines few alias to build plugin.
+# cargo build-wasi generates wasm-wasi32 binary
+# cargo build-wasm32 generates wasm32-unknown-unknown binary.

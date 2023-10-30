@@ -1,0 +1,19 @@
+{
+  "name": "create-vue-app-example",
+  "private": true,
+  "scripts": {
+    "_test": "node test.js",
+    "dev": "cross-env HELLO=import-meta-env vite",
+    "build": "vite build",
+    "preview": "cross-env HELLO=import-meta-env import-meta-env -x .env.example.public && vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.31"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.2",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.3",
+    "vite": "^3.1.4"
+  }
+}
