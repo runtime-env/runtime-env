@@ -4,17 +4,9 @@
   "scripts": {
     "build": "pnpm --recursive --aggregate-output run build",
     "pack": "pnpm --recursive --aggregate-output run pack",
-    "serve": "node scripts/serve.js",
-    "test": "jest packages/shared && pnpm --recursive --aggregate-output --workspace-concurrency=1 run test",
-    "lint": "pnpm run lint:prettier && pnpm run lint:cargo",
-    "lint:prettier": "pnpm prettier --check .",
-    "lint:cargo": "cd packages/swc && cargo fmt --check",
-    "lint-fix": "pnpm run lint-fix:prettier && pnpm run lint-fix:cargo",
-    "lint-fix:prettier": "pnpm prettier --write .",
-    "lint-fix:cargo": "cd packages/swc && cargo fmt",
-    "docs:dev": "node scripts/gen-api-docs.js && vitepress dev docs",
-    "docs:build": "node scripts/gen-api-docs.js && vitepress build docs",
-    "docs:preview": "vitepress serve docs --port 4173"
+    "test": "pnpm --recursive --aggregate-output --workspace-concurrency=1 run test",
+    "lint": "pnpm prettier --check .",
+    "lint-fix": "pnpm prettier --write ."
   },
   "devDependencies": {
     "@babel/core": "7.23.2",
@@ -44,7 +36,8 @@
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
-        "@algolia/client-search"
+        "@algolia/client-search",
+        "search-insights"
       ]
     }
   }

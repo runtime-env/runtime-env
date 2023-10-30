@@ -52,4 +52,4 @@ jobs:
           delete-branch: true
           reviewers: "iendeavor"
           branch: bot/release/${{ matrix.package }}
-          title: "chore(release): @import-meta-env/${{ matrix.package }}"
+          title: "chore(release): @runtime-env/${{ matrix.package }}"

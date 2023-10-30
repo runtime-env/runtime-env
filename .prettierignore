@@ -4,7 +4,6 @@ bin
 dist
 __fixtures__
 pnpm-lock.yaml
-import-meta-env.d.ts
 *.rs
 docs/public/google8464686d8d2a6081.html
 

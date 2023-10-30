@@ -30,20 +30,6 @@ jobs:
           node-version: 18
           cache: "pnpm"
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-2023-07-03
-          profile: minimal
-          override: true
-          target: wasm32-wasi
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            packages/swc
-
       - name: Install dependencies
         run: pnpm i
 
@@ -60,9 +46,6 @@ jobs:
             ./
             !.git/
             !**/node_modules/
-            !packages/swc/target/
-            packages/swc/target/wasm32-wasi/release/import_meta_env_swc.wasm
-            !packages/examples/
 
   lint:
     name: Lint
@@ -87,24 +70,8 @@ jobs:
           node-version: 18
           cache: "pnpm"
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-2023-07-03
-          profile: minimal
-          override: true
-          target: wasm32-wasi
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            packages/swc
-
       - name: Install dependencies
-        run: |
-          pnpm i
-          rustup component add rustfmt
+        run: pnpm i
 
       - name: Check formatting
         run: pnpm run lint
@@ -132,162 +99,11 @@ jobs:
           node-version: 18
           cache: "pnpm"
 
-      - name: Install Rust
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: nightly-2023-07-03
-          profile: minimal
-          override: true
-          target: wasm32-wasi
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            packages/swc
-
       - name: Install dependencies
         run: pnpm i
 
       - name: Test packages
         run: pnpm run test
-
-  npm-node-18-examples:
-    needs:
-      - build
-      - lint
-      - test
-
-    name: "Test example - ${{ matrix.example }}"
-
-    runs-on: ${{ matrix.os }}
-
-    env:
-      RUST_BACKTRACE: full
-
-    strategy:
-      matrix:
-        example:
-          - "@vue+cli@5-example"
-          - "angular-example"
-          - "babel-starter-example"
-          - "compatibility-example"
-          - "create-next-app-example"
-          - "create-react-app-example"
-          - "create-vue-app-example"
-          - "cypress-example"
-          - "docker-compose-starter-example"
-          - "docker-starter-example"
-          - "esbuild-starter-example"
-          - "jest-example"
-          - "mocha-example"
-          # - "nuxt-bridge-example"
-          - "nx-react-example"
-          - "process-env-example"
-          - "rollup-plugin-babel-example"
-          - "rollup-starter-example"
-          - "rollup-swc-example"
-          - "rspack-starter-example"
-          - "swc-example"
-          - "vite-alpine-example"
-          - "vite-built-in-import-meta-env-example"
-          - "vite-config-build-assets-dir-example"
-          - "vite-config-build-out-dir-example"
-          - "vite-legacy-example"
-          - "vite-preact-example"
-          # - "vite-qwik-example"
-          - "vite-react-example"
-          - "vite-solid-example"
-          - "vite-starter-example"
-          - "vite-svelte-example"
-          - "vite-swc-example"
-          - "vite-vanilla-example"
-          - "vite-vanilla-ts-example"
-          - "vite-vue-jsx-example"
-          - "vite-vue-ts-example"
-          - "vitest-example"
-          - "webpack-module-federation-example"
-          - "webpack-babel-loader-example"
-          - "webpack-starter-example"
-          - "webpack-swc-example"
-          - "webpack-ts-loader-example"
-          - "worker-example"
-        include:
-          - os: ubuntu-latest
-            node_version: 18
-
-      fail-fast: false
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-
-      - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: Test diff
-        run: |
-          cd packages/examples
-          npm i
-          cd ../../diff/after-using-import-meta-env
-          npm i
-          npm run _test
-
-      - name: Test ${{ matrix.example }}
-        run: |
-          cd packages/examples
-          npm i
-          cd ${{ matrix.example }}
-          npm i
-          npm run _test
-
-  npm-node-16-examples:
-    needs:
-      - build
-      - lint
-      - test
-
-    name: "Test example - ${{ matrix.example }}"
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        example:
-          - "@vue+cli@4-example"
-          - "create-nuxt-app-example"
-        include:
-          - os: ubuntu-latest
-            node_version: 16
-
-      fail-fast: false
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-
-      - name: Set node version to ${{ matrix.node_version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node_version }}
-
-      - name: Test ${{ matrix.example }}
-        run: |
-          cd packages/examples
-          npm i
-          cd ${{ matrix.example }}
-          npm i
-          npm run _test
 
   release:
     name: Release
@@ -296,21 +112,13 @@ jobs:
       - build
       - lint
       - test
-      - npm-node-18-examples
-      - npm-node-16-examples
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         package:
-          - babel
           - cli
-          - flow
-          - prepare
-          - swc
-          - typescript
-          - unplugin
 
     steps:
       - name: Checkout
@@ -356,54 +164,4 @@ jobs:
         if: ${{github.ref_name == 'main' && steps.publish.outputs.type != 'none'}}
         with:
           tag_name: ${{ matrix.package }}${{ steps.publish.outputs.version }}
-          body: "Changelog: https://github.com/iendeavor/import-meta-env/blob/${{ matrix.package }}${{ steps.publish.outputs.version }}/packages/${{ matrix.package }}/CHANGELOG.md"
-
-  docs:
-    name: Docs
-
-    needs:
-      - build
-      - lint
-      - test
-      - npm-node-18-examples
-      - npm-node-16-examples
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: artifact
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: ^7
-
-      - name: Install dependencies
-        run: pnpm i
-
-      - name: Build docs
-        run: pnpm run docs:build
-
-      - name: Commit files
-        run: |
-          cd docs/.vitepress/dist
-          git init
-          git branch -m gh-pages
-          git config --local user.email "github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git add .
-          git commit -m "docs: deploy"
-
-      - name: Push docs
-        if: github.ref_name == 'main'
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: gh-pages
-          directory: docs/.vitepress/dist
-          force: true
+          body: "Changelog: https://github.com/runtime-env/runtime-env/blob/${{ matrix.package }}${{ steps.publish.outputs.version }}/packages/${{ matrix.package }}/CHANGELOG.md"
