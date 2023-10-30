@@ -1,5 +1,5 @@
 {
-  "name": "@import-meta-env/prepare",
+  "name": "@runtime-env/prepare",
   "version": "0.1.12",
   "description": "Build once, deploy anywhere. Startup/runtime environment variable solution for JavaScript.",
   "license": "MIT",

@@ -1,5 +1,5 @@
 {
-  "name": "@import-meta-env/typescript",
+  "name": "@runtime-env/typescript",
   "version": "0.3.2",
   "description": "Automatically generate .d.ts from .env.example",
   "license": "MIT",
