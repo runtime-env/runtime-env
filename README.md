@@ -103,6 +103,18 @@
      };
      ```
 
+     In order to run `runtime-env` in a production environment, you may also need to package the `runtime-env` into a standalone executable, in which case you can use a tool such as [pkg](https://npmjs.com/pkg) to do this, for example:
+
+     ```sh
+     $ pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-alpine-x64 --output runtime-env-alpine
+     ```
+
+     Then run it like we did before:
+
+     ```sh
+     $ runtime-env-alpine gen-js --mode production
+     ```
+
 1. Generate `runtime-env.d.ts`:
 
    ```sh
