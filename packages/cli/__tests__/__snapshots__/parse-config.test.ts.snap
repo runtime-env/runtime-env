@@ -6,7 +6,41 @@ exports[`genJs.*.mode invalid 1`] = `
     "code": "custom",
     "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
     "path": [
-      "genJs"
+      "genJs",
+      0,
+      "mode"
+    ]
+  },
+  {
+    "code": "custom",
+    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "path": [
+      "genJs",
+      1,
+      "mode"
+    ]
+  }
+]"
+`;
+
+exports[`genJs.*.mode invalid 2`] = `
+"[
+  {
+    "code": "custom",
+    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "path": [
+      "genJs",
+      0,
+      "mode"
+    ]
+  },
+  {
+    "code": "custom",
+    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "path": [
+      "genJs",
+      2,
+      "mode"
     ]
   }
 ]"

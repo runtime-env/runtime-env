@@ -15,9 +15,25 @@ const parseConfig = (config: unknown) => {
           outputFilePath: z.string(),
         }),
       )
-      .refine((genJs: { mode: string }[]) => {
-        return new Set(genJs.map(({ mode }) => mode)).size === genJs.length;
-      }, "[@runtime-env/cli] SyntaxError: No duplicate modes allowed"),
+      .superRefine((genJs, context) => {
+        const modeAndIndexList: [string, number][] = genJs.map(
+          ({ mode }, index) => [mode, index],
+        );
+        modeAndIndexList
+          .filter(([mode1]) => {
+            return (
+              modeAndIndexList.filter(([mode2]) => mode2 === mode1).length > 1
+            );
+          })
+          .forEach(([_, index]) => {
+            context.addIssue({
+              code: z.ZodIssueCode.custom,
+              message:
+                "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+              path: [index, "mode"],
+            });
+          });
+      }),
     genTs: z
       .object({
         envExampleFilePath: z.string(),
