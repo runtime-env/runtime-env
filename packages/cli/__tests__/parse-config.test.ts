@@ -68,5 +68,24 @@ describe("genJs.*.mode", () => {
         ],
       }),
     ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "foo",
+          },
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "bar",
+          },
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "foo",
+          },
+        ],
+      }),
+    ).toThrowErrorMatchingSnapshot();
   });
 });
