@@ -181,4 +181,4 @@ Visit [here](https://www.npmjs.com/package/cosmiconfig#searchplaces) to see all 
 
 - You MUST configure your web server to prevent caching of `runtime-env.js`.
 
-- If you are building PWA, you MUST to configure your service-worker to prevent caching of `runtime-env.js`.
+- If you are building PWA, you MUST to configure your ServiceWorker to use proper approach for `runtime-env.js`, for example you could `NetworkFirst` strategy in Workbox.
