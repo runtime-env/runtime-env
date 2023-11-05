@@ -1,5 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`genJs.*.mode invalid 1`] = `
+"[
+  {
+    "code": "custom",
+    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "path": [
+      "genJs"
+    ]
+  }
+]"
+`;
+
 exports[`globalVariableName invalid 1`] = `
 "[
   {

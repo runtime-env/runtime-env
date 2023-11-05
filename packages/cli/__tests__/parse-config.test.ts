@@ -32,3 +32,41 @@ describe("globalVariableName", () => {
     ).toThrowErrorMatchingSnapshot();
   });
 });
+
+describe("genJs.*.mode", () => {
+  test("valid", () => {
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "foo",
+          },
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "bar",
+          },
+        ],
+      }),
+    ).not.toThrow();
+  });
+
+  test("invalid", () => {
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "foo",
+          },
+          {
+            ...minimalValidConfig.genJs[0],
+            mode: "foo",
+          },
+        ],
+      }),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});

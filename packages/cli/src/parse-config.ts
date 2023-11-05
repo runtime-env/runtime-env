@@ -5,15 +5,19 @@ const parseConfig = (config: unknown) => {
     globalVariableName: z.string().refine((globalVariableName) => {
       return variableNameRe.test(globalVariableName);
     }, "[@runtime-env/cli] SyntaxError: Invalid variable name"),
-    genJs: z.array(
-      z.object({
-        mode: z.string(),
-        envExampleFilePath: z.string(),
-        envFilePath: z.string().nullable().optional().default(null),
-        userEnvironment: z.boolean(),
-        outputFilePath: z.string(),
-      }),
-    ),
+    genJs: z
+      .array(
+        z.object({
+          mode: z.string(),
+          envExampleFilePath: z.string(),
+          envFilePath: z.string().nullable().optional().default(null),
+          userEnvironment: z.boolean(),
+          outputFilePath: z.string(),
+        }),
+      )
+      .refine((genJs: { mode: string }[]) => {
+        return new Set(genJs.map(({ mode }) => mode)).size === genJs.length;
+      }, "[@runtime-env/cli] SyntaxError: No duplicate modes allowed"),
     genTs: z
       .object({
         envExampleFilePath: z.string(),
