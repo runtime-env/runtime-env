@@ -3,6 +3,7 @@ node_modules
 bin
 dist
 __fixtures__
+__snapshots__
 pnpm-lock.yaml
 *.rs
 docs/public/google8464686d8d2a6081.html
