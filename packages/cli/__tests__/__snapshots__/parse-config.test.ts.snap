@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`globalVariableName invalid 1`] = `
+"[
+  {
+    "code": "custom",
+    "message": "[@runtime-env/cli] SyntaxError: Invalid variable name",
+    "path": [
+      "globalVariableName"
+    ]
+  }
+]"
+`;
