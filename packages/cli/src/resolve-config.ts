@@ -1,5 +1,6 @@
 import { cosmiconfigSync } from "cosmiconfig";
 import parseConfig from "./parse-config";
+import throwError from "./throwError";
 
 type Config = {
   globalVariableName: string;
@@ -19,9 +20,13 @@ type Config = {
 type ResolveConfig = () => Config;
 
 const resolveConfig: ResolveConfig = () => {
-  const config = cosmiconfigSync("runtimeenv").search()?.config;
+  const configResult = cosmiconfigSync("runtimeenv").search();
 
-  return parseConfig(config);
+  if (!configResult?.config) {
+    throwError("No configuration found");
+  }
+
+  return parseConfig(configResult.config);
 };
 
 export default resolveConfig;
