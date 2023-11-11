@@ -4,7 +4,7 @@ exports[`genJs.*.mode invalid 1`] = `
 "[
   {
     "code": "custom",
-    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "message": "[runtime-env] SyntaxError: No duplicate modes allowed",
     "path": [
       "genJs",
       0,
@@ -13,7 +13,7 @@ exports[`genJs.*.mode invalid 1`] = `
   },
   {
     "code": "custom",
-    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "message": "[runtime-env] SyntaxError: No duplicate modes allowed",
     "path": [
       "genJs",
       1,
@@ -27,7 +27,7 @@ exports[`genJs.*.mode invalid 2`] = `
 "[
   {
     "code": "custom",
-    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "message": "[runtime-env] SyntaxError: No duplicate modes allowed",
     "path": [
       "genJs",
       0,
@@ -36,7 +36,7 @@ exports[`genJs.*.mode invalid 2`] = `
   },
   {
     "code": "custom",
-    "message": "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+    "message": "[runtime-env] SyntaxError: No duplicate modes allowed",
     "path": [
       "genJs",
       2,
@@ -50,7 +50,7 @@ exports[`globalVariableName invalid 1`] = `
 "[
   {
     "code": "custom",
-    "message": "[@runtime-env/cli] SyntaxError: Invalid variable name",
+    "message": "[runtime-env] SyntaxError: Invalid variable name",
     "path": [
       "globalVariableName"
     ]

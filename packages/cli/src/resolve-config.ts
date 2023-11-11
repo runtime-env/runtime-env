@@ -1,6 +1,6 @@
 import { cosmiconfigSync } from "cosmiconfig";
 import parseConfig from "./parse-config";
-import throwError from "./throwError";
+import createMessage from "./create-message";
 
 type Config = {
   globalVariableName: string;
@@ -23,7 +23,7 @@ const resolveConfig: ResolveConfig = () => {
   const configResult = cosmiconfigSync("runtimeenv").search();
 
   if (!configResult?.config) {
-    throwError("No configuration found");
+    throw Error(createMessage("No configuration found"));
   }
 
   return parseConfig(configResult.config);

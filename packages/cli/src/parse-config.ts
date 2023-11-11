@@ -1,10 +1,11 @@
 import { z } from "zod";
+import createMessage from "./create-message";
 
 const parseConfig = (config: unknown) => {
   const configSchema = z.object({
     globalVariableName: z.string().refine((globalVariableName) => {
       return variableNameRe.test(globalVariableName);
-    }, "[@runtime-env/cli] SyntaxError: Invalid variable name"),
+    }, createMessage("SyntaxError: Invalid variable name")),
     genJs: z
       .array(
         z.object({
@@ -28,8 +29,7 @@ const parseConfig = (config: unknown) => {
           .forEach(([_, index]) => {
             context.addIssue({
               code: z.ZodIssueCode.custom,
-              message:
-                "[@runtime-env/cli] SyntaxError: No duplicate modes allowed",
+              message: createMessage("SyntaxError: No duplicate modes allowed"),
               path: [index, "mode"],
             });
           });

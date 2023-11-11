@@ -127,12 +127,12 @@ describe("resolveEnv", () => {
       resolveEnv({ envExampleFilePath, envFilePath, userEnvironment });
 
     expect(act).toThrow(
-      Error(`[@runtime-env/cli] Some environment variables are not defined`),
+      Error(`[runtime-env] Some environment variables are not defined`),
     );
     expect(spy.mock.calls).toMatchInlineSnapshot(`
       [
         [
-          "[31m[runtime-env]: Some environment variables are not defined.[39m",
+          "[31m[runtime-env] Some environment variables are not defined.[39m",
         ],
         [
           "
@@ -171,12 +171,12 @@ describe("resolveEnv", () => {
       });
 
     expect(act).toThrow(
-      Error(`[@runtime-env/cli] Some environment variables are not defined`),
+      Error(`[runtime-env] Some environment variables are not defined`),
     );
     expect(spy.mock.calls).toMatchInlineSnapshot(`
       [
         [
-          "[31m[runtime-env]: Some environment variables are not defined.[39m",
+          "[31m[runtime-env] Some environment variables are not defined.[39m",
         ],
         [
           "
@@ -212,12 +212,12 @@ describe("resolveEnv", () => {
       resolveEnv({ envExampleFilePath, envFilePath, userEnvironment });
 
     expect(act).toThrow(
-      Error(`[@runtime-env/cli] Some environment variables are not defined`),
+      Error(`[runtime-env] Some environment variables are not defined`),
     );
     expect(spy.mock.calls).toMatchInlineSnapshot(`
       [
         [
-          "[31m[runtime-env]: Some environment variables are not defined.[39m",
+          "[31m[runtime-env] Some environment variables are not defined.[39m",
         ],
         [
           "

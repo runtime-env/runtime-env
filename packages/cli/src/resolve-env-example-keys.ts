@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
 import { parse } from "dotenv";
-import throwError from "./throwError";
+import createMessage from "./create-message";
 
 type ResolveEnvExampleKeys = (_: {
   envExampleFilePath: string;
@@ -12,7 +12,7 @@ const resolveEnvExampleKeys: ResolveEnvExampleKeys = ({
 }) => {
   envExampleFilePath = resolve(process.cwd(), envExampleFilePath);
   if (existsSync(envExampleFilePath) === false) {
-    throwError(`failed to load file: "${envExampleFilePath}"`);
+    throw Error(createMessage(`Failed to load file: "${envExampleFilePath}"`));
   }
   const content = readFileSync(envExampleFilePath, "utf8");
   const parsed = parse(content);

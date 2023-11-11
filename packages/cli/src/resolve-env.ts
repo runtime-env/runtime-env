@@ -2,7 +2,7 @@ import fs from "fs";
 import { parse } from "dotenv";
 import { red } from "picocolors";
 import resolveEnvExampleKeys from "./resolve-env-example-keys";
-import throwError from "./throwError";
+import createMessage from "./create-message";
 
 type ResolveEnv = (_: {
   envFilePath: null | string;
@@ -56,11 +56,11 @@ const resolveEnv: ResolveEnv = ({
       "",
     ].join("\n");
     console.error(
-      red(`[runtime-env]: Some environment variables are not defined.`),
+      red(createMessage(`Some environment variables are not defined.`)),
     );
     console.error(environmentVariablesAreMissing);
 
-    throwError(`Some environment variables are not defined`);
+    throw Error(createMessage(`Some environment variables are not defined`));
   }
 
   return Object.freeze(env!);

@@ -1,7 +1,7 @@
 import { Command } from "commander";
 import resolveConfig from "../resolve-config";
 import act from "./act";
-import throwError from "../throwError";
+import createMessage from "../create-message";
 
 export default () => {
   return new Command("gen-js")
@@ -9,7 +9,8 @@ export default () => {
     .action(({ mode }) => {
       const config = resolveConfig();
       const jsConfig = config.genJs.find((jsConfig) => jsConfig.mode === mode);
-      if (!jsConfig) throwError(`No configuration found for mode: ${mode}`);
+      if (!jsConfig)
+        throw Error(createMessage(`No configuration found for mode: ${mode}`));
 
       act({
         globalVariableName: config.globalVariableName,

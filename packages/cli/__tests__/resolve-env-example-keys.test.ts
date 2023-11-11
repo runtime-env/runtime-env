@@ -34,7 +34,7 @@ describe("resolveEnvExampleKeys", () => {
     const envExampleFilePath = tmp.tmpNameSync();
 
     expect(() => resolveEnvExampleKeys({ envExampleFilePath })).toThrow(
-      Error(`[@runtime-env/cli] failed to load file: "${envExampleFilePath}"`),
+      Error(`[runtime-env] Failed to load file: "${envExampleFilePath}"`),
     );
   });
 });
