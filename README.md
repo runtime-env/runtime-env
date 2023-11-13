@@ -1,5 +1,7 @@
 # runtime-env
 
+> **The twelve-factor app stores config in _environment variables_** (often shortened to env vars or env). Env vars are easy to change between deploys without changing any code. - [The Twelve-Factor App](https://12factor.net/config)
+
 ## Feature
 
 - **🔒 Security First** - No environment variables will be exposed to clients unless you define it in a .env.example file.
