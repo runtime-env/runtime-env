@@ -1,0 +1,12 @@
+{
+  "globalVariableName": "runtimeEnv",
+  "genJs": [
+    {
+      "mode": "test",
+      "envExampleFilePath": ".env.example",
+      "envFilePath": ".env",
+      "userEnvironment": false,
+      "outputFilePath": "jest-setup-file-runtime-env.js"
+    }
+  ]
+}

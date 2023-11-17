@@ -41,14 +41,14 @@
          "envExampleFilePath": ".env.example",
          "envFilePath": ".env",
          "userEnvironment": false,
-         "outputFilePath": "runtime-env.js"
+         "outputFilePath": "public/runtime-env.js"
        },
        {
          "mode": "test",
          "envExampleFilePath": ".env.example",
          "envFilePath": ".env",
          "userEnvironment": false,
-         "outputFilePath": "jest/setup-files/runtime-env.js"
+         "outputFilePath": "jest-setup-file-runtime-env.js"
        },
        {
          "mode": "production",
