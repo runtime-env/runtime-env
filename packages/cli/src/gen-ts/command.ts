@@ -10,7 +10,7 @@ export default () => {
 
     act({
       globalVariableName: config.globalVariableName,
-      envExampleFilePath: config.genTs.envExampleFilePath,
+      envExampleFilePath: config.envExampleFilePath,
       outputFilePath: config.genTs.outputFilePath,
     });
   });

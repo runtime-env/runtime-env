@@ -4,15 +4,14 @@ import throwError from "./throwError";
 
 type Config = {
   globalVariableName: string;
+  envExampleFilePath: string;
   genJs: {
     mode: string;
-    envExampleFilePath: string;
     envFilePath: null | string;
     userEnvironment: boolean;
     outputFilePath: string;
   }[];
   genTs: null | {
-    envExampleFilePath: string;
     outputFilePath: string;
   };
 };

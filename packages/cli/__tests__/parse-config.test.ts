@@ -2,10 +2,10 @@ import parseConfig from "../src/parse-config";
 
 const minimalValidConfig = {
   globalVariableName: "_",
+  envExampleFilePath: "_",
   genJs: [
     {
       mode: "_",
-      envExampleFilePath: "_",
       envFilePath: null,
       userEnvironment: false,
       outputFilePath: "_",

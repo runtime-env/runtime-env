@@ -5,11 +5,11 @@ const parseConfig = (config: unknown) => {
     globalVariableName: z.string().refine((globalVariableName) => {
       return variableNameRe.test(globalVariableName);
     }, "[@runtime-env/cli] SyntaxError: Invalid variable name"),
+    envExampleFilePath: z.string(),
     genJs: z
       .array(
         z.object({
           mode: z.string(),
-          envExampleFilePath: z.string(),
           envFilePath: z.string().nullable().optional().default(null),
           userEnvironment: z.boolean(),
           outputFilePath: z.string(),
@@ -36,7 +36,6 @@ const parseConfig = (config: unknown) => {
       }),
     genTs: z
       .object({
-        envExampleFilePath: z.string(),
         outputFilePath: z.string(),
       })
       .nullable()

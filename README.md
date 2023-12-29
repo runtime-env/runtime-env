@@ -35,31 +35,28 @@
    ```json
    {
      "globalVariableName": "runtimeEnv",
+     "envExampleFilePath": ".env.example",
      "genJs": [
        {
          "mode": "development",
-         "envExampleFilePath": ".env.example",
          "envFilePath": ".env",
          "userEnvironment": false,
          "outputFilePath": "public/runtime-env.js"
        },
        {
          "mode": "test",
-         "envExampleFilePath": ".env.example",
          "envFilePath": ".env",
          "userEnvironment": false,
          "outputFilePath": "jest-setup-file-runtime-env.js"
        },
        {
          "mode": "production",
-         "envExampleFilePath": ".env.example",
          "envFilePath": null,
          "userEnvironment": true,
          "outputFilePath": "dist/runtime-env.js"
        }
      ],
      "genTs": {
-       "envExampleFilePath": ".env.example",
        "outputFilePath": "src/runtime-env.d.ts"
      }
    }
@@ -177,19 +174,18 @@ Visit [here](https://www.npmjs.com/package/cosmiconfig#searchplaces) to see all 
 
 ### Options
 
-| Default                                  | Path                         | Type               | Description                                                                                                                                                                   |
-| ---------------------------------------- | ---------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| _required_                               | `globalVariableName`         | `string`           |                                                                                                                                                                               |
-| _required_                               | `genJs`                      | `array`            |                                                                                                                                                                               |
-| _required_                               | `genJs.*`                    | `object`           |                                                                                                                                                                               |
-| _required_                               | `genJs.*.mode`               | `string`           | Instruct the CLI which configuration to use                                                                                                                                   |
-| _required_                               | `genJs.*.envExampleFilePath` | `string`           |                                                                                                                                                                               |
-| `null`                                   | `genJs.*.envFilePath`        | `null` \| `string` | Leave `null` to mean no env files are loaded                                                                                                                                  |
-| _required_                               | `genJs.*.userEnvironment`    | `boolean`          | Indicates whether environment variables should be loaded from `process.env`. `process.env.*` takes precedence over the environment variables loaded via `genJs.*.envFilePath` |
-| _required_                               | `genJs.*.outputFilePath`     | `string`           |                                                                                                                                                                               |
-| _required if running `--gen-ts` command_ | `genTs`                      | object             |                                                                                                                                                                               |
-| _required_                               | `genTs.envExampleFilePath`   | string             |                                                                                                                                                                               |
-| _required_                               | `genTs.outputFilePath`       | string             |                                                                                                                                                                               |
+| Default                                  | Path                      | Type               | Description                                                                                                                                                                   |
+| ---------------------------------------- | ------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| _required_                               | `globalVariableName`      | `string`           |                                                                                                                                                                               |
+| _required_                               | `envExampleFilePath`      | `string`           |                                                                                                                                                                               |
+| _required_                               | `genJs`                   | `array`            |                                                                                                                                                                               |
+| _required_                               | `genJs.*`                 | `object`           |                                                                                                                                                                               |
+| _required_                               | `genJs.*.mode`            | `string`           | Instruct the CLI which configuration to use                                                                                                                                   |
+| `null`                                   | `genJs.*.envFilePath`     | `null` \| `string` | Leave `null` to mean no env files are loaded                                                                                                                                  |
+| _required_                               | `genJs.*.userEnvironment` | `boolean`          | Indicates whether environment variables should be loaded from `process.env`. `process.env.*` takes precedence over the environment variables loaded via `genJs.*.envFilePath` |
+| _required_                               | `genJs.*.outputFilePath`  | `string`           |                                                                                                                                                                               |
+| _required if running `--gen-ts` command_ | `genTs`                   | object             |                                                                                                                                                                               |
+| _required_                               | `genTs.outputFilePath`    | string             |                                                                                                                                                                               |
 
 ## Further Setup
 

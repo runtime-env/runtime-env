@@ -13,7 +13,7 @@ export default () => {
 
       act({
         globalVariableName: config.globalVariableName,
-        envExampleFilePath: jsConfig.envExampleFilePath,
+        envExampleFilePath: config.envExampleFilePath,
         envFilePath: jsConfig.envFilePath,
         userEnvironment: jsConfig.userEnvironment,
         outputFilePath: jsConfig.outputFilePath,

@@ -1,9 +1,9 @@
 {
   "globalVariableName": "runtimeEnv",
+  "envExampleFilePath": ".env.example",
   "genJs": [
     {
       "mode": "development",
-      "envExampleFilePath": ".env.example",
       "envFilePath": ".env",
       "userEnvironment": false,
       "outputFilePath": "public/runtime-env.js"
