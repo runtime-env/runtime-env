@@ -1,6 +1,6 @@
 {
   "globalVariableName": "runtimeEnv",
-  "envExampleFilePath": ".env.example",
+  "envSchemaFilePath": "runtime-env-schema.json",
   "genJs": [
     {
       "mode": "test",

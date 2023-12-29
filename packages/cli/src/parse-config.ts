@@ -1,3 +1,4 @@
+import { dirname, join } from "path";
 import { z } from "zod";
 
 const parseConfig = (config: unknown) => {
@@ -5,12 +6,17 @@ const parseConfig = (config: unknown) => {
     globalVariableName: z.string().refine((globalVariableName) => {
       return variableNameRe.test(globalVariableName);
     }, "[@runtime-env/cli] SyntaxError: Invalid variable name"),
-    envExampleFilePath: z.string(),
+    envSchemaFilePath: z.string().transform(filePathTransform),
     genJs: z
       .array(
         z.object({
           mode: z.string(),
-          envFilePath: z.string().nullable().optional().default(null),
+          envFilePath: z
+            .string()
+            .transform(filePathTransform)
+            .nullable()
+            .optional()
+            .default(null),
           userEnvironment: z.boolean(),
           outputFilePath: z.string(),
         }),
@@ -33,10 +39,13 @@ const parseConfig = (config: unknown) => {
               path: [index, "mode"],
             });
           });
-      }),
+      })
+      .nullable()
+      .optional()
+      .default(null),
     genTs: z
       .object({
-        outputFilePath: z.string(),
+        outputFilePath: z.string().transform(filePathTransform),
       })
       .nullable()
       .optional()
@@ -47,6 +56,10 @@ const parseConfig = (config: unknown) => {
 };
 
 export default parseConfig;
+
+const filePathTransform = (filePath: string): string => {
+  return join(process.cwd(), filePath);
+};
 
 // https://stackoverflow.com/a/9337047/7122623
 const variableNameRe =

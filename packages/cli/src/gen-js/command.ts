@@ -6,17 +6,19 @@ import throwError from "../throwError";
 export default () => {
   return new Command("gen-js")
     .requiredOption("--mode <mode>")
-    .action(({ mode }) => {
+    .action(async ({ mode }) => {
       const config = resolveConfig();
+      if (!config.genJs) throwError("No configuration found");
+
       const jsConfig = config.genJs.find((jsConfig) => jsConfig.mode === mode);
       if (!jsConfig) throwError(`No configuration found for mode: ${mode}`);
 
-      act({
-        globalVariableName: config.globalVariableName,
-        envExampleFilePath: config.envExampleFilePath,
+      await act({
         envFilePath: jsConfig.envFilePath,
-        userEnvironment: jsConfig.userEnvironment,
+        envSchemaFilePath: config.envSchemaFilePath,
+        globalVariableName: config.globalVariableName,
         outputFilePath: jsConfig.outputFilePath,
+        userEnvironment: jsConfig.userEnvironment,
       });
     });
 };
