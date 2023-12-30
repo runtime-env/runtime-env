@@ -3,14 +3,6 @@ import parseConfig from "../src/parse-config";
 const minimalValidConfig = {
   globalVariableName: "_",
   envSchemaFilePath: "_",
-  genJs: [
-    {
-      mode: "_",
-      envFilePath: null,
-      userEnvironment: false,
-      outputFilePath: "_",
-    },
-  ],
 };
 
 describe("globalVariableName", () => {
@@ -40,11 +32,15 @@ describe("genJs.*.mode", () => {
         ...minimalValidConfig,
         genJs: [
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "foo",
           },
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "bar",
           },
         ],
@@ -58,11 +54,15 @@ describe("genJs.*.mode", () => {
         ...minimalValidConfig,
         genJs: [
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "foo",
           },
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "foo",
           },
         ],
@@ -73,15 +73,21 @@ describe("genJs.*.mode", () => {
         ...minimalValidConfig,
         genJs: [
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "foo",
           },
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "bar",
           },
           {
-            ...minimalValidConfig.genJs[0],
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
             mode: "foo",
           },
         ],
