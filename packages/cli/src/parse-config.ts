@@ -1,4 +1,4 @@
-import { dirname, join } from "path";
+import { join } from "path";
 import { z } from "zod";
 
 const parseConfig = (config: unknown) => {
