@@ -4,13 +4,13 @@ import act from "./act";
 import throwError from "../throwError";
 
 export default () => {
-  return new Command("gen-ts").action(() => {
+  return new Command("gen-ts").action(async () => {
     const config = resolveConfig();
     if (!config.genTs) throwError("No configuration found");
 
-    act({
+    await act({
+      envSchemaFilePath: config.envSchemaFilePath,
       globalVariableName: config.globalVariableName,
-      envExampleFilePath: config.genTs.envExampleFilePath,
       outputFilePath: config.genTs.outputFilePath,
     });
   });
