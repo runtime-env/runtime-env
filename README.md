@@ -69,7 +69,7 @@
 1. Generate `runtime-env.js`:
 
    ```sh
-   $ echo "FOO=development\nBAR={\"BAZ\":\"value\"}\nSECRET=\"****\"" > .env
+   $ echo "FOO=\"development\"\nBAR=\"{\"BAZ\":\"value\"}\"\nSECRET=\"****\"" > .env
    $ export FOO="escape<"
    $ runtime-env gen-js --mode development
    ```
