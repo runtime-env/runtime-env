@@ -130,6 +130,24 @@ describe("generate js", () => {
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
+  it("should escape", async () => {
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, `FOO=<script>\nBAR={"BAZ":"<script>"}`, "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
+    const userEnvironment = false;
+
+    const schema = await createSchemaForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const js = await schema.generateJs();
+
+    expect(js).toMatchSnapshot();
+  });
+
   it("should works (envFile + userEnvironment)", async () => {
     const envFilePath = tmpNameSync();
     writeFileSync(envFilePath, envFileContent, "utf8");
