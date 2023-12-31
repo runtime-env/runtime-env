@@ -2,17 +2,20 @@ import serializeJavascript from "serialize-javascript";
 import Ajv from "ajv";
 import AjvFormats from "ajv-formats";
 import { parse } from "dotenv";
-import { CreateSchema, CreateSchemaReturnType } from "../create-schema";
+import {
+  CreateGenerator,
+  CreateGeneratorReturnType,
+} from "../create-generator";
 import { readFileSync } from "fs";
 import { compile } from "json-schema-to-typescript";
 
-export const createSchemaForJSONSchema: CreateSchema = async ({
+export const createGeneratorForJSONSchema: CreateGenerator = async ({
   globalVariableName,
   envSchemaFilePath,
   envFilePath,
   userEnvironment,
 }) => {
-  return <CreateSchemaReturnType>{
+  return <CreateGeneratorReturnType>{
     generateJs: async () => {
       const ajv = new Ajv({
         allErrors: true,

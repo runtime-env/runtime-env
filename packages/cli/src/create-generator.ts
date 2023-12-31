@@ -1,16 +1,16 @@
-export type CreateSchemaParameter = {
+export type CreateGeneratorParameter = {
   globalVariableName: string;
   envSchemaFilePath: string;
   envFilePath: null | string;
   userEnvironment: boolean;
 };
 
-export type CreateSchemaReturnType = {
+export type CreateGeneratorReturnType = {
   generateJs: () => Promise<string>;
 
   generateTs: () => Promise<string>;
 };
 
-export type CreateSchema = (
-  _: CreateSchemaParameter,
-) => Promise<CreateSchemaReturnType>;
+export type CreateGenerator = (
+  _: CreateGeneratorParameter,
+) => Promise<CreateGeneratorReturnType>;

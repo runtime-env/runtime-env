@@ -1,5 +1,5 @@
 import { tmpNameSync } from "tmp";
-import { createSchemaForJSONSchema } from "./json-schema";
+import { createGeneratorForJSONSchema } from "./json-schema";
 import { writeFileSync } from "fs";
 
 const globalVariableName = "runtimeEnv";
@@ -41,7 +41,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, '{"type":"invalid"}', "utf8");
     const userEnvironment = true;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -60,7 +60,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, '{"type":"object"}', "utf8");
     const userEnvironment = false;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -79,7 +79,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
     const userEnvironment = false;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -118,7 +118,7 @@ describe("generate js", () => {
     );
     const userEnvironment = false;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -137,7 +137,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
     const userEnvironment = false;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -155,7 +155,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
     const userEnvironment = true;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -173,7 +173,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
     const userEnvironment = false;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -190,7 +190,7 @@ describe("generate js", () => {
     writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
     const userEnvironment = true;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -219,7 +219,7 @@ describe("generate js", () => {
     );
     const userEnvironment = true;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -248,7 +248,7 @@ describe("generate js", () => {
     );
     const userEnvironment = true;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
@@ -268,7 +268,7 @@ describe("generate ts", () => {
     writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
     const userEnvironment = false;
 
-    const schema = await createSchemaForJSONSchema({
+    const schema = await createGeneratorForJSONSchema({
       envFilePath,
       envSchemaFilePath,
       globalVariableName,
