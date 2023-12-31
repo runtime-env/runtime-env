@@ -48,44 +48,29 @@ export const createSchemaForJSONSchema: CreateSchema = async ({
       const parsedEnv: Record<string, any> = {};
       const errors: string[] = [];
       Object.keys(envSchemaFileJSON.properties).forEach((property) => {
-        const value = env[property];
-        if (envSchemaFileJSON.properties[property].type === "string") {
-          const propertySchema = {
-            type: envSchemaFileJSON.type,
-            properties: {
-              [property]: envSchemaFileJSON.properties[property],
-            },
-            required: (envSchemaFileJSON.required ?? []).includes(property)
-              ? [property]
-              : [],
-          };
-          if (ajv.validate(propertySchema, { [property]: value })) {
-            parsedEnv[property] = serializeJavascript(value);
-          } else {
-            errors.push(JSON.stringify(ajv.errors));
-          }
+        const value =
+          envSchemaFileJSON.properties[property].type === "string"
+            ? env[property]
+            : (() => {
+                try {
+                  return JSON.parse(env[property]);
+                } catch {
+                  return env[property];
+                }
+              })();
+        const propertySchema = {
+          type: envSchemaFileJSON.type,
+          properties: {
+            [property]: envSchemaFileJSON.properties[property],
+          },
+          required: (envSchemaFileJSON.required ?? []).includes(property)
+            ? [property]
+            : [],
+        };
+        if (ajv.validate(propertySchema, { [property]: value })) {
+          parsedEnv[property] = serializeJavascript(value);
         } else {
-          const parsedValue = (() => {
-            try {
-              return JSON.parse(value);
-            } catch {
-              return value;
-            }
-          })();
-          const propertySchema = {
-            type: envSchemaFileJSON.type,
-            properties: {
-              [property]: envSchemaFileJSON.properties[property],
-            },
-            required: (envSchemaFileJSON.required ?? []).includes(property)
-              ? [property]
-              : [],
-          };
-          if (ajv.validate(propertySchema, { [property]: parsedValue })) {
-            parsedEnv[property] = JSON.stringify(parsedValue);
-          } else {
-            errors.push(JSON.stringify(ajv.errors));
-          }
+          errors.push(JSON.stringify(ajv.errors));
         }
       });
 
