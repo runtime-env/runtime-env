@@ -36,7 +36,7 @@ beforeAll(() => {
 describe("generate js", () => {
   it("should throw 1", async () => {
     const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, envFileContent, "utf8");
+    writeFileSync(envFilePath, "", "utf8");
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(envSchemaFilePath, '{"type":"invalid"}', "utf8");
     const userEnvironment = true;
@@ -57,7 +57,7 @@ describe("generate js", () => {
     const envFilePath = tmpNameSync();
     writeFileSync(envFilePath, "", "utf8");
     const envSchemaFilePath = tmpNameSync();
-    writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
+    writeFileSync(envSchemaFilePath, '{"type":"object"}', "utf8");
     const userEnvironment = false;
 
     const schema = await createSchemaForJSONSchema({
@@ -76,7 +76,46 @@ describe("generate js", () => {
     const envFilePath = tmpNameSync();
     writeFileSync(envFilePath, "", "utf8");
     const envSchemaFilePath = tmpNameSync();
-    writeFileSync(envSchemaFilePath, '{"type":"object"}', "utf8");
+    writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
+    const userEnvironment = false;
+
+    const schema = await createSchemaForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+
+    await expect(() =>
+      schema.generateJs(),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it("should throw 4", async () => {
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, envFileContent, "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      `{
+      "type": "object",
+      "properties": {
+        "FOO": {
+          "type": "number"
+        },
+        "BAR": {
+          "type": "object",
+          "properties": {
+            "BAZ": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": ["FOO"]
+    }`,
+      "utf8",
+    );
     const userEnvironment = false;
 
     const schema = await createSchemaForJSONSchema({
