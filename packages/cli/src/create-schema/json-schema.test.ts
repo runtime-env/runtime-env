@@ -167,10 +167,67 @@ describe("generate js", () => {
   });
 
   it("should works (userEnvironment only)", async () => {
+    const envFilePath = null;
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
+    const userEnvironment = true;
+
+    const schema = await createSchemaForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const js = await schema.generateJs();
+
+    expect(js).toMatchSnapshot();
+  });
+
+  it("should be undefined if no corresponding environment variable presents (primitive)", async () => {
     const envFilePath = tmpNameSync();
     writeFileSync(envFilePath, "", "utf8");
     const envSchemaFilePath = tmpNameSync();
-    writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
+    writeFileSync(
+      envSchemaFilePath,
+      `{
+      "type": "object",
+      "properties": {
+        "QUX": {
+          "type": "string"
+        }
+      }
+    }`,
+      "utf8",
+    );
+    const userEnvironment = true;
+
+    const schema = await createSchemaForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const js = await schema.generateJs();
+
+    expect(js).toMatchSnapshot();
+  });
+
+  it("should be undefined if no corresponding environment variable presents (non-primitive)", async () => {
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, "", "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      `{
+      "type": "object",
+      "properties": {
+        "QUX": {
+          "type": "object"
+        }
+      }
+    }`,
+      "utf8",
+    );
     const userEnvironment = true;
 
     const schema = await createSchemaForJSONSchema({
