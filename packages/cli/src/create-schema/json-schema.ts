@@ -60,10 +60,7 @@ export const createSchemaForJSONSchema: CreateSchema = async ({
               : [],
           };
           if (ajv.validate(propertySchema, { [property]: value })) {
-            parsedEnv[property] =
-              typeof value === "string"
-                ? serializeJavascript(value)
-                : undefined;
+            parsedEnv[property] = serializeJavascript(value);
           } else {
             errors.push(JSON.stringify(ajv.errors));
           }
