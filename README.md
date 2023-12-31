@@ -4,7 +4,7 @@
 
 ## Feature
 
-- **🔒 Security First** - No environment variables will be exposed to clients unless you define it in a .env.example file.
+- **🔒 Security First** - No environment variables will be exposed to clients unless you define it in a schema file.
 
 - **✅ Type Safe** - No more forgetting to provide environment variables. Using runtime-env, if your code compiles, it works.
 
