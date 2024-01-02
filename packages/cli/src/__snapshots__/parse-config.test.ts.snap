@@ -1,5 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`genJs.*.envFilePath invalid 1 1`] = `
+"[
+  {
+    "code": "too_small",
+    "minimum": 1,
+    "type": "array",
+    "inclusive": true,
+    "exact": false,
+    "message": "Array must contain at least 1 element(s)",
+    "path": [
+      "genJs",
+      0,
+      "envFilePath"
+    ]
+  }
+]"
+`;
+
 exports[`genJs.*.mode invalid 1`] = `
 "[
   {

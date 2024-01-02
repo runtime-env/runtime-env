@@ -2,7 +2,7 @@ import { writeFileSync } from "fs";
 import { createGeneratorForJSONSchema } from "../create-generator/json-schema";
 
 type Act = (_: {
-  envFilePath: null | string;
+  envFilePath: null | string | string[];
   envSchemaFilePath: string;
   globalVariableName: string;
   outputFilePath: string;
