@@ -184,6 +184,26 @@ describe("generate js", () => {
     expect(js).toMatchSnapshot();
   });
 
+  it("should works (multiple envFile)", async () => {
+    const envFilePath1 = tmpNameSync();
+    writeFileSync(envFilePath1, 'FOO="default"', "utf8");
+    const envFilePath2 = tmpNameSync();
+    writeFileSync(envFilePath2, 'FOO="foo"\nBAR="{"BAZ":"baz"}"', "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(envSchemaFilePath, envSchemaFileContent, "utf8");
+    const userEnvironment = false;
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath: [envFilePath1, envFilePath2],
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const js = await schema.generateJs();
+
+    expect(js).toMatchSnapshot();
+  });
+
   it("should works (userEnvironment only)", async () => {
     const envFilePath = null;
     const envSchemaFilePath = tmpNameSync();

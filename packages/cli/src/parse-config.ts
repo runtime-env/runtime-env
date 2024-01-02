@@ -12,10 +12,10 @@ const parseConfig = (config: unknown) => {
         z.object({
           mode: z.string(),
           envFilePath: z
-            .string()
-            .transform(filePathTransform)
-            .nullable()
-            .optional()
+            .union([
+              z.string().transform(filePathTransform).nullable().optional(),
+              z.array(z.string().transform(filePathTransform)).min(1),
+            ])
             .default(null),
           userEnvironment: z.boolean(),
           outputFilePath: z.string(),

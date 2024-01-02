@@ -95,3 +95,69 @@ describe("genJs.*.mode", () => {
     ).toThrowErrorMatchingSnapshot();
   });
 });
+
+describe("genJs.*.envFilePath", () => {
+  test("valid 1", () => {
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            envFilePath: null,
+            userEnvironment: false,
+            outputFilePath: "_",
+            mode: "foo",
+          },
+        ],
+      }),
+    ).not.toThrow();
+  });
+
+  test("valid 2", () => {
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            envFilePath: "_",
+            userEnvironment: false,
+            outputFilePath: "_",
+            mode: "foo",
+          },
+        ],
+      }),
+    ).not.toThrow();
+  });
+
+  test("valid 3", () => {
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            envFilePath: ["_", "__"],
+            userEnvironment: false,
+            outputFilePath: "_",
+            mode: "foo",
+          },
+        ],
+      }),
+    ).not.toThrow();
+  });
+
+  test("invalid 1", () => {
+    expect(() =>
+      parseConfig({
+        ...minimalValidConfig,
+        genJs: [
+          {
+            envFilePath: [],
+            userEnvironment: false,
+            outputFilePath: "_",
+            mode: "foo",
+          },
+        ],
+      }),
+    ).toThrowErrorMatchingSnapshot();
+  });
+});

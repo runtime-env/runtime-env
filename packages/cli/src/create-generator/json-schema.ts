@@ -27,11 +27,16 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
       const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
       const env = (() => {
         let env: Record<string, string> = {};
-        if (envFilePath !== null) {
+        const envFilePaths = Array.isArray(envFilePath)
+          ? envFilePath
+          : envFilePath !== null
+          ? [envFilePath]
+          : [];
+        envFilePaths.forEach((envFilePath) => {
           const envFileContent = readFileSync(envFilePath, "utf8");
-          const envFileJSON = parse(envFileContent);
-          env = { ...env, ...envFileJSON };
-        }
+          const parsedEnvFileContent = parse(envFileContent);
+          env = { ...env, ...parsedEnvFileContent };
+        });
         if (userEnvironment) {
           env = { ...env, ...(process.env as Record<string, string>) };
         }
