@@ -33,6 +33,189 @@ beforeAll(() => {
   process.env.SECRET = "****";
 });
 
+describe("interpolate", () => {
+  it("should works (envFileOnly)", async () => {
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, `FOO="<script>"`, "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      `
+{
+  "type": "object",
+  "properties": {
+    "FOO": {
+      "type": "string"
+    }
+  },
+  "required": ["FOO"]
+}
+`,
+      "utf8",
+    );
+    const userEnvironment = false;
+
+    const input = `
+<!DOCTYPE html>
+<html>
+  <body>
+    <div><%= runtimeEnv.FOO %></div>
+  </body>
+</html>
+    `.trim();
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const output = await schema.interpolate(input);
+
+    expect(output).toMatchSnapshot();
+  });
+
+  it("should works (userEnvironment)", async () => {
+    const envFilePath = null;
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      `
+{
+  "type": "object",
+  "properties": {
+    "FOO": {
+      "type": "string"
+    }
+  },
+  "required": ["FOO"]
+}
+`,
+      "utf8",
+    );
+    const userEnvironment = true;
+
+    const input = `
+<!DOCTYPE html>
+<html>
+  <body>
+    <div><%= runtimeEnv.FOO %></div>
+  </body>
+</html>
+    `.trim();
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const output = await schema.interpolate(input);
+
+    expect(output).toMatchSnapshot();
+  });
+
+  it("should works (nested)", async () => {
+    process.env.BAZ = '{"KEY":"<script>"}';
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, `QUX="{"KEY":"<script>"}"`, "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      `
+{
+  "type": "object",
+  "properties": {
+    "BAZ": {
+      "type": "object",
+      "properties": {
+        "KEY": {
+          "type": "string"
+        }
+      },
+      "required": ["KEY"]
+    },
+    "QUX": {
+      "type": "object",
+      "properties": {
+        "KEY": {
+          "type": "string"
+        }
+      },
+      "required": ["KEY"]
+    }
+  },
+  "required": ["BAZ", "QUX"]
+}
+`,
+      "utf8",
+    );
+    const userEnvironment = true;
+
+    const input = `
+<!DOCTYPE html>
+<html>
+  <body>
+    <div><%= runtimeEnv.BAZ.KEY %></div>
+    <div><%= runtimeEnv.QUX.KEY %></div>
+  </body>
+</html>
+    `.trim();
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const output = await schema.interpolate(input);
+
+    expect(output).toMatchSnapshot();
+    delete process.env.BAZ;
+  });
+
+  it("should works (stringified number)", async () => {
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, `FOO="42"`, "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      `
+{
+  "type": "object",
+  "properties": {
+    "FOO": {
+      "type": "string"
+    }
+  },
+  "required": ["FOO"]
+}
+`,
+      "utf8",
+    );
+    const userEnvironment = false;
+
+    const input = `
+<!DOCTYPE html>
+<html>
+  <body>
+    <div><%= runtimeEnv.FOO %></div>
+  </body>
+</html>
+    `.trim();
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+    const output = await schema.interpolate(input);
+
+    expect(output).toMatchSnapshot();
+  });
+});
+
 describe("generate js", () => {
   it("should throw 1", async () => {
     const envFilePath = tmpNameSync();
