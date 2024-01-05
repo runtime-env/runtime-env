@@ -9,6 +9,8 @@ export type CreateGeneratorReturnType = {
   generateJs: () => Promise<string>;
 
   generateTs: () => Promise<string>;
+
+  interpolate: (input: string) => Promise<string>;
 };
 
 export type CreateGenerator = (

@@ -14,9 +14,8 @@
 
 This package generates a JavaScript module and a TypeScript declaration file from your environment variables:
 
-`runtime-env.js`
-
 ```js
+// runtime-env.js
 globalThis.runtimeEnv = {
   FOO: "foo",
   BAR: {
@@ -25,9 +24,8 @@ globalThis.runtimeEnv = {
 };
 ```
 
-`runtime-env.d.js`
-
 ```ts
+// runtime-env.d.js
 declare const runtimeEnv: {
   readonly FOO: string;
   readonly BAR?: {
@@ -38,30 +36,47 @@ declare const runtimeEnv: {
 
 You can import the JavaScript module from anywhere:
 
-`index.html`
-
 ```html
+<!-- index.html -->
 <script src="/path/to/runtime-env.js"></script>
 ```
 
-`jest.config.ts`
-
 ```js
+// jest.config.ts
 export default {
   setupFiles: ["<rootDir>/path/to/runtime-env.js"],
 };
 ```
 
-`web-worker.js`
-
 ```js
+// web-worker.js
 importScripts("path/to/runtime-env.js");
 ```
 
 And use it like this:
 
 ```ts
+// main.js
+
+// input
 console.log(runtimeEnv.FOO);
+console.log(runtimeEnv.BAR.BAZ);
+
+// output
+console.log("foo");
+console.log(42);
+```
+
+```html
+<!-- index.html -->
+
+<!-- input -->
+<div><%= runtime.FOO %></div>
+<div><%= runtime.BAR.BAZ %></div>
+
+<!-- output -->
+<div>foo</div>
+<div>42</div>
 ```
 
 ## Getting Start
@@ -85,11 +100,11 @@ console.log(runtimeEnv.FOO);
          "mode": "development",
          "envFilePath": ".env",
          "userEnvironment": true,
-         "outputFilePath": "public/runtime-env.js"
+         "outputFilePath": "path/to/runtime-env.js"
        }
      ],
      "genTs": {
-       "outputFilePath": "src/runtime-env.d.ts"
+       "outputFilePath": "path/to/runtime-env.d.ts"
      }
    }
    ```
@@ -118,7 +133,7 @@ console.log(runtimeEnv.FOO);
    }
    ```
 
-1. Generate `runtime-env.js` and `runtime-env.d.ts`:
+1. Generate `runtime-env.js` and `runtime-env.d.ts`, and interpolate `index.html`:
 
    `.env`
 
@@ -135,6 +150,7 @@ console.log(runtimeEnv.FOO);
    ```sh
    $ runtime-env gen-js --mode development
    $ runtime-env gen-ts
+   $ runtime-env interpolate "`cat path/to/index.html | sed 's/"/\\"/'`" > path/to/index.html
    ```
 
 1. Further setups:

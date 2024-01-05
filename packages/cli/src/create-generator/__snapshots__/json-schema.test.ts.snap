@@ -110,3 +110,40 @@ declare const runtimeEnv: DeepImmutable<{
 }>
 "
 `;
+
+exports[`interpolate should works (envFileOnly) 1`] = `
+"<!DOCTYPE html>
+<html>
+  <body>
+    <div>\\u003Cscript\\u003E</div>
+  </body>
+</html>"
+`;
+
+exports[`interpolate should works (nested) 1`] = `
+"<!DOCTYPE html>
+<html>
+  <body>
+    <div>\\u003Cscript\\u003E</div>
+    <div>\\u003Cscript\\u003E</div>
+  </body>
+</html>"
+`;
+
+exports[`interpolate should works (stringified number) 1`] = `
+"<!DOCTYPE html>
+<html>
+  <body>
+    <div>42</div>
+  </body>
+</html>"
+`;
+
+exports[`interpolate should works (userEnvironment) 1`] = `
+"<!DOCTYPE html>
+<html>
+  <body>
+    <div>override</div>
+  </body>
+</html>"
+`;
