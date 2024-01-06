@@ -93,7 +93,7 @@ This package offers a complete runtime environment variable solution for Web app
 
    - If you are building a PWA, you **MUST** to configure your ServiceWorker to use proper approach for caching `runtime-env.js` file.
 
-   - In order to run `runtime-env` in a production environment, you may also need to package the `runtime-env` into a standalone executable, in which case you can use a tool such as [pkg](https://npmjs.com/pkg) to do this, for example:
+   - In order to run `runtime-env` in a production environment, you may also need to package the `runtime-env` into a standalone executable, in which case you can use a tool such as [pkg](https://npmjs.com/pkg) or [single-executable-applications (experimental)](https://nodejs.org/docs/latest-v18.x/api/single-executable-applications.html) to do this, for example:
 
      ```sh
      $ pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-alpine-x64 --output runtime-env-alpine

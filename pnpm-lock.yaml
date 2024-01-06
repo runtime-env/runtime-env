@@ -61,6 +61,7 @@ importers:
       ajv-formats: 2.1.1_ajv@8.12.0
       commander: 11.1.0
       cosmiconfig: 8.3.6_typescript@5.3.3
+      dotenv: 16.3.1
       json-schema-to-typescript: 13.1.1
       lodash: 4.17.21
       picocolors: 1.0.0
@@ -70,7 +71,6 @@ importers:
       '@types/glob': 8.1.0
       '@types/lodash': 4.14.202
       '@types/serialize-javascript': 5.0.3
-      dotenv: 16.3.1
       typescript: 5.3.3
 
 packages:
@@ -2668,7 +2668,6 @@ packages:
   /dotenv/16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
-    dev: true
 
   /dotgitignore/2.1.0:
     resolution: {integrity: sha512-sCm11ak2oY6DglEPpCB8TixLjWAxd3kJTs6UIcSasNYxXdFPV+YKlye92c8H4kKFqV5qYMIh7d+cYecEg0dIkA==}
