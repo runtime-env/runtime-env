@@ -11,7 +11,7 @@ describe("interpolate", () => {
       `
 FOO="<script>"
     `.trim(),
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -25,7 +25,7 @@ FOO="<script>"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -43,7 +43,7 @@ FOO="<script>"
     <div><%= runtimeEnv.FOO %></div>
   </body>
 </html>
-      `.trim()
+      `.trim(),
     );
 
     expect(output).toMatchSnapshot();
@@ -66,7 +66,7 @@ FOO="<script>"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -84,7 +84,7 @@ FOO="<script>"
     <div><%= runtimeEnv.FOO %></div>
   </body>
 </html>
-        `.trim()
+        `.trim(),
     );
 
     expect(output).toMatchSnapshot();
@@ -102,7 +102,7 @@ FOO="<script>"
       `
 QUX="{"KEY":"<script>"}"
     `.trim(),
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -143,7 +143,7 @@ QUX="{"KEY":"<script>"}"
         },
         required: ["BAZ", "QUX"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -167,7 +167,7 @@ QUX="{"KEY":"<script>"}"
     <div><%= runtimeEnv.THUD[0] %></div>
   </body>
 </html>
-        `.trim()
+        `.trim(),
     );
 
     expect(output).toMatchSnapshot();
@@ -183,7 +183,7 @@ QUX="{"KEY":"<script>"}"
       `
 FOO="42"
     `.trim(),
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -197,7 +197,7 @@ FOO="42"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -215,7 +215,7 @@ FOO="42"
     <div><%= runtimeEnv.FOO %></div>
   </body>
 </html>
-        `.trim()
+        `.trim(),
     );
 
     expect(output).toMatchSnapshot();
@@ -231,7 +231,7 @@ describe("generate js", () => {
     writeFileSync(
       envSchemaFilePath,
       JSON.stringify({ type: "invalid" }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -243,7 +243,7 @@ describe("generate js", () => {
     });
 
     await expect(() =>
-      schema.generateJs()
+      schema.generateJs(),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -255,7 +255,7 @@ describe("generate js", () => {
     writeFileSync(
       envSchemaFilePath,
       JSON.stringify({ type: "object" }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -267,7 +267,7 @@ describe("generate js", () => {
     });
 
     await expect(() =>
-      schema.generateJs()
+      schema.generateJs(),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -295,7 +295,7 @@ describe("generate js", () => {
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -307,7 +307,7 @@ describe("generate js", () => {
     });
 
     await expect(() =>
-      schema.generateJs()
+      schema.generateJs(),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -321,7 +321,7 @@ FOO=escape<
 BAR={"BAZ":"value"}
 SECRET=****
     `,
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -343,7 +343,7 @@ SECRET=****
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -355,7 +355,7 @@ SECRET=****
     });
 
     await expect(() =>
-      schema.generateJs()
+      schema.generateJs(),
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
@@ -368,7 +368,7 @@ SECRET=****
 FOO="<script>"
 BAR="{"BAZ":"<script>"}"
       `.trim(),
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -390,7 +390,7 @@ BAR="{"BAZ":"<script>"}"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -417,7 +417,7 @@ FOO="escape<"
 BAR="{"BAZ":"value"}"
 SECRET=****
     `,
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -439,7 +439,7 @@ SECRET=****
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -467,7 +467,7 @@ FOO="escape<"
 BAR="{"BAZ":"value"}"
 SECRET="****"
     `,
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -489,7 +489,7 @@ SECRET="****"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -512,7 +512,7 @@ SECRET="****"
       `
 FOO="default"
       `.trim(),
-      "utf8"
+      "utf8",
     );
     const envFilePath2 = tmpNameSync();
     writeFileSync(
@@ -521,7 +521,7 @@ FOO="default"
 FOO="foo"
 BAR="{"BAZ":"baz"}"
       `.trim(),
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -543,7 +543,7 @@ BAR="{"BAZ":"baz"}"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
@@ -583,7 +583,7 @@ BAR="{"BAZ":"baz"}"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -615,7 +615,7 @@ BAR="{"BAZ":"baz"}"
           },
         },
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -645,7 +645,7 @@ BAR="{"BAZ":"baz"}"
           },
         },
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = true;
 
@@ -672,7 +672,7 @@ FOO="escape<"
 BAR="{"BAZ":"value"}"
 SECRET="****"
     `,
-      "utf8"
+      "utf8",
     );
     const envSchemaFilePath = tmpNameSync();
     writeFileSync(
@@ -694,7 +694,7 @@ SECRET="****"
         },
         required: ["FOO"],
       }),
-      "utf8"
+      "utf8",
     );
     const userEnvironment = false;
 
