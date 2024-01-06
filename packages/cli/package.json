@@ -17,7 +17,7 @@
     "bin"
   ],
   "scripts": {
-    "build": "rimraf bin && pnpm build-cli",
+    "build": "rimraf bin && tsc && pnpm build-cli",
     "build-cli": "esbuild src/index.ts --bundle --platform=node --target=node14 --external:dotenv --outfile=bin/runtime-env.js && node ./scripts/patchBin.js",
     "pack": "rm -f *.tgz && pnpm pack && node ../../scripts/rename-tgz.js",
     "release": "standard-version --skip.tag -t cli --preset=conventionalcommits --releaseCommitMessageFormat 'chore(release): @runtime-env/cli@{{currentTag}}' --path .",
@@ -36,7 +36,8 @@
     "@types/glob": "8.1.0",
     "@types/lodash": "^4.14.202",
     "@types/serialize-javascript": "5.0.3",
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "typescript": "^5.3.3"
   },
   "peerDependencies": {
     "dotenv": "*"
