@@ -126,6 +126,11 @@ exports[`interpolate should works (nested) 1`] = `
   <body>
     <div>\\u003Cscript\\u003E</div>
     <div>\\u003Cscript\\u003E</div>
+    <div>\\u003Cscript\\u003E</div>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </body>
 </html>"
 `;

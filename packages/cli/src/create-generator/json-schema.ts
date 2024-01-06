@@ -171,10 +171,13 @@ const parseEnv: ParseEnv = async ({
 
 type ConvertEnvToData = (env: Record<string, any>) => Record<string, any>;
 const convertEnvToData: ConvertEnvToData = (env) => {
-  return Object.entries(env).reduce(
-    (acc, [key, value]) => Object.assign(acc, { [key]: JSON.parse(value) }),
-    {},
-  );
+  return Object.entries(env).reduce((acc, [key, value]) => {
+    try {
+      return Object.assign(acc, { [key]: JSON.parse(value) });
+    } catch {
+      return Object.assign(acc, { [key]: "" });
+    }
+  }, {});
 };
 
 type SerializeLeafNodes = (env: any) => Record<string, any>;
