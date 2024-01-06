@@ -117,6 +117,7 @@ describe("interpolate", () => {
 
   it("should works (nested)", async () => {
     process.env.BAZ = '{"KEY":"<script>"}';
+    process.env.FRED = '["<script>"]';
     const envFilePath = tmpNameSync();
     writeFileSync(envFilePath, `QUX="{"KEY":"<script>"}"`, "utf8");
     const envSchemaFilePath = tmpNameSync();
@@ -143,6 +144,18 @@ describe("interpolate", () => {
         }
       },
       "required": ["KEY"]
+    },
+    "FRED": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "THUD": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     }
   },
   "required": ["BAZ", "QUX"]
@@ -158,6 +171,11 @@ describe("interpolate", () => {
   <body>
     <div><%= runtimeEnv.BAZ.KEY %></div>
     <div><%= runtimeEnv.QUX.KEY %></div>
+    <div><%= runtimeEnv.FRED[0] %></div>
+    <div><%= runtimeEnv.UNKNOWN %></div>
+    <div><%= runtimeEnv.QUX.UNKNOWN %></div>
+    <div><%= runtimeEnv.THUD %></div>
+    <div><%= runtimeEnv.THUD[0] %></div>
   </body>
 </html>
     `.trim();
@@ -172,6 +190,7 @@ describe("interpolate", () => {
 
     expect(output).toMatchSnapshot();
     delete process.env.BAZ;
+    delete process.env.FRED;
   });
 
   it("should works (stringified number)", async () => {
