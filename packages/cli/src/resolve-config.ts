@@ -9,7 +9,7 @@ type Config = {
     | null
     | {
         mode: string;
-        envFilePath: null | string;
+        envFilePath: null | string | string[];
         userEnvironment: boolean;
         outputFilePath: string;
       }[];
