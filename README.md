@@ -16,42 +16,107 @@
 
 ## Usage
 
-This package offers a complete runtime environment variable solution for Web applications:
+In this document, we assume that you have set the following environment variables:
+
+user environment
+
+```sh
+$ export TAG_ID="G-ABCD12345"
+```
+
+.env file
+
+```ini
+FIREBASE_CONFIG={"apiKey":"AIzaSk2CngkeAyDJr2BhzSprQXp8PsZs3VFJFMA","authDomain":"example.firebaseapp.com"}
+```
+
+This package offers a complete runtime environment variable solution for Web applications.
+
+1. HTML
+
+   Input:
+
+   ```html
+   <!-- index.html -->
+   <script
+     async
+     src="https://www.googletagmanager.com/gtag/js?id=<%= runtimeEnv.TAG_ID %>"
+   ></script>
+   ```
+
+   Execute `runtime-env interpolate` command to replace templates with environment variables:
+
+   ```sh
+   $ npx runtime-env interpolate --input-file-path index.html --output-file-path index.html
+   ```
+
+   Output:
+
+   ```html
+   <!-- index.html -->
+   <script
+     async
+     src="https://www.googletagmanager.com/gtag/js?id=G-ABCD12345"
+   ></script>
+   ```
+
+   We use <a href='https://lodash.com/docs/4.17.15#template' target='_blank'>lodash.template</a> to interpolate.
 
 1. JavaScript
 
+   Source:
+
+   ```html
+   <!-- index.html -->
+   <script src="/runtime-env.js"></script>
+   <script src="/main.js"></script>
+   ```
+
+   ```js
+   // main.js
+   import { initializeApp } from "firebase/app";
+   const app = initializeApp(runtimeENv.FIREBASE_CONFIG);
+   ```
+
+   Execute `runtime-env gen-js` command to generate environment variables global object:
+
    ```sh
-   $ export TITLE="Awesome Website"
    $ npx runtime-env gen-js --mode production
-   $ cat runtime-env.js
-   # globalThis.runtimeEnv = {
-   #   TITLE: "Awesome Website",
-   # };
+   ```
+
+   Output:
+
+   ```js
+   // runtime-env.js
+   globalThis.runtimeEnv = {
+     TAG_ID: "G-ABCD12345",
+     FIREBASE_CONFIG: {
+       apiKey: "AIzaSk2CngkeAyDJr2BhzSprQXp8PsZs3VFJFMA",
+       authDomain: "example.firebaseapp.com",
+     },
+   };
    ```
 
 1. TypeScript
 
+   Execute `runtime-env gen-ts` command to generate environment variables types:
+
    ```sh
    $ npx runtime-env gen-ts
-   $ cat runtime-env.d.ts
-   # declare const runtimeEnv: {
-   #   readonly TITLE: string;
-   # };
    ```
 
-1. HTML
+   Output:
 
-   ```sh
-   $ cat index.html
-   # <title><%= runtimeEnv.TITLE %></title>
-   $ export TITLE="Awesome Website"
-   $ npx runtime-env interpolate --input-file-path index.html --output-file-path index.html
-   # or npx runtime-env interpolate "`cat index.html`" > index.html
-   $ cat index.html
-   # <title>Awesome Website</title>
+   ```ts
+   // runtime-env.d.ts
+   declare const runtimeEnv: {
+     readonly TAG_ID: string;
+     readonly FIREBASE_CONFIG: {
+       readonly apiKey: string;
+       readonly authDomain: string;
+     };
+   };
    ```
-
-   We use <a href='https://lodash.com/docs/4.17.15#template' target='_blank'>lodash.template</a> to interpolate.
 
 ## Setup
 
@@ -85,11 +150,23 @@ This package offers a complete runtime environment variable solution for Web app
    {
      "type": "object",
      "properties": {
-       "TITLE": {
+       "TAG_ID": {
          "type": "string"
+       },
+       "FIREBASE_CONFIG": {
+         "type": "object",
+         "properties": {
+           "apiKey": {
+             "type": "string"
+           },
+           "authDomain": {
+             "type": "string"
+           }
+         },
+         "required": ["apiKey", "authDomain"]
        }
      },
-     "required": ["TITLE"]
+     "required": ["TAG_ID", "FIREBASE_CONFIG"]
    }
    ```
 
@@ -99,19 +176,24 @@ This package offers a complete runtime environment variable solution for Web app
 
    - You **MUST** configure your web server to prevent caching of `runtime-env.js`.
 
+   - In order to execute `runtime-env` in environment without NodeJS runtime, you can:
+
+     1. Install NodeJS and NPM package manager:
+
+        ```
+        # Dockerfile
+        FROM nginx:stable-alpine3.17
+
+        apk add --update nodejs npm
+        ```
+
+     2. Or, package the `runtime-env` to a executable:
+
+        ```sh
+        $ pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-alpine-x64 --output runtime-env
+        ```
+
    - If you are building a PWA, you **MUST** to configure your ServiceWorker to use proper approach for caching `runtime-env.js` file.
-
-   - In order to run `runtime-env` in a production environment, you may also need to package the `runtime-env` into a standalone executable, in which case you can use a tool such as [pkg](https://npmjs.com/pkg) to do this, for example:
-
-     ```sh
-     $ pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-alpine-x64 --output runtime-env-alpine
-     ```
-
-     Then run it:
-
-     ```sh
-     $ runtime-env-alpine gen-js --mode production
-     ```
 
 ## Configuration
 
@@ -143,44 +225,3 @@ Environment variables are looked up in the following places, in order, stopping 
 1. `genJs.*.envFilePath[N-2]`
 1. `genJs.*.envFilePath[...]`
 1. `genJs.*.envFilePath[0]`
-
-Best practice:
-
-`.runtimeenvrc.json`
-
-```json
-{
-  "genJs": [
-    // for better DX
-    {
-      "mode": "development",
-      "envFilePath": [".env.development", ".env.local"],
-      "userEnvironment": true,
-      "outputFilePath": "src/runtime-env.js"
-    },
-    // produce the same results for everyone
-    {
-      "mode": "test",
-      "envFilePath": ".env.test",
-      "userEnvironment": false,
-      "outputFilePath": "test/runtime-env.js"
-    },
-    // only load env from user environment, for example `docker run --env`
-    {
-      "mode": "production",
-      "envFilePath": null,
-      "userEnvironment": true,
-      "outputFilePath": "dist/runtime-env.js"
-    }
-  ],
-  ...
-}
-```
-
-`.gitignore`
-
-```
-.env.local
-!.env.development
-!.env.test
-```
