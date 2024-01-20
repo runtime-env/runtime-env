@@ -5,7 +5,13 @@ import throwError from "../throwError";
 
 export default () => {
   return new Command("gen-js")
-    .requiredOption("--mode <mode>")
+    .description(
+      "generate a JavaScript file that includes environment variables within an object, making them accessible through the globalThis property.",
+    )
+    .requiredOption(
+      "--mode <mode>",
+      "use <mode> configurations in the configuration file to generate the JavaScript file.",
+    )
     .action(async ({ mode }) => {
       const config = resolveConfig();
       if (!config.genJs) throwError("No configuration found");
