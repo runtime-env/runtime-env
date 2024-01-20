@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/runtime-env/runtime-env/compare/cli0.3.1...cli0.3.2) (2024-01-20)
+
+
+### Features
+
+* add command description ([#52](https://github.com/runtime-env/runtime-env/issues/52)) ([0e43bc3](https://github.com/runtime-env/runtime-env/commit/0e43bc33ef3e92e574b6a588168569f9d39d2dd4))
+
 ## [0.3.0](https://github.com/runtime-env/runtime-env/compare/cli0.2.3...cli0.3.0) (2024-01-05)
 
 
