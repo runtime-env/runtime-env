@@ -170,26 +170,19 @@ We use <a href='https://lodash.com/docs/4.17.15#template' target='_blank'>lodash
 
 1. Further setups:
 
-   - You **MUST** configure your web server to prevent caching of `runtime-env.js`.
+   - You **NEED** to set up your web server to stop runtime-env.js to be cached by browser or CDNs.
 
-   - In order to execute `runtime-env` in environment without NodeJS runtime, you can:
+   - To use runtime-env on systems that don't have Node.js installed, you'll need to pack `runtime-env` CLI into a single runnable file. Here's how you can do it:
 
-     1. Install NodeJS and NPM package manager:
+     - Make a single runnable app using NodeJS's [Single Executable Applications](https://nodejs.org/api/single-executable-applications.html) feature (experimental).
 
-        ```
-        # Dockerfile
-        FROM nginx:stable-alpine3.17
+     - Pack runtime-env into a runnable file using [pkg](https://github.com/vercel/pkg):
 
-        apk add --update nodejs npm
-        ```
+       ```sh
+       $ pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-alpine-x64 --output runtime-env
+       ```
 
-     2. Or, package the `runtime-env` to a executable:
-
-        ```sh
-        $ pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-alpine-x64 --output runtime-env
-        ```
-
-   - If you are building a PWA, you **MUST** to configure your ServiceWorker to use proper approach for caching `runtime-env.js` file.
+   - If you're making a PWA (Progressive Web App), you **HAVE TO** set up your ServiceWorker to choose the right way to cache runtime-env.js.
 
 ## Configuration
 
