@@ -1,17 +1,20 @@
-FROM node:18.18.2 as build
+FROM node:20.11.0-alpine3.18 as build
 
 COPY package*.json .
 RUN npm ci
-
 COPY public ./public
 COPY src ./src
 COPY webpack.config.js ./
 RUN npx webpack --mode production
-RUN npx pkg ./node_modules/@runtime-env/cli/bin/runtime-env.js --target node18-x64 --output runtime-env
+# Create a SEA(Single Executable Application) using Node, see https://nodejs.org/api/single-executable-applications.html for more details
+RUN echo '{ "main": "./node_modules/@runtime-env/cli/bin/runtime-env.js", "output": "sea-prep.blob" }' > sea-config.json
+RUN node --experimental-sea-config sea-config.json
+RUN cp $(command -v node) runtime-env
+RUN npx postject runtime-env NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
 
+FROM nginx:1.25.3-alpine3.18
 
-FROM nginx:1.25.3
-
+RUN apk add g++ make
 COPY --from=build dist ./dist
 COPY --from=build runtime-env ./
 COPY .runtimeenvrc.json .runtimeenvschema.json start.sh ./
