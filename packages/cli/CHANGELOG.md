@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/runtime-env/runtime-env/compare/cli0.4.0...cli0.4.1) (2024-02-18)
+
+
+### Bug Fixes
+
+* prepend shebang ([#56](https://github.com/runtime-env/runtime-env/issues/56)) ([128e16d](https://github.com/runtime-env/runtime-env/commit/128e16dabb602a26c15ddddfb2eac5b80ea74e83)), closes [#55](https://github.com/runtime-env/runtime-env/issues/55)
+
 ## [0.4.0](https://github.com/runtime-env/runtime-env/compare/cli0.3.1...cli0.4.0) (2024-01-27)
 
 
