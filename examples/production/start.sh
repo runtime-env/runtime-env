@@ -2,6 +2,6 @@
 
 set -e
 
-./runtime-env gen-js --mode production
+./runtime-env gen-js --output-file-path dist/runtime-env.js
 
 nginx -g "daemon off;"

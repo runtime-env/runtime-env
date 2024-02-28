@@ -1,7 +1,6 @@
-import { Command } from "commander";
-import resolveConfig from "../resolve-config";
+import { Command, program } from "commander";
 import act from "./act";
-import { readFileSync } from "fs";
+import { writeFileSync, readFileSync } from "fs";
 
 export default () => {
   return new Command("interpolate")
@@ -14,22 +13,21 @@ export default () => {
     )
     .option(
       "--output-file-path <outputFilePath>",
-      "specify the output file to be written instead of being piped to stdout.",
+      "specify the output file to be written instead of being piped to stdout",
     )
-    .action(({ inputFilePath, outputFilePath }, { args }) => {
-      const config = resolveConfig();
+    .action(async ({ inputFilePath, outputFilePath }, { args }) => {
+      const { globalVariableName, envSchemaFilePath } = program.opts();
 
-      act({
-        envFilePath: [],
-        envSchemaFilePath: config.envSchemaFilePath,
-        globalVariableName: config.globalVariableName,
-        input:
-          typeof inputFilePath === "string"
-            ? readFileSync(inputFilePath, "utf8")
-            : args[0],
-        outputFilePath:
-          typeof outputFilePath === "string" ? outputFilePath : null,
-        userEnvironment: true,
+      const { output } = await act({
+        envSchemaFilePath,
+        globalVariableName,
+        input: inputFilePath ? readFileSync(inputFilePath, "utf8") : args[0],
       });
+
+      if (outputFilePath) {
+        writeFileSync(outputFilePath, output, "utf8");
+      } else {
+        console.log(output);
+      }
     });
 };

@@ -17,7 +17,7 @@ FROM nginx:1.25.3
 
 COPY --from=build dist ./dist
 COPY --from=build runtime-env patch-runtime-env-revision ./
-COPY .runtimeenvrc.json .runtimeenvschema.json start.sh ./
+COPY .runtimeenvschema.json start.sh ./
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 CMD ["sh", "./start.sh"]

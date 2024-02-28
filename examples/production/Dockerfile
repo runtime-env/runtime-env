@@ -17,7 +17,7 @@ FROM nginx:1.25.3-alpine3.18
 RUN apk add g++ make
 COPY --from=build dist ./dist
 COPY --from=build runtime-env ./
-COPY .runtimeenvrc.json .runtimeenvschema.json start.sh ./
+COPY .runtimeenvschema.json start.sh ./
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 CMD ["sh", "./start.sh"]
