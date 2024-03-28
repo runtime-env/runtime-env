@@ -2,6 +2,48 @@
 
 > **The twelve-factor app stores config in _environment variables_** (often shortened to env vars or env). Env vars are easy to change between deploys without changing any code. - [The Twelve-Factor App](https://12factor.net/config)
 
+## How this works
+
+1. write code
+
+   ```html
+   <!-- index.html -->
+   <title><%= runtimeEnv.HELLO %></title>
+   ```
+
+   ```js
+   // index.js
+   console.log(runtimeEnv.HELLO);
+   ```
+
+2. run commands
+
+   - `npx runtime-env gen-js ...`
+   - `npx runtime-env gen-ts ...`
+   - `npx runtime-env interpolate ...`
+
+3. see results
+
+   ```html
+   <!-- index.html -->
+   <title>world</title>
+   ```
+
+   ```js
+   // index.js
+   console.log(runtimeEnv.HELLO);
+   ```
+
+   ```ts
+   // runtime-env.js
+   globalThis.runtimeEnv = { HELLO: "world" };
+   ```
+
+   ```ts
+   // runtime-env.d.ts
+   declare const runtimeEnv: { HELLO: string };
+   ```
+
 ## Table of Content
 
 - [Installation](#installation)
