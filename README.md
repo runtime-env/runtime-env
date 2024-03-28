@@ -6,14 +6,14 @@
 
 1. write code
 
-   ```html
-   <!-- index.html -->
-   <title><%= runtimeEnv.HELLO %></title>
-   ```
-
    ```js
    // index.js
    console.log(runtimeEnv.HELLO);
+   ```
+
+   ```html
+   <!-- index.html -->
+   <title><%= runtimeEnv.HELLO %></title>
    ```
 
 2. run commands
@@ -23,11 +23,6 @@
    - `npx runtime-env interpolate ...`
 
 3. see results
-
-   ```html
-   <!-- index.html -->
-   <title>world</title>
-   ```
 
    ```js
    // index.js
@@ -42,6 +37,11 @@
    ```ts
    // runtime-env.d.ts
    declare const runtimeEnv: { HELLO: string };
+   ```
+
+   ```html
+   <!-- index.html -->
+   <title>world</title>
    ```
 
 ## Table of Content
