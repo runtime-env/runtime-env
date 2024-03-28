@@ -3,10 +3,11 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "runtime-env gen-js --mode test && jest"
+    "test": "dotenv -e .env -- runtime-env gen-js --output-file-path jest-setup-file-runtime-env.js && jest"
   },
   "devDependencies": {
-    "@runtime-env/cli": "^0.2.0",
+    "@runtime-env/cli": "^0.5.0-alpha.2",
+    "dotenv-cli": "^7.4.1",
     "jest": "^29.7.0"
   }
 }

@@ -1,17 +1,11 @@
-import { writeFileSync } from "fs";
 import { createGeneratorForJSONSchema } from "../create-generator/json-schema";
 
 type Act = (_: {
   envSchemaFilePath: string;
   globalVariableName: string;
-  outputFilePath: string;
-}) => Promise<void>;
+}) => Promise<{ output: string }>;
 
-const act: Act = async ({
-  globalVariableName,
-  envSchemaFilePath,
-  outputFilePath,
-}) => {
+const act: Act = async ({ globalVariableName, envSchemaFilePath }) => {
   const generator = await createGeneratorForJSONSchema({
     envFilePath: null,
     envSchemaFilePath,
@@ -19,9 +13,9 @@ const act: Act = async ({
     userEnvironment: false,
   });
 
-  const content = await generator.generateTs();
+  const output = await generator.generateTs();
 
-  writeFileSync(outputFilePath, content, "utf8");
+  return { output };
 };
 
 export default act;
