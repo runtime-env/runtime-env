@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/runtime-env/runtime-env/compare/cli0.4.1...cli0.5.0) (2024-03-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Parsing of .env files has been removed. Please load environment variables to the user environment before running the runtime-env CLI.
+* The configuration file has been removed. Please use command line options instead.
+
+### Features
+
+* v0.5 ([#63](https://github.com/runtime-env/runtime-env/issues/63)) ([f557b74](https://github.com/runtime-env/runtime-env/commit/f557b748dd2e45346e06bd8927f1f8836887d156))
+
 ### [0.4.1](https://github.com/runtime-env/runtime-env/compare/cli0.4.0...cli0.4.1) (2024-02-18)
 
 
