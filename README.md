@@ -63,7 +63,7 @@ $ npm i -D @runtime-env/cli
    $ export TITLE="HELLO"
    ```
 
-   Run `npx runtime-env interpolate --input-file-path index.html --output-file-path index.html` to interpolate the template in the html file:
+   Run `npx -p @runtime-env/cli runtime-env interpolate --input-file-path index.html --output-file-path index.html` to interpolate the template in the html file:
 
    ```html
    <!doctype html>
@@ -78,7 +78,7 @@ $ npm i -D @runtime-env/cli
    </html>
    ```
 
-   Run `npx runtime-env gen-js --output-file-path runtime-env.js` to generate a JavaScript file which contains environment variables:
+   Run `npx -p @runtime-env/cli runtime-env gen-js --output-file-path runtime-env.js` to generate a JavaScript file which contains environment variables:
 
    `runtime-env.js`:
 
@@ -86,7 +86,7 @@ $ npm i -D @runtime-env/cli
    globalThis.runtimeEnv = { HELLO: "world" };
    ```
 
-   Run `npx runtime-env gen-ts --output-file-path runtime-env.d.ts` to generate a TypeScript file which contains corresponding types of environment variables:
+   Run `npx -p @runtime-env/cli runtime-env gen-ts --output-file-path runtime-env.d.ts` to generate a TypeScript file which contains corresponding types of environment variables:
 
    `runtime-env.d.ts`:
 
@@ -173,7 +173,7 @@ $ npm i -D @runtime-env/cli
    }
    ```
 
-   You could use other file name by running `npx runtime-env --env-schema-file-path ...`.
+   You could use other file name by running `npx -p @runtime-env/cli runtime-env --env-schema-file-path ...`.
 
    Runtime-env uses <a href='https://ajv.js.org/' target='_blank'>Ajv</a> to parse your JSON-schema.
 
@@ -182,7 +182,7 @@ $ npm i -D @runtime-env/cli
    - To generate a JavaScript file which contains the environment variables, you will execute `runtime-env gen-js`:
 
      ```sh
-     $ npx runtime-env gen-js --output-file-path runtime-env.js
+     $ npx -p @runtime-env/cli runtime-env gen-js --output-file-path runtime-env.js
      ```
 
      ```js
@@ -207,7 +207,7 @@ $ npm i -D @runtime-env/cli
    - If you are using TypeScript, you can also generate a _declaration file_ by running `runtime-env gen-ts`:
 
      ```sh
-     $ npx runtime-env gen-ts --output-file-path runtime-env.d.ts
+     $ npx -p @runtime-env/cli runtime-env gen-ts --output-file-path runtime-env.d.ts
      ```
 
      ```ts
@@ -224,7 +224,7 @@ $ npm i -D @runtime-env/cli
    - For `index.html` and other non-JavaScript files, if needed, you can run `runtime-env interpolate`:
 
      ```sh
-     $ npx runtime-env interpolate --input-file-path index.html --output-file-path index.html
+     $ npx -p @runtime-env/cli runtime-env interpolate --input-file-path index.html --output-file-path index.html
      ```
 
      ```html
@@ -252,7 +252,7 @@ $ npm i -D @runtime-env/cli
 
 ## Commands
 
-- `$ npx runtime-env --help`
+- `$ npx -p @runtime-env/cli runtime-env --help`
 
   ```
   Usage: runtime-env [options] [command]
@@ -270,7 +270,7 @@ $ npm i -D @runtime-env/cli
     help [command]                               display help for command
   ```
 
-- `$ npx runtime-env interpolate --help`
+- `$ npx -p @runtime-env/cli runtime-env interpolate --help`
 
   ```
   Usage: runtime-env interpolate [options]
@@ -283,7 +283,7 @@ $ npm i -D @runtime-env/cli
     -h, --help                           display help for command
   ```
 
-- `$ npx runtime-env gen-js --help`
+- `$ npx -p @runtime-env/cli runtime-env gen-js --help`
 
   ```
   Usage: runtime-env gen-js [options]
@@ -295,7 +295,7 @@ $ npm i -D @runtime-env/cli
     -h, --help                           display help for command
   ```
 
-- `$ npx runtime-env gen-ts --help`
+- `$ npx -p @runtime-env/cli runtime-env gen-ts --help`
 
   ```
   Usage: runtime-env gen-ts [options]

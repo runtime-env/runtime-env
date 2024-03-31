@@ -6,7 +6,7 @@
 $ npm i -D @runtime-env/cli
 ```
 
-`$ npx runtime-env --help`
+`$ npx -p @runtime-env/cli runtime-env --help`
 
 ```
 Usage: runtime-env [options] [command]
@@ -24,7 +24,7 @@ Commands:
   help [command]                               display help for command
 ```
 
-`$ npx runtime-env gen-js --help`
+`$ npx -p @runtime-env/cli runtime-env gen-js --help`
 
 ```
 Usage: runtime-env gen-js [options]
@@ -36,7 +36,7 @@ Options:
   -h, --help                           display help for command
 ```
 
-`$ npx runtime-env gen-ts --help`
+`$ npx -p @runtime-env/cli runtime-env gen-ts --help`
 
 ```
 Usage: runtime-env gen-ts [options]
@@ -48,7 +48,7 @@ Options:
   -h, --help                           display help for command
 ```
 
-`$ npx runtime-env interpolate --help`
+`$ npx -p @runtime-env/cli runtime-env interpolate --help`
 
 ```
 Usage: runtime-env interpolate [options]
