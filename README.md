@@ -38,7 +38,7 @@ $ npm i -D @runtime-env/cli
    `index.js`:
 
    ```js
-   console.log(runtimeEnv.HELLO);
+   console.log(runtimeEnv.TITLE);
    ```
 
    `.runtimeenvschema.json`:
@@ -60,7 +60,7 @@ $ npm i -D @runtime-env/cli
    `user environment`:
 
    ```sh
-   $ export TITLE="HELLO"
+   $ export TITLE="Hello Runtime Env!"
    ```
 
    Run `npx -p @runtime-env/cli runtime-env interpolate --input-file-path index.html --output-file-path index.html` to interpolate the template in the html file:
@@ -69,7 +69,7 @@ $ npm i -D @runtime-env/cli
    <!doctype html>
    <html>
      <head>
-       <title>HELLO</title>
+       <title>Hello Runtime Env!</title>
      </head>
      <body>
        <script src="/runtime-env.js"></script>
@@ -83,7 +83,7 @@ $ npm i -D @runtime-env/cli
    `runtime-env.js`:
 
    ```js
-   globalThis.runtimeEnv = { HELLO: "world" };
+   globalThis.runtimeEnv = { TITLE: "Hello Runtime Env!" };
    ```
 
    Run `npx -p @runtime-env/cli runtime-env gen-ts --output-file-path runtime-env.d.ts` to generate a TypeScript file which contains corresponding types of environment variables:
@@ -91,7 +91,7 @@ $ npm i -D @runtime-env/cli
    `runtime-env.d.ts`:
 
    ```ts
-   declare const runtimeEnv: { HELLO: string };
+   declare const runtimeEnv: { TITLE: string };
    ```
 
 3. The final result
@@ -102,7 +102,7 @@ $ npm i -D @runtime-env/cli
    <!doctype html>
    <html>
      <head>
-       <title>HELLO</title>
+       <title>Hello Runtime Env!</title>
      </head>
      <body>
        <script src="/runtime-env.js"></script>
@@ -114,19 +114,19 @@ $ npm i -D @runtime-env/cli
    `index.js`:
 
    ```js
-   console.log(runtimeEnv.HELLO);
+   console.log(runtimeEnv.TITLE);
    ```
 
    `runtime-env.js` (generated):
 
    ```js
-   globalThis.runtimeEnv = { HELLO: "world" };
+   globalThis.runtimeEnv = { TITLE: "Hello Runtime Env!" };
    ```
 
    `runtime-env.d.ts` (generated):
 
    ```ts
-   declare const runtimeEnv: { HELLO: string };
+   declare const runtimeEnv: { TITLE: string };
    ```
 
    `.runtimeenvschema.json`:
