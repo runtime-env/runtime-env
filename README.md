@@ -91,7 +91,7 @@ $ npm i -D @runtime-env/cli
    `runtime-env.d.ts`:
 
    ```ts
-   declare const runtimeEnv: { TITLE: string };
+   declare const runtimeEnv: { readonly TITLE: string };
    ```
 
 3. The final result
