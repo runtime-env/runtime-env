@@ -57,20 +57,15 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
 
 type Primitive = undefined | null | boolean | string | number
 
-type Immutable<T> =
+type DeepReadonly<T> =
   T extends Primitive ? T :
-    T extends Array<infer U> ? ReadonlyArray<U> :
-      Readonly<T>
+    T extends Array<infer U> ? DeepReadonlyArray<U> :
+      DeepReadonlyObject<T>
 
-type DeepImmutable<T> =
-  T extends Primitive ? T :
-    T extends Array<infer U> ? DeepImmutableArray<U> :
-      DeepImmutableObject<T>
+type DeepReadonlyArray<T> = ReadonlyArray<DeepReadonly<T>>
 
-interface DeepImmutableArray<T> extends ReadonlyArray<DeepImmutable<T>> {}
-
-type DeepImmutableObject<T> = {
-  readonly [K in keyof T]: DeepImmutable<T[K]>
+type DeepReadonlyObject<T> = {
+  readonly [K in keyof T]: DeepReadonly<T[K]>
 }
         `,
         additionalProperties: false,
@@ -79,7 +74,7 @@ type DeepImmutableObject<T> = {
         result
           .replace(
             /export interface (\S+) /,
-            `declare const ${globalVariableName}: DeepImmutable<`,
+            `declare const ${globalVariableName}: DeepReadonly<`,
           )
           .trim() + ">\n"
       );
