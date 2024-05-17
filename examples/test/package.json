@@ -6,7 +6,7 @@
     "test": "dotenv -e .env -- runtime-env gen-js --output-file-path jest-setup-file-runtime-env.js && jest"
   },
   "devDependencies": {
-    "@runtime-env/cli": "^0.5.0-alpha.2",
+    "@runtime-env/cli": "^0.5.0",
     "dotenv-cli": "^7.4.1",
     "jest": "^29.7.0"
   }
