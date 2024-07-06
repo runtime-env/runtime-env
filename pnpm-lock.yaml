@@ -47,7 +47,7 @@ importers:
   packages/cli:
     specifiers:
       '@types/lodash': ^4.14.202
-      '@types/serialize-javascript': 5.0.3
+      '@types/serialize-javascript': 5.0.4
       ajv: ^8.12.0
       ajv-formats: ^2.1.1
       commander: 11.1.0
@@ -65,7 +65,7 @@ importers:
       serialize-javascript: 6.0.1
     devDependencies:
       '@types/lodash': 4.14.202
-      '@types/serialize-javascript': 5.0.3
+      '@types/serialize-javascript': 5.0.4
 
 packages:
 
@@ -1761,8 +1761,8 @@ packages:
     resolution: {integrity: sha512-+68kP9yzs4LMp7VNh8gdzMSPZFL44MLGqiHWvttYJe+6qnuVr4Ek9wSBQoveqY/r+LwjCcU29kNVkidwim+kYA==}
     dev: false
 
-  /@types/serialize-javascript/5.0.3:
-    resolution: {integrity: sha512-jz2WlMFHH85UD+SH9soACEO7v4I6kThWb7RcbT6aSCJ4hXsxOwZxwFkmXCC2ZpIjzaRKRfxVw+DvRtvqE8Ntig==}
+  /@types/serialize-javascript/5.0.4:
+    resolution: {integrity: sha512-Z2R7UKFuNWCP8eoa2o9e5rkD3hmWxx/1L0CYz0k2BZzGh0PhEVMp9kfGiqEml/0IglwNERXZ2hwNzIrSz/KHTA==}
     dev: true
 
   /@types/stack-utils/2.0.1:
