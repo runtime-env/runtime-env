@@ -41,6 +41,6 @@
     "json-schema-to-typescript": "^13.1.1",
     "lodash": "^4.17.21",
     "picocolors": "1.0.1",
-    "serialize-javascript": "6.0.1"
+    "serialize-javascript": "6.0.2"
   }
 }
