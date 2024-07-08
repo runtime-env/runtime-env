@@ -38,8 +38,8 @@ importers:
       rimraf: 5.0.8
       standard-version: 9.5.0
       tmp: 0.2.3
-      ts-loader: 9.5.1_5jglb6metpmgpx726btwkws6ya
-      typescript: 5.3.3
+      ts-loader: 9.5.1_ojsgvhaynpwdtkui7q4pkvwytm
+      typescript: 5.5.3
       webpack: 5.90.0_webpack-cli@5.1.4
       webpack-cli: 5.1.4_webpack@5.90.0
       yaml: 2.3.3
@@ -5135,7 +5135,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /ts-loader/9.5.1_5jglb6metpmgpx726btwkws6ya:
+  /ts-loader/9.5.1_ojsgvhaynpwdtkui7q4pkvwytm:
     resolution: {integrity: sha512-rNH3sK9kGZcH9dYzC7CewQm4NtxJTjSEVRJ2DyBZR7f8/wcta+iV44UPCXc5+nzDzivKtlzV6c9P4e+oFhDLYg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -5147,7 +5147,7 @@ packages:
       micromatch: 4.0.5
       semver: 7.5.4
       source-map: 0.7.4
-      typescript: 5.3.3
+      typescript: 5.5.3
       webpack: 5.90.0_webpack-cli@5.1.4
     dev: true
 
@@ -5184,8 +5184,8 @@ packages:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
     dev: true
 
-  /typescript/5.3.3:
-    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
+  /typescript/5.5.3:
+    resolution: {integrity: sha512-/hreyEujaB0w76zKo6717l3L0o/qEUtRgdvUBvlkhoWeOVMjMuHNHk0BRBzikzuGDqNmPQbg5ifMEqsHLiIUcQ==}
     engines: {node: '>=14.17'}
     hasBin: true
     dev: true
