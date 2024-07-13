@@ -5,10 +5,10 @@
   "skip-github-release": true,
   "packages": {
     "packages/cli": {
-      "include-component-in-tag": false,
+      "component": "cli",
+      "include-component-in-tag": true,
       "include-v-in-tag": false,
-      "pull-request-title-pattern": "chore(release): @runtime-env/cli@${version}",
-      "tag-separator": "cli"
+      "pull-request-title-pattern": "chore(release): @runtime-env/cli@${version}"
     }
   }
 }
