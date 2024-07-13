@@ -4,6 +4,6 @@
   "exclude-paths": ["examples"],
   "skip-github-release": true,
   "packages": {
-    "cli": {}
+    "packages/cli": {}
   }
 }
