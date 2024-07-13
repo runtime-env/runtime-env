@@ -3,8 +3,6 @@ name: CI
 on:
   push:
     branches:
-      - main
-  pull_request:
 
 jobs:
   build:
@@ -106,6 +104,8 @@ jobs:
         run: pnpm run test
 
   release:
+    if: github.ref_name == 'main'
+
     name: Release
 
     needs:
