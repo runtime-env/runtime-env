@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.1](https://github.com/runtime-env/runtime-env/compare/cli0.5.0...cli0.5.1) (2024-07-13)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv-formats to v3 ([#108](https://github.com/runtime-env/runtime-env/issues/108)) ([9ce86f6](https://github.com/runtime-env/runtime-env/commit/9ce86f6d3d407a48f0ecae7565f64835385e3dfc))
+* **deps:** update dependency commander to v12 ([#109](https://github.com/runtime-env/runtime-env/issues/109)) ([0bd88ef](https://github.com/runtime-env/runtime-env/commit/0bd88effb88b8adf73dae96952dac75d72af544c))
+* **deps:** update dependency picocolors to v1.0.1 ([#88](https://github.com/runtime-env/runtime-env/issues/88)) ([d520c4e](https://github.com/runtime-env/runtime-env/commit/d520c4e467f792be62cd5949364808f2fe0ad615))
+* **deps:** update dependency serialize-javascript to v6.0.2 ([#89](https://github.com/runtime-env/runtime-env/issues/89)) ([b2c6a0d](https://github.com/runtime-env/runtime-env/commit/b2c6a0d16b2de5d01d9edaaa9fc36be2619e1ca1))
+
 ## [0.5.0](https://github.com/runtime-env/runtime-env/compare/cli0.4.1...cli0.5.0) (2024-03-28)
 
 
