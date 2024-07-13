@@ -1,6 +1,6 @@
 {
   "name": "@runtime-env/cli",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Build once, deploy anywhere. Startup/runtime environment variable solution for JavaScript.",
   "license": "MIT",
   "author": "Ernest",
