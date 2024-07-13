@@ -105,8 +105,8 @@ const parseEnv: ParseEnv = async ({
     const envFilePaths = Array.isArray(envFilePath)
       ? envFilePath
       : envFilePath !== null
-      ? [envFilePath]
-      : [];
+        ? [envFilePath]
+        : [];
     envFilePaths.forEach((envFilePath) => {
       const envFileContent = readFileSync(envFilePath, "utf8");
       const parsedEnvFileContent = parse(envFileContent);
