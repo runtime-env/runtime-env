@@ -1,4 +1,4 @@
-FROM node:20.15.1 as build
+FROM node:20.16.0 as build
 
 COPY package*.json .
 RUN npm ci
