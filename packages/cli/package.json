@@ -19,7 +19,7 @@
     "build": "rimraf bin && tsc && webpack --mode production && node ./scripts/patchBin.js",
     "pack": "rm -f *.tgz && pnpm pack && node ../../scripts/rename-tgz.js",
     "release": "standard-version --skip.tag -t cli --preset=conventionalcommits --releaseCommitMessageFormat 'chore(release): @runtime-env/cli@{{currentTag}}' --path .",
-    "test": "jest"
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
   },
   "repository": {
     "type": "git",
@@ -38,7 +38,7 @@
     "ajv": "^8.12.0",
     "ajv-formats": "^3.0.0",
     "commander": "12.1.0",
-    "json-schema-to-typescript": "^13.1.1",
+    "json-schema-to-typescript": "^15.0.0",
     "lodash": "^4.17.21",
     "picocolors": "1.1.0",
     "serialize-javascript": "6.0.2"
