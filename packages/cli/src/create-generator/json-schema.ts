@@ -70,11 +70,20 @@ type DeepReadonlyObject<T> = {
         `,
         additionalProperties: false,
       });
+      const capitalCaseGlobalVariableName =
+        globalVariableName.charAt(0).toUpperCase() +
+        globalVariableName.slice(1);
       return (
         result
           .replace(
             /export interface (\S+) /,
-            `declare const ${globalVariableName}: DeepReadonly<`,
+            `
+declare global {
+  var ${globalVariableName}: ${capitalCaseGlobalVariableName}
+}
+
+export type ${capitalCaseGlobalVariableName} = DeepReadonly<
+            `.trim(),
           )
           .trim() + ">\n"
       );

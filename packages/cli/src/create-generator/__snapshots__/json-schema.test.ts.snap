@@ -100,7 +100,11 @@ type DeepReadonlyObject<T> = {
   readonly [K in keyof T]: DeepReadonly<T[K]>;
 };
 
-declare const runtimeEnv: DeepReadonly<{
+declare global {
+  var runtimeEnv: RuntimeEnv
+}
+
+export type RuntimeEnv = DeepReadonly<{
   FOO: string;
   BAR?: {
     BAZ?: string;

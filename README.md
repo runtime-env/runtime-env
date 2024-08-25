@@ -322,6 +322,6 @@ $ npm i -D @runtime-env/cli
 - For JavaScript, you can read environment variables through the `globalThis` property:
 
   ```js
-  // Syntax: globalThis.<globalVariableName>.<environmentVariableName>
-  initializeApp(globalThis.runtimeEnv.FIREBASE_CONFIG);
+  // Syntax: <globalVariableName>.<environmentVariableName>
+  initializeApp(runtimeEnv.FIREBASE_CONFIG);
   ```
