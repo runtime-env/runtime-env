@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.2](https://github.com/runtime-env/runtime-env/compare/cli0.5.1...cli0.5.2) (2024-08-25)
+
+
+### Bug Fixes
+
+* make runtimeEnv accessible via globalThis ([#151](https://github.com/runtime-env/runtime-env/issues/151)) ([cb7278f](https://github.com/runtime-env/runtime-env/commit/cb7278f6d04dca928a4732f2b8471d23348f6205)), closes [#150](https://github.com/runtime-env/runtime-env/issues/150)
+
 ## [0.5.1](https://github.com/runtime-env/runtime-env/compare/cli0.5.0...cli0.5.1) (2024-07-13)
 
 
