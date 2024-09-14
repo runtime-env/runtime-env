@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.3](https://github.com/runtime-env/runtime-env/compare/cli0.5.2...cli0.5.3) (2024-09-14)
+
+
+### Bug Fixes
+
+* **deps:** update dependency json-schema-to-typescript to v15 ([#132](https://github.com/runtime-env/runtime-env/issues/132)) ([349ac18](https://github.com/runtime-env/runtime-env/commit/349ac18ff00006e9f25a89fd3b66d6ef4da518b2))
+* **deps:** update dependency picocolors to v1.1.0 ([#156](https://github.com/runtime-env/runtime-env/issues/156)) ([bc76c66](https://github.com/runtime-env/runtime-env/commit/bc76c667618bcbf44241871be709b4c51d795ea7))
+
 ## [0.5.2](https://github.com/runtime-env/runtime-env/compare/cli0.5.1...cli0.5.2) (2024-08-25)
 
 
