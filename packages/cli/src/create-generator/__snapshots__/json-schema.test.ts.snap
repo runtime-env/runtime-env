@@ -91,8 +91,8 @@ type Primitive = undefined | null | boolean | string | number;
 type DeepReadonly<T> = T extends Primitive
   ? T
   : T extends Array<infer U>
-  ? DeepReadonlyArray<U>
-  : DeepReadonlyObject<T>;
+    ? DeepReadonlyArray<U>
+    : DeepReadonlyObject<T>;
 
 type DeepReadonlyArray<T> = ReadonlyArray<DeepReadonly<T>>;
 
