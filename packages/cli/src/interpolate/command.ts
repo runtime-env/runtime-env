@@ -22,29 +22,44 @@ export default () => {
       "specify the output file to be written instead of being piped to stdout",
     )
     .action(async ({ inputFile, outputFile, envFile }, { args }) => {
-      const { globalVariableName, schemaFile } = program.opts();
+      const { globalVariableName, schemaFile, watch } = program.opts();
 
-      let input = "";
-      if (inputFile) {
-        try {
-          input = readFileSync(inputFile, "utf8");
-        } catch (error) {
-          throwError(`input file not found: no such file, open '${inputFile}'`);
-        }
-      } else {
-        input = args[0];
+      await run();
+      if (watch) {
+        const chokidar = require("chokidar");
+        chokidar
+          .watch([schemaFile, ...envFile, ...(inputFile ? [inputFile] : [])])
+          .on("change", async () => {
+            await run();
+          });
       }
-      const { output } = await act({
-        envFiles: envFile,
-        schemaFile,
-        globalVariableName,
-        input,
-      });
 
-      if (outputFile) {
-        writeFileSync(outputFile, output, "utf8");
-      } else {
-        console.log(output);
+      async function run() {
+        let input = "";
+        if (inputFile) {
+          try {
+            input = readFileSync(inputFile, "utf8");
+          } catch (error) {
+            throwError(
+              `input file not found: no such file, open '${inputFile}'`,
+            );
+          }
+        } else {
+          input = args[0];
+        }
+
+        const { output } = await act({
+          envFiles: envFile,
+          schemaFile,
+          globalVariableName,
+          input,
+        });
+
+        if (outputFile) {
+          writeFileSync(outputFile, output, "utf8");
+        } else {
+          console.log(output);
+        }
       }
     });
 };
