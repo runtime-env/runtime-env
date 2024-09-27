@@ -16,6 +16,7 @@ program
     "specify the json schema file to be loaded",
     ".runtimeenvschema.json",
   )
+  .option("--watch", "turn on watch mode", false)
   .addCommand(commandGenJs())
   .addCommand(commandGenTs())
   .addCommand(commandInterpolate())

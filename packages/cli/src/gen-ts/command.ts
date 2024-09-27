@@ -12,17 +12,27 @@ export default () => {
       "specify the output file to be written instead of being piped to stdout",
     )
     .action(async ({ outputFile }) => {
-      const { globalVariableName, schemaFile } = program.opts();
+      const { globalVariableName, schemaFile, watch } = program.opts();
 
-      const { output } = await act({
-        schemaFile,
-        globalVariableName,
-      });
+      await run();
+      if (watch) {
+        const chokidar = require("chokidar");
+        chokidar.watch([schemaFile]).on("change", async () => {
+          await run();
+        });
+      }
 
-      if (outputFile) {
-        writeFileSync(outputFile, output, "utf8");
-      } else {
-        console.log(output);
+      async function run() {
+        const { output } = await act({
+          schemaFile,
+          globalVariableName,
+        });
+
+        if (outputFile) {
+          writeFileSync(outputFile, output, "utf8");
+        } else {
+          console.log(output);
+        }
       }
     });
 };
