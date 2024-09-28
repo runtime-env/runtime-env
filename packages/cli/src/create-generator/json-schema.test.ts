@@ -359,6 +359,54 @@ SECRET=****
     ).rejects.toThrowErrorMatchingSnapshot();
   });
 
+  it("should throw 5", async () => {
+    const globalVariableName = "runtimeEnv";
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, "", "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      JSON.stringify({ type: "object", properties: {}, required: "invalid" }),
+      "utf8",
+    );
+    const userEnvironment = false;
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+
+    await expect(() =>
+      schema.generateJs(),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
+  it("should throw 6", async () => {
+    const globalVariableName = "runtimeEnv";
+    const envFilePath = tmpNameSync();
+    writeFileSync(envFilePath, "", "utf8");
+    const envSchemaFilePath = tmpNameSync();
+    writeFileSync(
+      envSchemaFilePath,
+      JSON.stringify({ type: "object", properties: {}, required: [123] }),
+      "utf8",
+    );
+    const userEnvironment = false;
+
+    const schema = await createGeneratorForJSONSchema({
+      envFilePath,
+      envSchemaFilePath,
+      globalVariableName,
+      userEnvironment,
+    });
+
+    await expect(() =>
+      schema.generateJs(),
+    ).rejects.toThrowErrorMatchingSnapshot();
+  });
+
   it("should escape", async () => {
     const globalVariableName = "runtimeEnv";
     const envFilePath = tmpNameSync();

@@ -1,6 +1,7 @@
 import { Command, program } from "commander";
 import act from "./act";
 import { writeFileSync, readFileSync } from "fs";
+import throwError from "../throwError";
 
 export default () => {
   return new Command("interpolate")
@@ -18,10 +19,22 @@ export default () => {
     .action(async ({ inputFilePath, outputFilePath }, { args }) => {
       const { globalVariableName, envSchemaFilePath } = program.opts();
 
+      let input = "";
+      if (inputFilePath) {
+        try {
+          input = readFileSync(inputFilePath, "utf8");
+        } catch (error) {
+          throwError(
+            `input file not found: no such file, open '${inputFilePath}'`,
+          );
+        }
+      } else {
+        input = args[0];
+      }
       const { output } = await act({
         envSchemaFilePath,
         globalVariableName,
-        input: inputFilePath ? readFileSync(inputFilePath, "utf8") : args[0],
+        input,
       });
 
       if (outputFilePath) {

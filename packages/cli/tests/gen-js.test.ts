@@ -75,6 +75,7 @@ describe("integration - gen-js", () => {
       },
     );
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 
   test("outputFilePath", () => {
@@ -131,6 +132,7 @@ describe("integration - gen-js", () => {
       cwd: __dirname,
     });
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 
   test("optionalEnv", () => {
@@ -158,5 +160,6 @@ describe("integration - gen-js", () => {
       cwd: __dirname,
     });
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 });
