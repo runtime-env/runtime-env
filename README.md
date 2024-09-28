@@ -83,7 +83,9 @@ $ npm i -D @runtime-env/cli
    `runtime-env.js`:
 
    ```js
-   globalThis.runtimeEnv = { TITLE: "Hello Runtime Env!" };
+   globalThis.runtimeEnv = {
+     TITLE: "Hello Runtime Env!",
+   };
    ```
 
    Run `npx -p @runtime-env/cli runtime-env gen-ts --output-file runtime-env.d.ts` to generate a TypeScript file which contains corresponding types of environment variables:
@@ -91,18 +93,27 @@ $ npm i -D @runtime-env/cli
    `runtime-env.d.ts`:
 
    ```ts
-   declare const runtimeEnv: { readonly TITLE: string };
+   // type DeepReadonly<T> = ...
+
+   declare global {
+     var runtimeEnv: RuntimeEnv;
+   }
+
+   export type RuntimeEnv = DeepReadonly<{
+     TITLE: string;
+   }>;
    ```
 
 3. The final result
 
    `index.html` (modified):
 
-   ```html
+   ```diff
    <!doctype html>
    <html>
      <head>
-       <title>Hello Runtime Env!</title>
+   -   <title><%= runtimeEnv.TITLE %></title>
+   +   <title>Hello Runtime Env!</title>
      </head>
      <body>
        <script src="/runtime-env.js"></script>
@@ -119,14 +130,24 @@ $ npm i -D @runtime-env/cli
 
    `runtime-env.js` (generated):
 
-   ```js
-   globalThis.runtimeEnv = { TITLE: "Hello Runtime Env!" };
+   ```diff
+   + globalThis.runtimeEnv = {
+   +   TITLE: "Hello Runtime Env!",
+   + };
    ```
 
    `runtime-env.d.ts` (generated):
 
-   ```ts
-   declare const runtimeEnv: { TITLE: string };
+   ```diff
+   + // type DeepReadonly<T> = ...
+   +
+   + declare global {
+   +   var runtimeEnv: RuntimeEnv;
+   + }
+   +
+   + export type RuntimeEnv = DeepReadonly<{
+   +   TITLE: string;
+   + }>;
    ```
 
    `.runtimeenvschema.json`:
@@ -212,13 +233,19 @@ $ npm i -D @runtime-env/cli
 
      ```ts
      // runtime-env.d.ts
-     declare const runtimeEnv: {
-       readonly TAG_ID: string;
-       readonly FIREBASE_CONFIG: {
-         readonly apiKey: string;
-         readonly authDomain: string;
+     // type DeepReadonly<T> = ...
+
+     declare global {
+       var runtimeEnv: RuntimeEnv;
+     }
+
+     export type RuntimeEnv = DeepReadonly<{
+       TAG_ID: string;
+       FIREBASE_CONFIG: {
+         apiKey: string;
+         authDomain: string;
        };
-     };
+     }>;
      ```
 
    - For `index.html` and other non-JavaScript files, if needed, you can run `runtime-env interpolate`:
