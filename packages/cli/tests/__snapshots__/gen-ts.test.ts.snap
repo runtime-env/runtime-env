@@ -1,5 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`integration - gen-ts envSchemaFilePath - invalid 1`] = `
+[
+  null,
+  "",
+  "[@runtime-env/cli]
+  schema file not found: no such file, open 'invalid'
+",
+]
+`;
+
 exports[`integration - gen-ts envSchemaFilePath 1`] = `
 [
   null,

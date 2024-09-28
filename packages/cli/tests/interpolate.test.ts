@@ -107,6 +107,7 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 
   test("outputFilePath", () => {
@@ -183,6 +184,7 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 
   test("optionalEnv", () => {
@@ -228,5 +230,6 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 });

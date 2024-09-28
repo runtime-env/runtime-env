@@ -9,6 +9,7 @@ import {
 import { readFileSync } from "fs";
 import { compile } from "json-schema-to-typescript";
 import { template } from "lodash";
+import throwError from "../throwError";
 
 export const createGeneratorForJSONSchema: CreateGenerator = async ({
   globalVariableName,
@@ -49,7 +50,14 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
       return content;
     },
     generateTs: async () => {
-      const envSchemaFileContent = readFileSync(envSchemaFilePath, "utf8");
+      let envSchemaFileContent = "";
+      try {
+        envSchemaFileContent = readFileSync(envSchemaFilePath, "utf8");
+      } catch {
+        throwError(
+          `schema file not found: no such file, open '${envSchemaFilePath}'`,
+        );
+      }
       const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
       const result = await compile(envSchemaFileJSON, globalVariableName, {
         bannerComment: `
@@ -107,7 +115,14 @@ const parseEnv: ParseEnv = async ({
     coerceTypes: false,
   });
   AjvFormats(ajv);
-  const envSchemaFileContent = readFileSync(envSchemaFilePath, "utf8");
+  let envSchemaFileContent = "";
+  try {
+    envSchemaFileContent = readFileSync(envSchemaFilePath, "utf8");
+  } catch {
+    throwError(
+      `schema file not found: no such file, open '${envSchemaFilePath}'`,
+    );
+  }
   const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
   const env = (() => {
     let env: Record<string, string> = {};
@@ -117,7 +132,12 @@ const parseEnv: ParseEnv = async ({
         ? [envFilePath]
         : [];
     envFilePaths.forEach((envFilePath) => {
-      const envFileContent = readFileSync(envFilePath, "utf8");
+      let envFileContent = "";
+      try {
+        envFileContent = readFileSync(envFilePath, "utf8");
+      } catch {
+        throwError(`env file not found: no such file, open '${envFilePath}'`);
+      }
       const parsedEnvFileContent = parse(envFileContent);
       env = { ...env, ...parsedEnvFileContent };
     });
@@ -128,14 +148,27 @@ const parseEnv: ParseEnv = async ({
   })();
 
   if (envSchemaFileJSON.type !== "object") {
-    throw Error('schema is invalid: data/type must be "object"');
+    throwError('schema is invalid: data/type must be "object"');
   }
   if (
     Object.getPrototypeOf(envSchemaFileJSON.properties ?? "").constructor !==
     Object
   ) {
-    throw Error("schema is invalid: data/properties must be object");
+    throwError("schema is invalid: data/properties must be object");
   }
+  if (
+    Array.isArray(Object.getPrototypeOf(envSchemaFileJSON.required ?? [])) ===
+    false
+  ) {
+    throwError("schema is invalid: data/required must be array");
+  }
+  (envSchemaFileJSON.required ?? []).forEach(
+    (property: unknown, index: number) => {
+      if (typeof property !== "string") {
+        throwError(`schema is invalid: data/required/${index} must be string`);
+      }
+    },
+  );
 
   const parsedEnv: Record<string, any> = {};
   const errors: string[] = [];
@@ -159,15 +192,19 @@ const parseEnv: ParseEnv = async ({
         ? [property]
         : [],
     };
-    if (ajv.validate(propertySchema, { [property]: value })) {
-      parsedEnv[property] = serializeJavascript(value);
-    } else {
-      errors.push(JSON.stringify(ajv.errors));
+    try {
+      if (ajv.validate(propertySchema, { [property]: value })) {
+        parsedEnv[property] = serializeJavascript(value);
+      } else {
+        errors.push("env is invalid: " + JSON.stringify(ajv.errors));
+      }
+    } catch (error) {
+      errors.push(String(error).replace("Error: ", ""));
     }
   });
 
   if (errors.length) {
-    throw TypeError(["", ...errors].join("\n  "));
+    throwError(...errors);
   }
 
   return parsedEnv;

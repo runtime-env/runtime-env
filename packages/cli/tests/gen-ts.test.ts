@@ -50,6 +50,7 @@ describe("integration - gen-ts", () => {
       },
     );
     expect(result.status).toBe(1);
+    expect(result.output).toMatchSnapshot();
   });
 
   test("outputFilePath", () => {
