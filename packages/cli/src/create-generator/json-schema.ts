@@ -13,15 +13,15 @@ import throwError from "../throwError";
 
 export const createGeneratorForJSONSchema: CreateGenerator = async ({
   globalVariableName,
-  envSchemaFilePath,
-  envFilePath,
+  schemaFile,
+  envFile,
   userEnvironment,
 }) => {
   return <CreateGeneratorReturnType>{
     interpolate: async (input) => {
       const parsedEnv = await parseEnv({
-        envFilePath,
-        envSchemaFilePath,
+        envFile,
+        schemaFile,
         userEnvironment,
       });
       const data = convertEnvToData(parsedEnv);
@@ -33,8 +33,8 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
     },
     generateJs: async () => {
       const parsedEnv = await parseEnv({
-        envFilePath,
-        envSchemaFilePath,
+        envFile,
+        schemaFile,
         userEnvironment,
       });
       const content = [
@@ -52,11 +52,9 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
     generateTs: async () => {
       let envSchemaFileContent = "";
       try {
-        envSchemaFileContent = readFileSync(envSchemaFilePath, "utf8");
+        envSchemaFileContent = readFileSync(schemaFile, "utf8");
       } catch {
-        throwError(
-          `schema file not found: no such file, open '${envSchemaFilePath}'`,
-        );
+        throwError(`schema file not found: no such file, open '${schemaFile}'`);
       }
       const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
       const result = await compile(envSchemaFileJSON, globalVariableName, {
@@ -100,15 +98,11 @@ export type ${capitalCaseGlobalVariableName} = DeepReadonly<
 };
 
 type ParseEnv = (_: {
-  envFilePath: null | string | string[];
-  envSchemaFilePath: string;
+  envFile: null | string | string[];
+  schemaFile: string;
   userEnvironment: boolean;
 }) => Promise<Record<string, any>>;
-const parseEnv: ParseEnv = async ({
-  envFilePath,
-  envSchemaFilePath,
-  userEnvironment,
-}) => {
+const parseEnv: ParseEnv = async ({ envFile, schemaFile, userEnvironment }) => {
   const ajv = new Ajv({
     allErrors: true,
     strict: true,
@@ -117,26 +111,24 @@ const parseEnv: ParseEnv = async ({
   AjvFormats(ajv);
   let envSchemaFileContent = "";
   try {
-    envSchemaFileContent = readFileSync(envSchemaFilePath, "utf8");
+    envSchemaFileContent = readFileSync(schemaFile, "utf8");
   } catch {
-    throwError(
-      `schema file not found: no such file, open '${envSchemaFilePath}'`,
-    );
+    throwError(`schema file not found: no such file, open '${schemaFile}'`);
   }
   const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
   const env = (() => {
     let env: Record<string, string> = {};
-    const envFilePaths = Array.isArray(envFilePath)
-      ? envFilePath
-      : envFilePath !== null
-        ? [envFilePath]
+    const envFilePaths = Array.isArray(envFile)
+      ? envFile
+      : envFile !== null
+        ? [envFile]
         : [];
-    envFilePaths.forEach((envFilePath) => {
+    envFilePaths.forEach((envFile) => {
       let envFileContent = "";
       try {
-        envFileContent = readFileSync(envFilePath, "utf8");
+        envFileContent = readFileSync(envFile, "utf8");
       } catch {
-        throwError(`env file not found: no such file, open '${envFilePath}'`);
+        throwError(`env file not found: no such file, open '${envFile}'`);
       }
       const parsedEnvFileContent = parse(envFileContent);
       env = { ...env, ...parsedEnvFileContent };

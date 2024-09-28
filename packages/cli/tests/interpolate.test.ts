@@ -3,7 +3,7 @@ import path from "path";
 import { spawnSync } from "child_process";
 import { tmpdir } from "tmp";
 
-const envSchemaFilePath = path.resolve(__dirname, ".runtimeenvschema.json");
+const schemaFile = path.resolve(__dirname, ".runtimeenvschema.json");
 const requiredEnv = {
   FOO: "inline",
 };
@@ -44,14 +44,14 @@ describe("integration - interpolate", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("envFileSchemaPath", () => {
+  test("envFileSchema", () => {
     const result = spawnSync(
       "node",
       [
         "../bin/runtime-env.js",
         "interpolate",
-        "--env-schema-file-path",
-        envSchemaFilePath,
+        "--schema-file",
+        schemaFile,
         "--",
         "123 <%= runtimeEnv.FOO %> 456",
       ],
@@ -69,13 +69,13 @@ describe("integration - interpolate", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("inputFilePath", () => {
+  test("inputFile", () => {
     const result = spawnSync(
       "node",
       [
         "../bin/runtime-env.js",
         "interpolate",
-        "--input-file-path",
+        "--input-file",
         path.resolve(__dirname, "input-file.html"),
       ],
       {
@@ -92,10 +92,10 @@ describe("integration - interpolate", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("inputFilePath - invalid", () => {
+  test("inputFile - invalid", () => {
     const result = spawnSync(
       "node",
-      ["../bin/runtime-env.js", "interpolate", "--input-file-path", "invalid"],
+      ["../bin/runtime-env.js", "interpolate", "--input-file", "invalid"],
       {
         encoding: "utf8",
         stdio: "pipe",
@@ -110,14 +110,14 @@ describe("integration - interpolate", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("outputFilePath", () => {
+  test("outputFile", () => {
     const result = spawnSync(
       "node",
       [
         "../bin/runtime-env.js",
         "interpolate",
-        "--output-file-path",
-        path.resolve(tmpdir, "runtime-env-interpolate-output-file-path.html"),
+        "--output-file",
+        path.resolve(tmpdir, "runtime-env-interpolate-output-file.html"),
         "--",
         "123 <%= runtimeEnv.FOO %> 456",
       ],
@@ -135,7 +135,7 @@ describe("integration - interpolate", () => {
     expect(result.output).toMatchSnapshot();
     expect(
       fs.readFileSync(
-        path.resolve(tmpdir, "runtime-env-interpolate-output-file-path.html"),
+        path.resolve(tmpdir, "runtime-env-interpolate-output-file.html"),
         "utf8",
       ),
     ).toMatchSnapshot();

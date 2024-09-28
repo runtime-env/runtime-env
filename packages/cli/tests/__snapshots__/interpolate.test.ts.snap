@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`integration - interpolate envFileSchemaPath 1`] = `
+exports[`integration - interpolate envFileSchema 1`] = `
 [
   null,
   "123 inline 456
@@ -18,7 +18,7 @@ exports[`integration - interpolate globalVariableName 1`] = `
 ]
 `;
 
-exports[`integration - interpolate inputFilePath - invalid 1`] = `
+exports[`integration - interpolate inputFile - invalid 1`] = `
 [
   null,
   "",
@@ -28,7 +28,7 @@ exports[`integration - interpolate inputFilePath - invalid 1`] = `
 ]
 `;
 
-exports[`integration - interpolate inputFilePath 1`] = `
+exports[`integration - interpolate inputFile 1`] = `
 [
   null,
   "123 inline 456
@@ -57,7 +57,7 @@ exports[`integration - interpolate optionalEnv 1`] = `
 ]
 `;
 
-exports[`integration - interpolate outputFilePath 1`] = `
+exports[`integration - interpolate outputFile 1`] = `
 [
   null,
   "",
@@ -65,7 +65,7 @@ exports[`integration - interpolate outputFilePath 1`] = `
 ]
 `;
 
-exports[`integration - interpolate outputFilePath 2`] = `"123 inline 456"`;
+exports[`integration - interpolate outputFile 2`] = `"123 inline 456"`;
 
 exports[`integration - interpolate requiredEnv - invalid 1`] = `
 [

@@ -5,17 +5,17 @@ import { writeFileSync } from "fs";
 describe("interpolate", () => {
   it("should works (envFileOnly)", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO="<script>"
     `.trim(),
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -30,8 +30,8 @@ FOO="<script>"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -53,10 +53,10 @@ FOO="<script>"
     process.env.FOO = "override";
     process.env.SECRET = "****";
     const globalVariableName = "runtimeEnv";
-    const envFilePath = null;
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = null;
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -71,8 +71,8 @@ FOO="<script>"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -96,17 +96,17 @@ FOO="<script>"
     process.env.BAZ = '{"KEY":"<script>"}';
     process.env.FRED = '["<script>"]';
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 QUX="{"KEY":"<script>"}"
     `.trim(),
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -148,8 +148,8 @@ QUX="{"KEY":"<script>"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -177,17 +177,17 @@ QUX="{"KEY":"<script>"}"
 
   it("should works (stringified number)", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO="42"
     `.trim(),
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -202,8 +202,8 @@ FOO="42"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -225,19 +225,15 @@ FOO="42"
 describe("generate js", () => {
   it("should throw 1", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
-    writeFileSync(
-      envSchemaFilePath,
-      JSON.stringify({ type: "invalid" }),
-      "utf8",
-    );
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
+    writeFileSync(schemaFile, JSON.stringify({ type: "invalid" }), "utf8");
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -249,19 +245,15 @@ describe("generate js", () => {
 
   it("should throw 2", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
-    writeFileSync(
-      envSchemaFilePath,
-      JSON.stringify({ type: "object" }),
-      "utf8",
-    );
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
+    writeFileSync(schemaFile, JSON.stringify({ type: "object" }), "utf8");
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -273,11 +265,11 @@ describe("generate js", () => {
 
   it("should throw 3", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -300,8 +292,8 @@ describe("generate js", () => {
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -313,9 +305,9 @@ describe("generate js", () => {
 
   it("should throw 4", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO=escape<
 BAR={"BAZ":"value"}
@@ -323,9 +315,9 @@ SECRET=****
     `,
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -348,8 +340,8 @@ SECRET=****
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -361,19 +353,19 @@ SECRET=****
 
   it("should throw 5", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({ type: "object", properties: {}, required: "invalid" }),
       "utf8",
     );
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -385,19 +377,19 @@ SECRET=****
 
   it("should throw 6", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({ type: "object", properties: {}, required: [123] }),
       "utf8",
     );
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -409,18 +401,18 @@ SECRET=****
 
   it("should escape", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO="<script>"
 BAR="{"BAZ":"<script>"}"
       `.trim(),
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -443,8 +435,8 @@ BAR="{"BAZ":"<script>"}"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -457,9 +449,9 @@ BAR="{"BAZ":"<script>"}"
     process.env.FOO = "override";
     process.env.SECRET = "****";
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO="escape<"
 BAR="{"BAZ":"value"}"
@@ -467,9 +459,9 @@ SECRET=****
     `,
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -492,8 +484,8 @@ SECRET=****
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -507,9 +499,9 @@ SECRET=****
 
   it("should works (envFile only)", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO="escape<"
 BAR="{"BAZ":"value"}"
@@ -517,9 +509,9 @@ SECRET="****"
     `,
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -542,8 +534,8 @@ SECRET="****"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -571,9 +563,9 @@ BAR="{"BAZ":"baz"}"
       `.trim(),
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -596,8 +588,8 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath: [envFilePath1, envFilePath2],
-      envSchemaFilePath,
+      envFile: [envFilePath1, envFilePath2],
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -610,10 +602,10 @@ BAR="{"BAZ":"baz"}"
     process.env.FOO = "override";
     process.env.SECRET = "****";
     const globalVariableName = "runtimeEnv";
-    const envFilePath = null;
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = null;
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -636,8 +628,8 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -650,11 +642,11 @@ BAR="{"BAZ":"baz"}"
 
   it("should be undefined if no corresponding environment variable presents (primitive)", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -668,8 +660,8 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -680,11 +672,11 @@ BAR="{"BAZ":"baz"}"
 
   it("should be undefined if no corresponding environment variable presents (non-primitive)", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
-    writeFileSync(envFilePath, "", "utf8");
-    const envSchemaFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -698,8 +690,8 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });
@@ -712,9 +704,9 @@ BAR="{"BAZ":"baz"}"
 describe("generate ts", () => {
   it("should works", async () => {
     const globalVariableName = "runtimeEnv";
-    const envFilePath = tmpNameSync();
+    const envFile = tmpNameSync();
     writeFileSync(
-      envFilePath,
+      envFile,
       `
 FOO="escape<"
 BAR="{"BAZ":"value"}"
@@ -722,9 +714,9 @@ SECRET="****"
     `,
       "utf8",
     );
-    const envSchemaFilePath = tmpNameSync();
+    const schemaFile = tmpNameSync();
     writeFileSync(
-      envSchemaFilePath,
+      schemaFile,
       JSON.stringify({
         type: "object",
         properties: {
@@ -747,8 +739,8 @@ SECRET="****"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFilePath,
-      envSchemaFilePath,
+      envFile,
+      schemaFile,
       globalVariableName,
       userEnvironment,
     });

@@ -9,36 +9,34 @@ export default () => {
       "perform template interpolation by substituting environment variables",
     )
     .option(
-      "--input-file-path <inputFilePath>",
+      "--input-file <inputFile>",
       "specify the input file to be loaded instead of being read from stdin",
     )
     .option(
-      "--output-file-path <outputFilePath>",
+      "--output-file <outputFile>",
       "specify the output file to be written instead of being piped to stdout",
     )
-    .action(async ({ inputFilePath, outputFilePath }, { args }) => {
-      const { globalVariableName, envSchemaFilePath } = program.opts();
+    .action(async ({ inputFile, outputFile }, { args }) => {
+      const { globalVariableName, schemaFile } = program.opts();
 
       let input = "";
-      if (inputFilePath) {
+      if (inputFile) {
         try {
-          input = readFileSync(inputFilePath, "utf8");
+          input = readFileSync(inputFile, "utf8");
         } catch (error) {
-          throwError(
-            `input file not found: no such file, open '${inputFilePath}'`,
-          );
+          throwError(`input file not found: no such file, open '${inputFile}'`);
         }
       } else {
         input = args[0];
       }
       const { output } = await act({
-        envSchemaFilePath,
+        schemaFile,
         globalVariableName,
         input,
       });
 
-      if (outputFilePath) {
-        writeFileSync(outputFilePath, output, "utf8");
+      if (outputFile) {
+        writeFileSync(outputFile, output, "utf8");
       } else {
         console.log(output);
       }
