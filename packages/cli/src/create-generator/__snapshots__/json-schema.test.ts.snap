@@ -142,6 +142,7 @@ exports[`interpolate should works (stringified number) 1`] = `
 <html>
   <body>
     <div>42</div>
+    <div>1</div>
   </body>
 </html>"
 `;

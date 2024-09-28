@@ -225,6 +225,8 @@ const serializeLeafNodes: SerializeLeafNodes = (env) => {
       {},
     );
   } else {
-    return serializeJavascript(env).slice(1, -1);
+    return typeof env === "string"
+      ? serializeJavascript(env).slice(1, -1)
+      : serializeJavascript(env);
   }
 };
