@@ -1,7 +1,7 @@
 export type CreateGeneratorParameter = {
   globalVariableName: string;
   schemaFile: string;
-  envFile: null | string | string[];
+  envFiles: string[];
   userEnvironment: boolean;
 };
 

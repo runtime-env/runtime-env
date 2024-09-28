@@ -9,6 +9,11 @@ export default () => {
       "perform template interpolation by substituting environment variables",
     )
     .option(
+      "--env-file <envFile...>",
+      "set environment variables from supplied file (requires Node.js v20.12.0)",
+      [],
+    )
+    .option(
       "--input-file <inputFile>",
       "specify the input file to be loaded instead of being read from stdin",
     )
@@ -16,7 +21,7 @@ export default () => {
       "--output-file <outputFile>",
       "specify the output file to be written instead of being piped to stdout",
     )
-    .action(async ({ inputFile, outputFile }, { args }) => {
+    .action(async ({ inputFile, outputFile, envFile }, { args }) => {
       const { globalVariableName, schemaFile } = program.opts();
 
       let input = "";
@@ -30,6 +35,7 @@ export default () => {
         input = args[0];
       }
       const { output } = await act({
+        envFiles: envFile,
         schemaFile,
         globalVariableName,
         input,

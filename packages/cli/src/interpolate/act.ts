@@ -1,18 +1,20 @@
 import { createGeneratorForJSONSchema } from "../create-generator/json-schema";
 
 type CreateDeclaration = (_: {
+  envFiles: string[];
   schemaFile: string;
   globalVariableName: string;
   input: string;
 }) => Promise<{ output: string }>;
 
 const act: CreateDeclaration = async ({
+  envFiles,
   schemaFile,
   globalVariableName,
   input,
 }) => {
   const generator = await createGeneratorForJSONSchema({
-    envFile: [],
+    envFiles,
     schemaFile,
     globalVariableName,
     userEnvironment: true,

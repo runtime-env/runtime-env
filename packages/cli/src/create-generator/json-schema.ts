@@ -1,7 +1,7 @@
 import serializeJavascript from "serialize-javascript";
 import Ajv from "ajv";
 import AjvFormats from "ajv-formats";
-import { parse } from "dotenv";
+import util from "util";
 import {
   CreateGenerator,
   CreateGeneratorReturnType,
@@ -14,13 +14,13 @@ import throwError from "../throwError";
 export const createGeneratorForJSONSchema: CreateGenerator = async ({
   globalVariableName,
   schemaFile,
-  envFile,
+  envFiles,
   userEnvironment,
 }) => {
   return <CreateGeneratorReturnType>{
     interpolate: async (input) => {
       const parsedEnv = await parseEnv({
-        envFile,
+        envFiles,
         schemaFile,
         userEnvironment,
       });
@@ -33,7 +33,7 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
     },
     generateJs: async () => {
       const parsedEnv = await parseEnv({
-        envFile,
+        envFiles,
         schemaFile,
         userEnvironment,
       });
@@ -98,11 +98,15 @@ export type ${capitalCaseGlobalVariableName} = DeepReadonly<
 };
 
 type ParseEnv = (_: {
-  envFile: null | string | string[];
+  envFiles: string[];
   schemaFile: string;
   userEnvironment: boolean;
 }) => Promise<Record<string, any>>;
-const parseEnv: ParseEnv = async ({ envFile, schemaFile, userEnvironment }) => {
+const parseEnv: ParseEnv = async ({
+  envFiles,
+  schemaFile,
+  userEnvironment,
+}) => {
   const ajv = new Ajv({
     allErrors: true,
     strict: true,
@@ -118,20 +122,17 @@ const parseEnv: ParseEnv = async ({ envFile, schemaFile, userEnvironment }) => {
   const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
   const env = (() => {
     let env: Record<string, string> = {};
-    const envFilePaths = Array.isArray(envFile)
-      ? envFile
-      : envFile !== null
-        ? [envFile]
-        : [];
-    envFilePaths.forEach((envFile) => {
-      let envFileContent = "";
+    envFiles.forEach((envFile) => {
+      if (util.parseEnv === undefined) {
+        throwError(
+          "util.parseEnv is not a function: please upgrade to Node.js v20.12.0 or later",
+        );
+      }
       try {
-        envFileContent = readFileSync(envFile, "utf8");
+        env = { ...env, ...util.parseEnv(readFileSync(envFile, "utf8")) };
       } catch {
         throwError(`env file not found: no such file, open '${envFile}'`);
       }
-      const parsedEnvFileContent = parse(envFileContent);
-      env = { ...env, ...parsedEnvFileContent };
     });
     if (userEnvironment) {
       env = { ...env, ...(process.env as Record<string, string>) };
@@ -170,7 +171,7 @@ const parseEnv: ParseEnv = async ({ envFile, schemaFile, userEnvironment }) => {
         ? env[property]
         : (() => {
             try {
-              return JSON.parse(env[property]);
+              return JSON.parse(env[property]!);
             } catch {
               return env[property];
             }

@@ -8,15 +8,21 @@ export default () => {
       "generate a JavaScript file that includes environment variables within an object, making them accessible through the globalThis property",
     )
     .option(
+      "--env-file <envFile...>",
+      "set environment variables from supplied file (requires Node.js v20.12.0)",
+      [],
+    )
+    .option(
       "--output-file <outputFile>",
       "specify the output file to be written instead of being piped to stdout",
     )
-    .action(async ({ outputFile }) => {
+    .action(async ({ outputFile, envFile }) => {
       const { globalVariableName, schemaFile } = program.opts();
 
       const { output } = await act({
         schemaFile,
         globalVariableName,
+        envFiles: envFile,
       });
 
       if (outputFile) {

@@ -9,7 +9,7 @@ describe("interpolate", () => {
     writeFileSync(
       envFile,
       `
-FOO="<script>"
+FOO='<script>'
     `.trim(),
       "utf8",
     );
@@ -30,7 +30,7 @@ FOO="<script>"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -53,7 +53,6 @@ FOO="<script>"
     process.env.FOO = "override";
     process.env.SECRET = "****";
     const globalVariableName = "runtimeEnv";
-    const envFile = null;
     const schemaFile = tmpNameSync();
     writeFileSync(
       schemaFile,
@@ -71,7 +70,7 @@ FOO="<script>"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -100,7 +99,7 @@ FOO="<script>"
     writeFileSync(
       envFile,
       `
-QUX="{"KEY":"<script>"}"
+QUX='{"KEY":"<script>"}'
     `.trim(),
       "utf8",
     );
@@ -148,7 +147,7 @@ QUX="{"KEY":"<script>"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -181,7 +180,7 @@ QUX="{"KEY":"<script>"}"
     writeFileSync(
       envFile,
       `
-FOO="42"
+FOO='42'
     `.trim(),
       "utf8",
     );
@@ -202,7 +201,7 @@ FOO="42"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -232,7 +231,7 @@ describe("generate js", () => {
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -252,7 +251,7 @@ describe("generate js", () => {
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -292,7 +291,7 @@ describe("generate js", () => {
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -309,9 +308,9 @@ describe("generate js", () => {
     writeFileSync(
       envFile,
       `
-FOO=escape<
-BAR={"BAZ":"value"}
-SECRET=****
+FOO='escape<'
+BAR='{"BAZ":"value"}'
+SECRET='****'
     `,
       "utf8",
     );
@@ -340,7 +339,7 @@ SECRET=****
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -364,7 +363,7 @@ SECRET=****
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -388,7 +387,7 @@ SECRET=****
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -405,8 +404,8 @@ SECRET=****
     writeFileSync(
       envFile,
       `
-FOO="<script>"
-BAR="{"BAZ":"<script>"}"
+FOO='<script>'
+BAR='{"BAZ":"<script>"}'
       `.trim(),
       "utf8",
     );
@@ -435,7 +434,7 @@ BAR="{"BAZ":"<script>"}"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -453,9 +452,9 @@ BAR="{"BAZ":"<script>"}"
     writeFileSync(
       envFile,
       `
-FOO="escape<"
-BAR="{"BAZ":"value"}"
-SECRET=****
+FOO='escape<'
+BAR='{"BAZ":"value"}'
+SECRET='****'
     `,
       "utf8",
     );
@@ -484,7 +483,7 @@ SECRET=****
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -503,9 +502,9 @@ SECRET=****
     writeFileSync(
       envFile,
       `
-FOO="escape<"
-BAR="{"BAZ":"value"}"
-SECRET="****"
+FOO='escape<'
+BAR='{"BAZ":"value"}'
+SECRET='****'
     `,
       "utf8",
     );
@@ -534,7 +533,7 @@ SECRET="****"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -550,7 +549,7 @@ SECRET="****"
     writeFileSync(
       envFilePath1,
       `
-FOO="default"
+FOO='default'
       `.trim(),
       "utf8",
     );
@@ -558,8 +557,8 @@ FOO="default"
     writeFileSync(
       envFilePath2,
       `
-FOO="foo"
-BAR="{"BAZ":"baz"}"
+FOO='foo'
+BAR='{"BAZ":"baz"}'
       `.trim(),
       "utf8",
     );
@@ -588,7 +587,7 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile: [envFilePath1, envFilePath2],
+      envFiles: [envFilePath1, envFilePath2],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -602,7 +601,6 @@ BAR="{"BAZ":"baz"}"
     process.env.FOO = "override";
     process.env.SECRET = "****";
     const globalVariableName = "runtimeEnv";
-    const envFile = null;
     const schemaFile = tmpNameSync();
     writeFileSync(
       schemaFile,
@@ -628,7 +626,7 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -660,7 +658,7 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -690,7 +688,7 @@ BAR="{"BAZ":"baz"}"
     const userEnvironment = true;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
@@ -708,9 +706,9 @@ describe("generate ts", () => {
     writeFileSync(
       envFile,
       `
-FOO="escape<"
-BAR="{"BAZ":"value"}"
-SECRET="****"
+FOO='escape<'
+BAR='{"BAZ":"value"}'
+SECRET='****'
     `,
       "utf8",
     );
@@ -739,7 +737,7 @@ SECRET="****"
     const userEnvironment = false;
 
     const schema = await createGeneratorForJSONSchema({
-      envFile,
+      envFiles: [envFile],
       schemaFile,
       globalVariableName,
       userEnvironment,
