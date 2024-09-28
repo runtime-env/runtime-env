@@ -102,6 +102,124 @@ describe("integration - gen-js", () => {
     ).toMatchSnapshot();
   });
 
+  test("envFile - empty", () => {
+    const result = spawnSync("node", ["../bin/runtime-env.js", "gen-js"], {
+      encoding: "utf8",
+      stdio: "pipe",
+      env: {
+        ...process.env,
+        ...requiredEnv,
+      },
+      cwd: __dirname,
+    });
+    expect(result.status).toBe(0);
+    expect(result.output).toMatchSnapshot();
+  });
+
+  test("envFile - required", () => {
+    const result = spawnSync(
+      "node",
+      [
+        "../bin/runtime-env.js",
+        "gen-js",
+        "--env-file",
+        path.resolve(__dirname, ".env.required"),
+      ],
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+        cwd: __dirname,
+      },
+    );
+    expect(result.status).toBe(0);
+    expect(result.output).toMatchSnapshot();
+  });
+
+  test("envFile - optional", () => {
+    const result = spawnSync(
+      "node",
+      [
+        "../bin/runtime-env.js",
+        "gen-js",
+        "--env-file",
+        path.resolve(__dirname, ".env.optional"),
+      ],
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+        cwd: __dirname,
+      },
+    );
+    expect(result.status).toBe(0);
+    expect(result.output).toMatchSnapshot();
+  });
+
+  test("envFile - invalid", () => {
+    const result = spawnSync(
+      "node",
+      [
+        "../bin/runtime-env.js",
+        "gen-js",
+        "--env-file",
+        path.resolve(__dirname, ".env.invalid"),
+      ],
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+        cwd: __dirname,
+      },
+    );
+    expect(result.status).not.toBe(0);
+    expect(result.output[2]).toContain(".env.invalid");
+    expect(result.output[2]).toContain("not found");
+  });
+
+  test("envFile - multiple + inline", () => {
+    const result = spawnSync(
+      "node",
+      [
+        "../bin/runtime-env.js",
+        "gen-js",
+        "--env-file",
+        path.resolve(__dirname, ".env.required"),
+        "--env-file",
+        path.resolve(__dirname, ".env.optional"),
+      ],
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+        env: {
+          ...process.env,
+          ...requiredEnv,
+        },
+        cwd: __dirname,
+      },
+    );
+    expect(result.status).toBe(0);
+    expect(result.output).toMatchSnapshot();
+  });
+
+  test("envFile - multiple", () => {
+    const result = spawnSync(
+      "node",
+      [
+        "../bin/runtime-env.js",
+        "gen-js",
+        "--env-file",
+        path.resolve(__dirname, ".env.required"),
+        "--env-file",
+        path.resolve(__dirname, ".env.optional"),
+      ],
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+        cwd: __dirname,
+      },
+    );
+    expect(result.status).toBe(0);
+    expect(result.output).toMatchSnapshot();
+  });
+
   test("requiredEnv", () => {
     const result = spawnSync("node", ["../bin/runtime-env.js", "gen-js"], {
       encoding: "utf8",
