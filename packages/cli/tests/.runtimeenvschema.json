@@ -1,0 +1,17 @@
+{
+  "type": "object",
+  "properties": {
+    "FOO": {
+      "type": "string"
+    },
+    "BAR": {
+      "type": "object",
+      "properties": {
+        "BAZ": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": ["FOO"]
+}
