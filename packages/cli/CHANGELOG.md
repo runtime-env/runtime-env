@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.1](https://github.com/runtime-env/runtime-env/compare/cli0.6.0...cli0.6.1) (2024-09-28)
+
+
+### Bug Fixes
+
+* interpolation should only handle strings and must not slice other types ([#187](https://github.com/runtime-env/runtime-env/issues/187)) ([cf0e45f](https://github.com/runtime-env/runtime-env/commit/cf0e45f3505f8aa44b158c9ca20ddca0c46a7d91))
+
 ## [0.6.0](https://github.com/runtime-env/runtime-env/compare/cli0.5.3...cli0.6.0) (2024-09-28)
 
 
