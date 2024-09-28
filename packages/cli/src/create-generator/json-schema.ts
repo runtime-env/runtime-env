@@ -123,6 +123,11 @@ const parseEnv: ParseEnv = async ({
   const env = (() => {
     let env: Record<string, string> = {};
     envFiles.forEach((envFile) => {
+      if (util.parseEnv === undefined) {
+        throwError(
+          "util.parseEnv is not a function: please upgrade to Node.js v20.12.0 or later",
+        );
+      }
       try {
         env = { ...env, ...util.parseEnv(readFileSync(envFile, "utf8")) };
       } catch {
