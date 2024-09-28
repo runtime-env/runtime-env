@@ -3,7 +3,7 @@ import path from "path";
 import { spawnSync } from "child_process";
 import { tmpdir } from "tmp";
 
-const envSchemaFilePath = path.resolve(__dirname, ".runtimeenvschema.json");
+const schemaFile = path.resolve(__dirname, ".runtimeenvschema.json");
 const requiredEnv = {
   FOO: "inline",
 };
@@ -37,15 +37,10 @@ describe("integration - gen-js", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("envSchemaFilePath", () => {
+  test("schemaFile", () => {
     const result = spawnSync(
       "node",
-      [
-        "../bin/runtime-env.js",
-        "gen-js",
-        "--env-schema-file-path",
-        envSchemaFilePath,
-      ],
+      ["../bin/runtime-env.js", "gen-js", "--schema-file", schemaFile],
       {
         encoding: "utf8",
         stdio: "pipe",
@@ -60,10 +55,10 @@ describe("integration - gen-js", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("envSchemaFilePath - invalid", () => {
+  test("schemaFile - invalid", () => {
     const result = spawnSync(
       "node",
-      ["../bin/runtime-env.js", "gen-js", "--env-schema-file-path", "invalid"],
+      ["../bin/runtime-env.js", "gen-js", "--schema-file", "invalid"],
       {
         encoding: "utf8",
         stdio: "pipe",
@@ -78,14 +73,14 @@ describe("integration - gen-js", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("outputFilePath", () => {
+  test("outputFile", () => {
     const result = spawnSync(
       "node",
       [
         "../bin/runtime-env.js",
         "gen-js",
-        "--output-file-path",
-        path.resolve(tmpdir, "runtime-env-gen-js-output-file-path.js"),
+        "--output-file",
+        path.resolve(tmpdir, "runtime-env-gen-js-output-file.js"),
       ],
       {
         encoding: "utf8",
@@ -101,7 +96,7 @@ describe("integration - gen-js", () => {
     expect(result.output).toMatchSnapshot();
     expect(
       fs.readFileSync(
-        path.resolve(tmpdir, "runtime-env-gen-js-output-file-path.js"),
+        path.resolve(tmpdir, "runtime-env-gen-js-output-file.js"),
         "utf8",
       ),
     ).toMatchSnapshot();

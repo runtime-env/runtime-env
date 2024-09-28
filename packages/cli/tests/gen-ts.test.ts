@@ -3,7 +3,7 @@ import path from "path";
 import { spawnSync } from "child_process";
 import { tmpdir } from "tmp";
 
-const envSchemaFilePath = path.resolve(__dirname, ".runtimeenvschema.json");
+const schemaFile = path.resolve(__dirname, ".runtimeenvschema.json");
 
 describe("integration - gen-ts", () => {
   test("globalVariableName", () => {
@@ -20,15 +20,10 @@ describe("integration - gen-ts", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("envSchemaFilePath", () => {
+  test("schemaFile", () => {
     const result = spawnSync(
       "node",
-      [
-        "../bin/runtime-env.js",
-        "gen-ts",
-        "--env-schema-file-path",
-        envSchemaFilePath,
-      ],
+      ["../bin/runtime-env.js", "gen-ts", "--schema-file", schemaFile],
       {
         encoding: "utf8",
         stdio: "pipe",
@@ -39,10 +34,10 @@ describe("integration - gen-ts", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("envSchemaFilePath - invalid", () => {
+  test("schemaFile - invalid", () => {
     const result = spawnSync(
       "node",
-      ["../bin/runtime-env.js", "gen-ts", "--env-schema-file-path", "invalid"],
+      ["../bin/runtime-env.js", "gen-ts", "--schema-file", "invalid"],
       {
         encoding: "utf8",
         stdio: "pipe",
@@ -53,14 +48,14 @@ describe("integration - gen-ts", () => {
     expect(result.output).toMatchSnapshot();
   });
 
-  test("outputFilePath", () => {
+  test("outputFile", () => {
     const result = spawnSync(
       "node",
       [
         "../bin/runtime-env.js",
         "gen-ts",
-        "--output-file-path",
-        path.resolve(tmpdir, "runtime-env-gen-ts-output-file-path.ts"),
+        "--output-file",
+        path.resolve(tmpdir, "runtime-env-gen-ts-output-file.ts"),
       ],
       {
         encoding: "utf8",
@@ -72,7 +67,7 @@ describe("integration - gen-ts", () => {
     expect(result.output).toMatchSnapshot();
     expect(
       fs.readFileSync(
-        path.resolve(tmpdir, "runtime-env-gen-ts-output-file-path.ts"),
+        path.resolve(tmpdir, "runtime-env-gen-ts-output-file.ts"),
         "utf8",
       ),
     ).toMatchSnapshot();

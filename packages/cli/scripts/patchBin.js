@@ -1,7 +1,7 @@
 const { readFileSync, writeFileSync } = require("fs");
 
-const filePath = "bin/runtime-env.js";
+const file = "bin/runtime-env.js";
 
-const oldContent = readFileSync(filePath, "utf-8");
+const oldContent = readFileSync(file, "utf-8");
 const newContent = `#!/usr/bin/env node\n'use strict';\n${oldContent}`;
-writeFileSync(filePath, newContent);
+writeFileSync(file, newContent);

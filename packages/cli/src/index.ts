@@ -12,7 +12,7 @@ program
     "runtimeEnv",
   )
   .option(
-    "--env-schema-file-path <envSchemaFilePath>",
+    "--schema-file <schemaFile>",
     "specify the json schema file to be loaded",
     ".runtimeenvschema.json",
   )
