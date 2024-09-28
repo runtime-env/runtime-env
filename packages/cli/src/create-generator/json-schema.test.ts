@@ -181,6 +181,7 @@ QUX='{"KEY":"<script>"}'
       envFile,
       `
 FOO='42'
+BAR='1'
     `.trim(),
       "utf8",
     );
@@ -193,8 +194,11 @@ FOO='42'
           FOO: {
             type: "string",
           },
+          BAR: {
+            type: "number",
+          },
         },
-        required: ["FOO"],
+        required: ["FOO", "BAR"],
       }),
       "utf8",
     );
@@ -212,6 +216,7 @@ FOO='42'
 <html>
   <body>
     <div><%= runtimeEnv.FOO %></div>
+    <div><%= runtimeEnv.BAR %></div>
   </body>
 </html>
         `.trim(),
