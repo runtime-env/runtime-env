@@ -1,7 +1,7 @@
 import serializeJavascript from "serialize-javascript";
 import Ajv from "ajv";
 import AjvFormats from "ajv-formats";
-import { parse } from "dotenv";
+import util from "util";
 import {
   CreateGenerator,
   CreateGeneratorReturnType,
@@ -123,14 +123,11 @@ const parseEnv: ParseEnv = async ({
   const env = (() => {
     let env: Record<string, string> = {};
     envFiles.forEach((envFile) => {
-      let envFileContent = "";
       try {
-        envFileContent = readFileSync(envFile, "utf8");
+        env = { ...env, ...util.parseEnv(readFileSync(envFile, "utf8")) };
       } catch {
         throwError(`env file not found: no such file, open '${envFile}'`);
       }
-      const parsedEnvFileContent = parse(envFileContent);
-      env = { ...env, ...parsedEnvFileContent };
     });
     if (userEnvironment) {
       env = { ...env, ...(process.env as Record<string, string>) };
@@ -169,7 +166,7 @@ const parseEnv: ParseEnv = async ({
         ? env[property]
         : (() => {
             try {
-              return JSON.parse(env[property]);
+              return JSON.parse(env[property]!);
             } catch {
               return env[property];
             }
