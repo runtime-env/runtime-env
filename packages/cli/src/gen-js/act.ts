@@ -7,7 +7,7 @@ type Act = (_: {
 
 const act: Act = async ({ globalVariableName, schemaFile }) => {
   const generator = await createGeneratorForJSONSchema({
-    envFile: [],
+    envFiles: [],
     schemaFile,
     globalVariableName,
     userEnvironment: true,

@@ -14,13 +14,13 @@ import throwError from "../throwError";
 export const createGeneratorForJSONSchema: CreateGenerator = async ({
   globalVariableName,
   schemaFile,
-  envFile,
+  envFiles,
   userEnvironment,
 }) => {
   return <CreateGeneratorReturnType>{
     interpolate: async (input) => {
       const parsedEnv = await parseEnv({
-        envFile,
+        envFiles,
         schemaFile,
         userEnvironment,
       });
@@ -33,7 +33,7 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
     },
     generateJs: async () => {
       const parsedEnv = await parseEnv({
-        envFile,
+        envFiles,
         schemaFile,
         userEnvironment,
       });
@@ -98,11 +98,15 @@ export type ${capitalCaseGlobalVariableName} = DeepReadonly<
 };
 
 type ParseEnv = (_: {
-  envFile: null | string | string[];
+  envFiles: string[];
   schemaFile: string;
   userEnvironment: boolean;
 }) => Promise<Record<string, any>>;
-const parseEnv: ParseEnv = async ({ envFile, schemaFile, userEnvironment }) => {
+const parseEnv: ParseEnv = async ({
+  envFiles,
+  schemaFile,
+  userEnvironment,
+}) => {
   const ajv = new Ajv({
     allErrors: true,
     strict: true,
@@ -118,12 +122,7 @@ const parseEnv: ParseEnv = async ({ envFile, schemaFile, userEnvironment }) => {
   const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
   const env = (() => {
     let env: Record<string, string> = {};
-    const envFilePaths = Array.isArray(envFile)
-      ? envFile
-      : envFile !== null
-        ? [envFile]
-        : [];
-    envFilePaths.forEach((envFile) => {
+    envFiles.forEach((envFile) => {
       let envFileContent = "";
       try {
         envFileContent = readFileSync(envFile, "utf8");

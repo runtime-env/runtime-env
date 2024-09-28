@@ -12,7 +12,7 @@ const act: CreateDeclaration = async ({
   input,
 }) => {
   const generator = await createGeneratorForJSONSchema({
-    envFile: [],
+    envFiles: [],
     schemaFile,
     globalVariableName,
     userEnvironment: true,
