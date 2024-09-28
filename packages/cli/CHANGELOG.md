@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.6.0](https://github.com/runtime-env/runtime-env/compare/cli0.5.3...cli0.6.0) (2024-09-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* `--input-file-path` is renamed to `--input-file`
+* `--output-file-path` is renamed to `--output-file`
+* `--env-schema-file-path` is renamed to `--schema-file`
+
+### Features
+
+* align naming conventions with Node's `--env-file` ([#181](https://github.com/runtime-env/runtime-env/issues/181)) ([dcd1e96](https://github.com/runtime-env/runtime-env/commit/dcd1e96d7b4d58a5983c39fdbb2dc6164eaa2e53))
+* better error message ([#180](https://github.com/runtime-env/runtime-env/issues/180)) ([1738b73](https://github.com/runtime-env/runtime-env/commit/1738b73f8d5fca8b20819f2a360fb9a47ac3a92b))
+* integrate built-in .env file support ([#182](https://github.com/runtime-env/runtime-env/issues/182)) ([3e73f7a](https://github.com/runtime-env/runtime-env/commit/3e73f7a36a88344df4324693dac6c8e6bf048d93)), closes [#176](https://github.com/runtime-env/runtime-env/issues/176)
+
 ## [0.5.3](https://github.com/runtime-env/runtime-env/compare/cli0.5.2...cli0.5.3) (2024-09-14)
 
 
