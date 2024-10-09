@@ -49,10 +49,10 @@ importers:
         version: 0.2.3
       ts-loader:
         specifier: ^9.5.1
-        version: 9.5.1(typescript@5.6.2)(webpack@5.95.0)
+        version: 9.5.1(typescript@5.6.3)(webpack@5.95.0)
       typescript:
         specifier: ^5.3.3
-        version: 5.6.2
+        version: 5.6.3
       webpack:
         specifier: ^5.90.0
         version: 5.95.0(webpack-cli@5.1.4)
@@ -2619,8 +2619,8 @@ packages:
   typedarray@0.0.6:
     resolution: {integrity: sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==}
 
-  typescript@5.6.2:
-    resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
+  typescript@5.6.3:
+    resolution: {integrity: sha512-hjcS1mhfuyi4WW8IWtjP7brDrG2cuDZukyrYrSauoXGNgx0S7zceP07adYkJycEr56BOUTNPzbInooiN3fn1qw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -5760,14 +5760,14 @@ snapshots:
 
   trim-newlines@3.0.1: {}
 
-  ts-loader@9.5.1(typescript@5.6.2)(webpack@5.95.0):
+  ts-loader@9.5.1(typescript@5.6.3)(webpack@5.95.0):
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.17.0
       micromatch: 4.0.7
       semver: 7.6.2
       source-map: 0.7.4
-      typescript: 5.6.2
+      typescript: 5.6.3
       webpack: 5.95.0(webpack-cli@5.1.4)
 
   type-detect@4.0.8: {}
@@ -5782,7 +5782,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typescript@5.6.2: {}
+  typescript@5.6.3: {}
 
   uglify-js@3.18.0:
     optional: true
