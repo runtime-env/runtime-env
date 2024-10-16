@@ -40,7 +40,7 @@
     "commander": "12.1.0",
     "json-schema-to-typescript": "^15.0.0",
     "lodash": "^4.17.21",
-    "picocolors": "1.1.0",
+    "picocolors": "1.1.1",
     "serialize-javascript": "6.0.2"
   }
 }
