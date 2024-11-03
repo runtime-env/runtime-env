@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.0](https://github.com/runtime-env/runtime-env/compare/cli0.6.1...cli0.7.0) (2024-11-03)
+
+
+### Features
+
+* watch mode ([#188](https://github.com/runtime-env/runtime-env/issues/188)) ([5e53061](https://github.com/runtime-env/runtime-env/commit/5e5306105551c9def85228ee0d17d6a8eb442817))
+
+
+### Bug Fixes
+
+* **deps:** update dependency picocolors to v1.1.1 ([#200](https://github.com/runtime-env/runtime-env/issues/200)) ([da90d8e](https://github.com/runtime-env/runtime-env/commit/da90d8ed749fd6d69de9083c9e924080895b1eb4))
+
 ## [0.6.1](https://github.com/runtime-env/runtime-env/compare/cli0.6.0...cli0.6.1) (2024-09-28)
 
 
