@@ -95,7 +95,7 @@ importers:
         version: 4.17.13
       '@types/node':
         specifier: ^22.7.3
-        version: 22.9.2
+        version: 22.9.3
       '@types/serialize-javascript':
         specifier: 5.0.4
         version: 5.0.4
@@ -889,9 +889,6 @@ packages:
 
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
-
-  '@types/node@22.9.2':
-    resolution: {integrity: sha512-wwuxAVEbsRvDD9x7buvAl7DyQ7Oj+va/d/Veug7higYzp9MF0CINbfWTBgDFMpcVwcdUiYuNmX2KfnvY3N70mw==}
 
   '@types/node@22.9.3':
     resolution: {integrity: sha512-F3u1fs/fce3FFk+DAxbxc78DF8x0cY09RRL8GnXLmkJ1jvx3TtPdWoTT5/NiYfI5ASqXBmfqJi9dZ3gxMx4lzw==}
@@ -3797,10 +3794,6 @@ snapshots:
   '@types/lodash@4.17.13': {}
 
   '@types/minimist@1.2.5': {}
-
-  '@types/node@22.9.2':
-    dependencies:
-      undici-types: 6.19.8
 
   '@types/node@22.9.3':
     dependencies:
