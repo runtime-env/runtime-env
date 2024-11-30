@@ -1,5 +1,8 @@
 {
-  "include": ["src"],
+  "extends": "@tsconfig/node-lts/tsconfig.json",
   "exclude": ["**/*.test.ts"],
-  "extends": "../../tsconfig.json"
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "outDir": "dist"
+  }
 }
