@@ -22,7 +22,7 @@ jobs:
         with:
           version: ^9
 
-      - name: Set node version to 20
+      - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -62,7 +62,7 @@ jobs:
         with:
           version: ^9
 
-      - name: Set node version to 20
+      - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -86,12 +86,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install pnpm@7
+      - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: ^9
 
-      - name: Set node version to 20
+      - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -136,7 +136,7 @@ jobs:
         with:
           version: ^9
 
-      - name: Set node version to 20
+      - name: Install node
         uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
