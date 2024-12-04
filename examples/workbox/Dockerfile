@@ -1,4 +1,4 @@
-FROM node:22.11.0 as build
+FROM node:22.12.0 as build
 
 COPY package*.json .
 RUN npm ci
