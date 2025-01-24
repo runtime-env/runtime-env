@@ -80,7 +80,7 @@ importers:
         version: 4.17.14
       '@types/node':
         specifier: ^22.7.3
-        version: 22.10.9
+        version: 22.10.10
       '@types/serialize-javascript':
         specifier: 5.0.4
         version: 5.0.4
@@ -425,9 +425,6 @@ packages:
 
   '@types/node@22.10.10':
     resolution: {integrity: sha512-X47y/mPNzxviAGY5TcYPtYL8JsY3kAq2n8fMmKoRCxq/c4v4pyGNCzM2R6+M5/umG4ZfHuT+sgqDYqWc9rJ6ww==}
-
-  '@types/node@22.10.9':
-    resolution: {integrity: sha512-Ir6hwgsKyNESl/gLOcEz3krR4CBGgliDqBQ2ma4wIhEx0w+xnoeTq3tdrNw15kU3SxogDjOgv9sqdtLW8mIHaw==}
 
   '@types/serialize-javascript@5.0.4':
     resolution: {integrity: sha512-Z2R7UKFuNWCP8eoa2o9e5rkD3hmWxx/1L0CYz0k2BZzGh0PhEVMp9kfGiqEml/0IglwNERXZ2hwNzIrSz/KHTA==}
@@ -2265,10 +2262,6 @@ snapshots:
   '@types/lodash@4.17.14': {}
 
   '@types/node@22.10.10':
-    dependencies:
-      undici-types: 6.20.0
-
-  '@types/node@22.10.9':
     dependencies:
       undici-types: 6.20.0
 
