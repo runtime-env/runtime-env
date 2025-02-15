@@ -3,6 +3,7 @@
   "automerge": true,
   "automergeType": "pr",
   "automergeStrategy": "squash",
-  "ignorePaths": ["packages/examples"],
+  "rangeStrategy": "pin",
+  "ignorePaths": ["**/node_modules/**"],
   "extends": ["config:recommended"]
 }
