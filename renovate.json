@@ -3,6 +3,6 @@
   "automerge": true,
   "automergeType": "pr",
   "automergeStrategy": "squash",
-  "ignorePaths": ["packages/examples"],
+  "rangeStrategy": "pin",
   "extends": ["config:recommended"]
 }
