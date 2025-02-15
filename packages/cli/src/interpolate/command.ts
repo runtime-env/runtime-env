@@ -21,6 +21,7 @@ export default () => {
       "--output-file <outputFile>",
       "specify the output file to be written instead of being piped to stdout",
     )
+    .allowExcessArguments()
     .action(async ({ inputFile, outputFile, envFile }, { args }) => {
       const { globalVariableName, schemaFile, watch } = program.opts();
 
