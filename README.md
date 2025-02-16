@@ -13,35 +13,14 @@
 ## Installation
 
 ```sh
-$ npm i -D @runtime-env/cli
+npm install --save-dev @runtime-env/cli
 ```
 
 ## Get Started
 
-1. Source code
+1. Create a JSON-schema file and define your environment variables:
 
-   `index.html`:
-
-   ```html
-   <!doctype html>
-   <html>
-     <head>
-       <title><%= runtimeEnv.TITLE %></title>
-     </head>
-     <body>
-       <script src="/runtime-env.js"></script>
-       <script src="/index.js"></script>
-     </body>
-   </html>
-   ```
-
-   `index.js`:
-
-   ```js
-   console.log(runtimeEnv.TITLE);
-   ```
-
-   `.runtimeenvschema.json`:
+   `.runtimeenvschema.json`
 
    ```json
    {
@@ -55,114 +34,50 @@ $ npm i -D @runtime-env/cli
    }
    ```
 
-2. Run commands
+2. Using environment variables in your code:
 
-   `user environment`:
+   `index.js`
+
+   ```js
+   document.body.innerHTML = globalThis.runtimeEnv.TITLE;
+   ```
+
+3. Set environment variables in your terminal:
 
    ```sh
-   $ export TITLE="Hello Runtime Env!"
+   export TITLE="Hello Runtime Env"
    ```
 
-   Run `npx -p @runtime-env/cli runtime-env interpolate --input-file index.html --output-file index.html` to interpolate the template in the html file:
+4. Use the `runtime-env` CLI to generate a JavaScript file:
+
+   ```sh
+   npx --package @runtime-env/cli runtime-env gen-js --output-file runtime-env.js
+   ```
+
+5. Import the generated file before importing the entry point:
+
+   `index.html`
 
    ```html
    <!doctype html>
    <html>
-     <head>
-       <title>Hello Runtime Env!</title>
-     </head>
      <body>
-       <script src="/runtime-env.js"></script>
-       <script src="/index.js"></script>
+       <script src="./runtime-env.js"></script>
+       <script src="./index.js"></script>
      </body>
    </html>
    ```
 
-   Run `npx -p @runtime-env/cli runtime-env gen-js --output-file runtime-env.js` to generate a JavaScript file which contains environment variables:
+6. Open `index.html` in your browser, and you will see `Hello Runtime Env` in the console.
 
-   `runtime-env.js`:
+7. Set a new environment variable, regenerate the JavaScript file, and refresh the page:
 
-   ```js
-   globalThis.runtimeEnv = {
-     TITLE: "Hello Runtime Env!",
-   };
+   ```sh
+   export TITLE="Yo Runtime Env"
+   npx --package @runtime-env/cli runtime-env gen-js --output-file runtime-env.js
    ```
 
-   Run `npx -p @runtime-env/cli runtime-env gen-ts --output-file runtime-env.d.ts` to generate a TypeScript file which contains corresponding types of environment variables:
-
-   `runtime-env.d.ts`:
-
-   ```ts
-   // type DeepReadonly<T> = ...
-
-   declare global {
-     var runtimeEnv: RuntimeEnv;
-   }
-
-   export type RuntimeEnv = DeepReadonly<{
-     TITLE: string;
-   }>;
-   ```
-
-3. The final result
-
-   `index.html` (modified):
-
-   ```diff
-   <!doctype html>
-   <html>
-     <head>
-   -   <title><%= runtimeEnv.TITLE %></title>
-   +   <title>Hello Runtime Env!</title>
-     </head>
-     <body>
-       <script src="/runtime-env.js"></script>
-       <script src="/index.js"></script>
-     </body>
-   </html>
-   ```
-
-   `index.js`:
-
-   ```js
-   console.log(runtimeEnv.TITLE);
-   ```
-
-   `runtime-env.js` (generated):
-
-   ```diff
-   + globalThis.runtimeEnv = {
-   +   TITLE: "Hello Runtime Env!",
-   + };
-   ```
-
-   `runtime-env.d.ts` (generated):
-
-   ```diff
-   + // type DeepReadonly<T> = ...
-   +
-   + declare global {
-   +   var runtimeEnv: RuntimeEnv;
-   + }
-   +
-   + export type RuntimeEnv = DeepReadonly<{
-   +   TITLE: string;
-   + }>;
-   ```
-
-   `.runtimeenvschema.json`:
-
-   ```json
-   {
-     "type": "object",
-     "properties": {
-       "TITLE": {
-         "type": "string"
-       }
-     },
-     "required": ["TITLE"]
-   }
-   ```
+8. That's it! You don't need to rebuild your app to update the environment variables anymore.
 
 ## Setup
 
@@ -341,7 +256,14 @@ $ npm i -D @runtime-env/cli
 
 ## Syntax
 
-- For HTML, you can use environment variables by a <a href='https://lodash.com/docs/4.17.15#template' target='_blank'>template</a>:
+- For JavaScript, you can read environment variables through the `globalThis` property:
+
+  ```js
+  // Syntax: <globalVariableName>.<environmentVariableName>
+  initializeApp(runtimeEnv.FIREBASE_CONFIG);
+  ```
+
+- For interpolation, you can use environment variables by a <a href='https://lodash.com/docs/4.17.15#template' target='_blank'>template</a>:
 
   ```html
   <!-- Syntax: <%= <globalVariableName>.<environmentVariableName> %> -->
@@ -349,11 +271,4 @@ $ npm i -D @runtime-env/cli
     async
     src="https://www.googletagmanager.com/gtag/js?id=<%= runtimeEnv.TAG_ID %>"
   ></script>
-  ```
-
-- For JavaScript, you can read environment variables through the `globalThis` property:
-
-  ```js
-  // Syntax: <globalVariableName>.<environmentVariableName>
-  initializeApp(runtimeEnv.FIREBASE_CONFIG);
   ```
