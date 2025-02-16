@@ -2,6 +2,9 @@
 
 > **The twelve-factor app stores config in _environment variables_** (often shortened to env vars or env). Env vars are easy to change between deploys without changing any code. - [The Twelve-Factor App](https://12factor.net/config)
 
+[![CI](https://github.com/runtime-env/runtime-env/actions/workflows/ci.yml/badge.svg)](https://github.com/runtime-env/runtime-env/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@runtime-env/cli?color=blue)](https://www.npmjs.com/package/@runtime-env/cli)
+
 ## Table of Content
 
 - [Installation](#installation)
