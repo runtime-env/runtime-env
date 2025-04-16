@@ -13,7 +13,7 @@ COPY webpack.config.js ./
 RUN npx webpack --mode production
 
 
-FROM nginx:1.27.4
+FROM nginx:1.27.5
 
 COPY --from=build dist ./dist
 COPY --from=build runtime-env patch-runtime-env-revision ./
