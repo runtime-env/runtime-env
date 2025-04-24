@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.2](https://github.com/runtime-env/runtime-env/compare/cli0.7.1...cli0.7.2) (2025-04-24)
+
+
+### Bug Fixes
+
+* **deps:** add webpack-node-externals as a dependency and update webpack config ([#348](https://github.com/runtime-env/runtime-env/issues/348)) ([2586fa3](https://github.com/runtime-env/runtime-env/commit/2586fa3fbb461597af5f8ab7222205fce3a13ba9))
+
 ## [0.7.1](https://github.com/runtime-env/runtime-env/compare/cli0.7.0...cli0.7.1) (2025-02-15)
 
 
