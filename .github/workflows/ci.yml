@@ -107,6 +107,14 @@ jobs:
       - name: Test packages
         run: pnpm run test
 
+      - name: Test packages (e2e)
+        run: |
+          pnpm run pack
+          cd examples/test
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm run test
+
   release:
     if: github.ref_name == 'main'
 
