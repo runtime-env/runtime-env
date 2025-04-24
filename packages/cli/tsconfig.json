@@ -2,6 +2,7 @@
   "extends": "@tsconfig/node-lts/tsconfig.json",
   "exclude": ["**/*.test.ts"],
   "compilerOptions": {
+    "isolatedModules": true,
     "resolveJsonModule": true,
     "outDir": "dist"
   }
