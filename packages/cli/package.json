@@ -33,7 +33,7 @@
   "devDependencies": {
     "@tsconfig/node-lts": "22.0.1",
     "@types/lodash": "4.17.17",
-    "@types/node": "22.15.19",
+    "@types/node": "22.15.21",
     "@types/serialize-javascript": "5.0.4",
     "webpack-node-externals": "3.0.0"
   },
