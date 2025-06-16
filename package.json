@@ -8,7 +8,7 @@
     "lint-fix": "pnpm prettier --write ."
   },
   "devDependencies": {
-    "@types/jest": "29.5.14",
+    "@types/jest": "30.0.0",
     "@types/node": "22.15.29",
     "@types/tmp": "0.2.6",
     "jest": "30.0.0",
