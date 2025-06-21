@@ -73,8 +73,8 @@ importers:
         version: 6.0.2
     devDependencies:
       '@tsconfig/node-lts':
-        specifier: 22.0.1
-        version: 22.0.1
+        specifier: 22.0.2
+        version: 22.0.2
       '@types/lodash':
         specifier: 4.17.18
         version: 4.17.18
@@ -434,8 +434,8 @@ packages:
   '@sinonjs/fake-timers@13.0.5':
     resolution: {integrity: sha512-36/hTbH2uaWuGVERyC6da9YwGWnzUZXuPro/F2LfsdOsLnCojz/iSH8MxUt/FD2S5XBSVPhmArFUXcpCQ2Hkiw==}
 
-  '@tsconfig/node-lts@22.0.1':
-    resolution: {integrity: sha512-BwlbLiYurZKrj+Pa6etSE1jXmr3VEDdgJto1jEYKcpBVwZZSWVkCPyFEFYbHdIOaFMlSTtV206DYPlT109aqug==}
+  '@tsconfig/node-lts@22.0.2':
+    resolution: {integrity: sha512-Kgq5yXTvnUnvlhob0xJpOH4na9PWtuFhHSf94MpDwnENWgiFeJKDNANQV2MT1WpXZYkK2WSWfVYKhVkR7bc8TA==}
 
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
@@ -2420,7 +2420,7 @@ snapshots:
     dependencies:
       '@sinonjs/commons': 3.0.1
 
-  '@tsconfig/node-lts@22.0.1': {}
+  '@tsconfig/node-lts@22.0.2': {}
 
   '@tybys/wasm-util@0.9.0':
     dependencies:
