@@ -32,7 +32,7 @@
   "homepage": "https://github.com/runtime-env/runtime-env#readme",
   "devDependencies": {
     "@tsconfig/node-lts": "22.0.2",
-    "@types/lodash": "4.17.18",
+    "@types/lodash": "4.17.19",
     "@types/node": "22.15.29",
     "@types/serialize-javascript": "5.0.4",
     "webpack-node-externals": "3.0.0"
