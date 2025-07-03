@@ -12,7 +12,7 @@
     "@types/node": "22.15.29",
     "@types/tmp": "0.2.6",
     "jest": "30.0.4",
-    "prettier": "3.5.3",
+    "prettier": "3.6.2",
     "rimraf": "6.0.1",
     "tmp": "0.2.3",
     "ts-jest": "29.4.0",
