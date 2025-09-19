@@ -30,8 +30,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       ts-jest:
-        specifier: 29.4.3
-        version: 29.4.3(@babel/core@7.27.4)(@jest/transform@30.0.5)(@jest/types@30.0.5)(babel-jest@30.0.5(@babel/core@7.27.4))(jest-util@30.0.5)(jest@30.0.5(@types/node@22.15.29))(typescript@5.9.2)
+        specifier: 29.4.4
+        version: 29.4.4(@babel/core@7.27.4)(@jest/transform@30.0.5)(@jest/types@30.0.5)(babel-jest@30.0.5(@babel/core@7.27.4))(jest-util@30.0.5)(jest@30.0.5(@types/node@22.15.29))(typescript@5.9.2)
       ts-loader:
         specifier: 9.5.4
         version: 9.5.4(typescript@5.9.2)(webpack@5.101.3)
@@ -1757,8 +1757,8 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
-  ts-jest@29.4.3:
-    resolution: {integrity: sha512-KTWbK2Wot8VXargsLoxhSoEQ9OyMdzQXQoUDeIulWu2Tf7gghuBHeg+agZqVLdTOHhQHVKAaeuctBDRkhWE7hg==}
+  ts-jest@29.4.4:
+    resolution: {integrity: sha512-ccVcRABct5ZELCT5U0+DZwkXMCcOCLi2doHRrKy1nK/s7J7bch6TzJMsrY09WxgUUIP/ITfmcDS8D2yl63rnXw==}
     engines: {node: ^14.15.0 || ^16.10.0 || ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
@@ -3836,7 +3836,7 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
-  ts-jest@29.4.3(@babel/core@7.27.4)(@jest/transform@30.0.5)(@jest/types@30.0.5)(babel-jest@30.0.5(@babel/core@7.27.4))(jest-util@30.0.5)(jest@30.0.5(@types/node@22.15.29))(typescript@5.9.2):
+  ts-jest@29.4.4(@babel/core@7.27.4)(@jest/transform@30.0.5)(@jest/types@30.0.5)(babel-jest@30.0.5(@babel/core@7.27.4))(jest-util@30.0.5)(jest@30.0.5(@types/node@22.15.29))(typescript@5.9.2):
     dependencies:
       bs-logger: 0.2.6
       fast-json-stable-stringify: 2.1.0
