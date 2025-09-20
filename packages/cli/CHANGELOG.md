@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.4](https://github.com/runtime-env/runtime-env/compare/cli0.7.3...cli0.7.4) (2025-09-19)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v14.0.1 ([#434](https://github.com/runtime-env/runtime-env/issues/434)) ([9ebcfcd](https://github.com/runtime-env/runtime-env/commit/9ebcfcd1b66ba021943fe9976c212287d943ff25))
+
 ## [0.7.3](https://github.com/runtime-env/runtime-env/compare/cli0.7.2...cli0.7.3) (2025-05-19)
 
 
