@@ -6,7 +6,7 @@
     "test": "runtime-env gen-js --env-file .env --output-file jest-setup-file-runtime-env.js && jest"
   },
   "devDependencies": {
-    "@runtime-env/cli": "0.7.3",
+    "@runtime-env/cli": "0.7.4",
     "jest": "30.0.5"
   }
 }
