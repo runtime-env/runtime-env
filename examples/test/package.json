@@ -7,6 +7,6 @@
   },
   "devDependencies": {
     "@runtime-env/cli": "0.7.4",
-    "jest": "30.0.5"
+    "jest": "30.1.3"
   }
 }
