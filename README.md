@@ -117,7 +117,6 @@ npm install --save-dev @runtime-env/cli
    Runtime-env uses <a href='https://ajv.js.org/' target='_blank'>Ajv</a> to parse your JSON-schema.
 
 1. Configure your package.json, Dockerfile, etc. to generate, and interpolate files:
-
    - To generate a JavaScript file which contains the environment variables, you will execute `runtime-env gen-js`:
 
      ```sh
@@ -180,11 +179,9 @@ npm install --save-dev @runtime-env/cli
      ```
 
 1. Further setups:
-
    - You **NEED** to set up your web server to stop runtime-env.js to be cached by browser or CDNs.
 
    - To use runtime-env on systems that don't have Node.js installed, you'll need to pack `runtime-env` CLI into a single runnable file. Here's how you can do it:
-
      - Make a single runnable app using NodeJS's [Single Executable Applications](https://nodejs.org/api/single-executable-applications.html) feature (experimental).
 
      - Pack runtime-env into a runnable file using [pkg](https://github.com/vercel/pkg):
