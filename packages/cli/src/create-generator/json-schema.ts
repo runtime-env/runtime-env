@@ -121,7 +121,7 @@ const parseEnv: ParseEnv = async ({
   }
   const envSchemaFileJSON = JSON.parse(envSchemaFileContent);
   const env = (() => {
-    let env: Record<string, string> = {};
+    let env: Record<string, undefined | string> = {};
     envFiles.forEach((envFile) => {
       if (util.parseEnv === undefined) {
         throwError(
@@ -135,7 +135,7 @@ const parseEnv: ParseEnv = async ({
       }
     });
     if (userEnvironment) {
-      env = { ...env, ...(process.env as Record<string, string>) };
+      env = { ...env, ...process.env };
     }
     return env;
   })();
