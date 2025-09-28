@@ -1,12 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "build": "pnpm --recursive --aggregate-output run build",
-    "pack": "pnpm --recursive --aggregate-output run pack",
-    "test": "pnpm --recursive --aggregate-output --workspace-concurrency=1 run test",
-    "lint": "pnpm prettier --check .",
-    "lint-fix": "pnpm prettier --write ."
+    "build": "npm run build --workspaces --if-present",
+    "pack": "npm run pack --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "format": "npx prettier --write ."
   },
+  "workspaces": [
+    "packages/cli"
+  ],
   "devDependencies": {
     "@types/jest": "30.0.0",
     "@types/node": "22.18.6",

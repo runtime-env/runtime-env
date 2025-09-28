@@ -18,25 +18,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.17.1
-
       - name: Install node
         uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: npm ci
 
       - name: Build packages
-        run: pnpm run build
+        run: npm run build
 
       - name: Pack packages
-        run: pnpm run pack
+        run: npm run pack
 
       - uses: actions/upload-artifact@v4
         with:
@@ -58,22 +52,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.17.1
-
       - name: Install node
         uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: npm ci
 
       - name: Check formatting
-        run: pnpm run lint
+        run: npx prettier --check .
 
   test:
     name: Test
@@ -87,29 +75,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.17.1
-
       - name: Install node
         uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm i --frozen-lockfile
+        run: npm ci
 
       - name: Build packages
-        run: pnpm run build
+        run: npm run build
 
       - name: Test packages
-        run: pnpm run test
+        run: npm run test
 
       - name: Test packages (e2e)
         run: |
-          pnpm run pack
+          npm run pack
           cd examples/test
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
@@ -140,16 +122,10 @@ jobs:
         with:
           name: artifact
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 10.17.1
-
       - name: Install node
         uses: actions/setup-node@v5
         with:
           node-version-file: .nvmrc
-          cache: "pnpm"
 
       - name: Publish
         uses: JS-DevTools/npm-publish@v4.1.1
