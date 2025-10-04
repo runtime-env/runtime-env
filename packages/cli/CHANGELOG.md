@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.5](https://github.com/runtime-env/runtime-env/compare/cli0.7.4...cli0.7.5) (2025-10-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency serialize-javascript to v7 ([#455](https://github.com/runtime-env/runtime-env/issues/455)) ([7cd8e55](https://github.com/runtime-env/runtime-env/commit/7cd8e55ca73482e8c8eb628bbc60c1aa2b00aa74))
+
 ## [0.7.4](https://github.com/runtime-env/runtime-env/compare/cli0.7.3...cli0.7.4) (2025-09-19)
 
 
