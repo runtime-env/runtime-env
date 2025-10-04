@@ -44,6 +44,6 @@
     "commander": "14.0.1",
     "json-schema-to-typescript": "15.0.4",
     "lodash": "4.17.21",
-    "serialize-javascript": "6.0.2"
+    "serialize-javascript": "7.0.0"
   }
 }
