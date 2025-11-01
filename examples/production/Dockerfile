@@ -1,10 +1,16 @@
-FROM node:22.2.0-alpine3.18 as build
+FROM node:22.2.0-alpine3.18 AS build
 
 COPY package*.json .
 RUN npm ci
 COPY public ./public
 COPY src ./src
 COPY webpack.config.js ./
+
+### This section is for testing only, you should install runtime-env from `npm ci`
+COPY runtime-env-cli-test.tgz ./
+RUN npm i ./runtime-env-cli-test.tgz
+###
+
 RUN npx webpack --mode production
 # Create a SEA(Single Executable Application) using Node, see https://nodejs.org/api/single-executable-applications.html for more details
 RUN echo '{ "main": "./node_modules/@runtime-env/cli/bin/runtime-env.js", "output": "sea-prep.blob" }' > sea-config.json
