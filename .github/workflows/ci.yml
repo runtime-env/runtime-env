@@ -86,6 +86,9 @@ jobs:
       - name: Build packages
         run: npm run build
 
+      - name: Build packages
+        run: npm run pack
+
       - name: Test packages
         run: npm run test
 
@@ -96,6 +99,13 @@ jobs:
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm run test
+
+      - name: Test production
+        run: |
+          cp packages/cli/runtime-env-cli-test.tgz examples/production/runtime-env-cli-test.tgz
+          cd examples/production
+          docker build . -t runtime-env-example
+          docker run --publish 3000:80 --env FOO=production runtime-env-example ./runtime-env --help
 
   release:
     if: github.ref_name == 'main'
