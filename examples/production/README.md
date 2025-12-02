@@ -2,5 +2,5 @@
 
 ```sh
 $ docker build . -t runtime-env-example
-$ docker run --publish 3000:80 --env FOO=production runtime-env-example
+$ docker run -it --rm -p 3000:80 -e FOO=production runtime-env-example
 ```

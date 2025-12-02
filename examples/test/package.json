@@ -1,12 +1,12 @@
 {
-  "name": "example",
+  "name": "test",
   "private": true,
   "version": "1.0.0",
   "scripts": {
+    "prepare": "echo FOO=\"test\" > .env",
     "test": "runtime-env gen-js --env-file .env --output-file jest-setup-file-runtime-env.js && jest"
   },
   "devDependencies": {
-    "@runtime-env/cli": "0.7.5",
     "jest": "30.2.0"
   }
 }
