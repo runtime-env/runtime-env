@@ -1,4 +1,4 @@
-FROM node:20.19.6-alpine3.22 AS build
+FROM node:24.11.1-alpine3.22 AS build
 
 COPY package*.json .
 RUN npm ci
