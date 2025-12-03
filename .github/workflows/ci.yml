@@ -86,15 +86,40 @@ jobs:
       - name: Build packages
         run: npm run build
 
+      - name: Build packages
+        run: npm run pack
+
       - name: Test packages
         run: npm run test
 
-      - name: Test packages (e2e)
+      - name: Test examples/development
         run: |
-          npm run pack
+          cd examples/development
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm run test
+
+      - name: Test examples/production
+        run: |
+          cd examples/production
+          npm ci
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
+          docker build . -t runtime-env-example
+          npm run test
+
+      - name: Test examples/test
+        run: |
           cd examples/test
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm run test
+
+      - name: Test examples/workbox
+        run: |
+          cd examples/workbox
+          npm ci
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
+          docker build . -t runtime-env-example
           npm run test
 
   release:
