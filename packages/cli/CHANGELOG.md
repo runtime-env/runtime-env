@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.6](https://github.com/runtime-env/runtime-env/compare/cli0.7.5...cli0.7.6) (2025-12-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chokidar to v5 ([#497](https://github.com/runtime-env/runtime-env/issues/497)) ([e13f415](https://github.com/runtime-env/runtime-env/commit/e13f415766b26891ede1db404c4be474d4ed8f88))
+* **deps:** update dependency commander to v14.0.2 ([#470](https://github.com/runtime-env/runtime-env/issues/470)) ([7188d2d](https://github.com/runtime-env/runtime-env/commit/7188d2d68857b72b31b959e3c72e8aa5a2dce88f))
+* **deps:** update dependency serialize-javascript to v7.0.1 ([#501](https://github.com/runtime-env/runtime-env/issues/501)) ([c902a2e](https://github.com/runtime-env/runtime-env/commit/c902a2ee9cd0b7952e60de46d90d236f05a6ee89))
+* Error [ERR_UNKNOWN_BUILTIN_MODULE]: No such built-in module: serialize-javascript ([#477](https://github.com/runtime-env/runtime-env/issues/477)) ([cef988a](https://github.com/runtime-env/runtime-env/commit/cef988ae155de94b39247f357fe7608397131327))
+
 ## [0.7.5](https://github.com/runtime-env/runtime-env/compare/cli0.7.4...cli0.7.5) (2025-10-04)
 
 
