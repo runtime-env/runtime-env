@@ -41,7 +41,14 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(0);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "123 inline 456
+     ",
+       "",
+     ]
+    `);
   });
 
   test("envFileSchema", () => {
@@ -66,7 +73,14 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(0);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "123 inline 456
+     ",
+       "",
+     ]
+    `);
   });
 
   test("inputFile", () => {
@@ -89,7 +103,15 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(0);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "123 inline 456
+
+     ",
+       "",
+     ]
+    `);
   });
 
   test("inputFile - invalid", () => {
@@ -107,7 +129,15 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(1);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "",
+       "[@runtime-env/cli]
+       input file not found: no such file, open 'invalid'
+     ",
+     ]
+    `);
   });
 
   test("outputFile", () => {
@@ -132,13 +162,19 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(0);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "",
+       "",
+     ]
+    `);
     expect(
       fs.readFileSync(
         path.resolve(tmpdir, "runtime-env-interpolate-output-file.html"),
         "utf8",
       ),
-    ).toMatchSnapshot();
+    ).toMatchInlineSnapshot(`"123 inline 456"`);
   });
 
   test("requiredEnv", () => {
@@ -161,7 +197,14 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(0);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "123 inline 456\\n 123  456
+     ",
+       "",
+     ]
+    `);
   });
 
   test("requiredEnv - invalid", () => {
@@ -184,7 +227,15 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(1);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "",
+       "[@runtime-env/cli]
+       env is invalid: [{"instancePath":"","schemaPath":"#/required","keyword":"required","params":{"missingProperty":"FOO"},"message":"must have required property 'FOO'"}]
+     ",
+     ]
+    `);
   });
 
   test("optionalEnv", () => {
@@ -207,7 +258,14 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(0);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "123 inline 456\\n 123 baz 456
+     ",
+       "",
+     ]
+    `);
   });
 
   test("optionalEnv - invalid", () => {
@@ -230,6 +288,14 @@ describe("integration - interpolate", () => {
       },
     );
     expect(result.status).toBe(1);
-    expect(result.output).toMatchSnapshot();
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "",
+       "[@runtime-env/cli]
+       env is invalid: [{"instancePath":"/BAR","schemaPath":"#/properties/BAR/type","keyword":"type","params":{"type":"object"},"message":"must be object"}]
+     ",
+     ]
+    `);
   });
 });
