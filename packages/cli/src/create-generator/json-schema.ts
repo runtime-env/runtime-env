@@ -7,7 +7,6 @@ import {
   CreateGeneratorReturnType,
 } from "../create-generator";
 import { readFileSync } from "fs";
-import { compile } from "json-schema-to-typescript";
 import { template } from "lodash";
 import throwError from "../throwError";
 
@@ -50,6 +49,7 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
       return content;
     },
     generateTs: async () => {
+      const compile = (await import("json-schema-to-typescript")).compile;
       let envSchemaFileContent = "";
       try {
         envSchemaFileContent = readFileSync(schemaFile, "utf8");
