@@ -41,10 +41,10 @@ describe("integration - gen-ts", () => {
      }
 
      export type Env = DeepReadonly<{
-       FOO: string;
-       BAR?: {
-         BAZ?: string;
-       };
+     FOO: string
+     BAR?: {
+     BAZ?: string
+     }
      }>
 
      ",
@@ -88,10 +88,10 @@ describe("integration - gen-ts", () => {
      }
 
      export type RuntimeEnv = DeepReadonly<{
-       FOO: string;
-       BAR?: {
-         BAZ?: string;
-       };
+     FOO: string
+     BAR?: {
+     BAZ?: string
+     }
      }>
 
      ",
@@ -172,10 +172,10 @@ describe("integration - gen-ts", () => {
      }
 
      export type RuntimeEnv = DeepReadonly<{
-       FOO: string;
-       BAR?: {
-         BAZ?: string;
-       };
+     FOO: string
+     BAR?: {
+     BAZ?: string
+     }
      }>
      "
     `);

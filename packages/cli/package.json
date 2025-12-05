@@ -16,7 +16,7 @@
     "bin"
   ],
   "scripts": {
-    "build": "rimraf bin && esbuild src/index.ts --define:import.meta.url=\\\"file:\\\" --define:process.env.NODE_ENV=\\\"production\\\" --bundle --outfile=bin/runtime-env.js --platform=node --target=node20 --banner:js=\"#!/usr/bin/env node\"",
+    "build": "rimraf bin && esbuild src/index.ts --define:import.meta.url=\\\"file:\\\" --define:process.env.NODE_ENV=\\\"production\\\" --bundle --outfile=bin/runtime-env.js --platform=node --target=node20 --banner:js=\"#!/usr/bin/env node\" --external:prettier --minify",
     "pack": "rm -f *.tgz && npm pack && node ../../scripts/rename-tgz.js",
     "release": "standard-version --skip.tag -t cli --preset=conventionalcommits --releaseCommitMessageFormat 'chore(release): @runtime-env/cli@{{currentTag}}' --path .",
     "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"

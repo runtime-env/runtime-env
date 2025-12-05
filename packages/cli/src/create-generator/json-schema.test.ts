@@ -872,10 +872,10 @@ SECRET='****'
      }
 
      export type RuntimeEnv = DeepReadonly<{
-       FOO: string;
-       BAR?: {
-         BAZ?: string;
-       };
+     FOO: string
+     BAR?: {
+     BAZ?: string
+     }
      }>
      "
     `);
