@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.7.7](https://github.com/runtime-env/runtime-env/compare/cli0.7.6...cli0.7.7) (2025-12-05)
+
+
+### Bug Fixes
+
+* [#347](https://github.com/runtime-env/runtime-env/issues/347) ([5cb671e](https://github.com/runtime-env/runtime-env/commit/5cb671ef791f5ff052c2cf8bc9a792dd957a7df3))
+* minimize ([#515](https://github.com/runtime-env/runtime-env/issues/515)) ([5cb671e](https://github.com/runtime-env/runtime-env/commit/5cb671ef791f5ff052c2cf8bc9a792dd957a7df3))
+
 ## [0.7.6](https://github.com/runtime-env/runtime-env/compare/cli0.7.5...cli0.7.6) (2025-12-03)
 
 
