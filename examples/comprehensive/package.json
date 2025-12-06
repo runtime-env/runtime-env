@@ -1,0 +1,32 @@
+{
+  "name": "comprehensive",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail \"npm:dev:*\"",
+    "dev:runtime-env:gen-ts": "runtime-env --watch gen-ts --output-file src/runtime-env.d.ts",
+    "dev:runtime-env:gen-js": "runtime-env --watch gen-js --env-file .env --output-file public/runtime-env.js",
+    "dev:runtime-env:interpolate": "mkdir -p node_modules/.cache/runtime-env && runtime-env --watch interpolate --env-file .env --input-file index.html --output-file node_modules/.cache/runtime-env/index.html",
+    "dev:vite": "vite",
+    "build": "npm run build:runtime-env && npm run build:vite",
+    "build:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts",
+    "build:vite": "rm -f public/runtime-env.js && tsc && vite build",
+    "preview": "npm run preview:runtime-env:gen-js && npm run preview:runtime-env:interpolate && npm run preview:runtime-env:pwa && npm run preview:vite",
+    "preview:runtime-env:gen-js": "runtime-env gen-js --env-file .env --output-file dist/runtime-env.js",
+    "preview:runtime-env:interpolate": "[ -f dist/index.html.bak ] || cp dist/index.html dist/index.html.bak && cp dist/index.html.bak dist/index.html && runtime-env interpolate --env-file .env --input-file dist/index.html --output-file dist/index.html",
+    "preview:runtime-env:pwa": "[ -f dist/sw.js ] && ([ -f dist/sw.js.bak ] || cp dist/sw.js dist/sw.js.bak) && cp dist/sw.js.bak dist/sw.js && node scripts/patch-runtime-env-revision.cjs dist || true",
+    "preview:vite": "vite preview",
+    "test": "npm run test:runtime-env && npm run test:vitest",
+    "test:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts && runtime-env gen-js --env-file .env --output-file public/runtime-env.js",
+    "test:vitest": "vitest --run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "concurrently": "^9.1.2",
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4",
+    "vite-plugin-pwa": "^1.2.0",
+    "vitest": "^4.0.5"
+  }
+}
