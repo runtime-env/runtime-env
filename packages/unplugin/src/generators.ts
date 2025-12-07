@@ -31,7 +31,7 @@ export function startWatchProcesses(
   // Start gen-ts watch if ts option is provided
   if (options.ts?.outputFile) {
     const args = [
-      "@runtime-env/cli",
+      "runtime-env",
       "--watch",
       "--schema-file",
       schemaFile,
@@ -53,7 +53,7 @@ export function startWatchProcesses(
         : [];
 
     const args = [
-      "@runtime-env/cli",
+      "runtime-env",
       "--watch",
       "--schema-file",
       schemaFile,
@@ -98,7 +98,7 @@ export async function genTypes(
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     const args = [
-      "@runtime-env/cli",
+      "runtime-env",
       "--schema-file",
       schemaFile,
       "gen-ts",
@@ -139,7 +139,7 @@ export async function interpolateHtml(
 
   const args = [
     "npx",
-    "@runtime-env/cli",
+    "runtime-env",
     "--schema-file",
     schemaFile,
     "--global-variable-name",
@@ -196,7 +196,7 @@ export async function loadEnvValues(
 
   const args = [
     "npx",
-    "@runtime-env/cli",
+    "runtime-env",
     "--schema-file",
     schemaFile,
     "--global-variable-name",
