@@ -1,0 +1,75 @@
+{
+  "name": "@runtime-env/unplugin",
+  "version": "0.1.0",
+  "description": "Unplugin for automatic runtime-env integration with Vite, Webpack, Rollup, esbuild, and Rspack",
+  "license": "MIT",
+  "author": "Ernest",
+  "keywords": [
+    "runtime-env",
+    "unplugin",
+    "vite",
+    "webpack",
+    "rspack",
+    "rollup",
+    "esbuild"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vite": {
+      "types": "./dist/vite.d.ts",
+      "import": "./dist/vite.js"
+    },
+    "./webpack": {
+      "types": "./dist/webpack.d.ts",
+      "import": "./dist/webpack.js"
+    },
+    "./rspack": {
+      "types": "./dist/rspack.d.ts",
+      "import": "./dist/rspack.js"
+    },
+    "./rollup": {
+      "types": "./dist/rollup.d.ts",
+      "import": "./dist/rollup.js"
+    },
+    "./esbuild": {
+      "types": "./dist/esbuild.d.ts",
+      "import": "./dist/esbuild.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsup",
+    "pack": "rm -f *.tgz && npm pack && node ../../scripts/rename-tgz.js",
+    "test": "echo 'No tests yet'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/runtime-env/runtime-env.git",
+    "directory": "packages/unplugin"
+  },
+  "bugs": {
+    "url": "https://github.com/runtime-env/runtime-env/issues"
+  },
+  "homepage": "https://github.com/runtime-env/runtime-env#readme",
+  "peerDependencies": {
+    "@runtime-env/cli": ">=0.7.0"
+  },
+  "dependencies": {
+    "unplugin": "^1.15.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "rimraf": "^6.1.2",
+    "tsup": "^8.3.5",
+    "typescript": "~5.9.3"
+  }
+}
