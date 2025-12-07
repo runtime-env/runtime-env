@@ -127,16 +127,19 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
 
             const hooks = HtmlWebpackPlugin.getHooks(compilation);
 
-            if (isDev) {
-              // Dev: inject templateParameters with runtime env values
-              hooks.beforeTemplateExecution.tapAsync(
-                "@runtime-env/unplugin",
-                async (data: any, cb: any) => {
-                  try {
-                    const schemaFile =
-                      options.schemaFile || ".runtimeenvschema.json";
-                    const globalVariableName =
-                      options.globalVariableName || "runtimeEnv";
+            // In both dev and production, we need to inject templateParameters
+            // so that lodash template processing doesn't fail
+            hooks.beforeAssetTagGeneration.tapAsync(
+              "@runtime-env/unplugin",
+              async (data: any, cb: any) => {
+                try {
+                  const schemaFile =
+                    options.schemaFile || ".runtimeenvschema.json";
+                  const globalVariableName =
+                    options.globalVariableName || "runtimeEnv";
+
+                  if (isDev) {
+                    // Dev: inject actual runtime env values
                     const envValues = await loadEnvValues(
                       schemaFile,
                       globalVariableName,
@@ -146,15 +149,30 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
                       ...data.plugin.options.templateParameters,
                       [globalVariableName]: envValues,
                     };
-                    cb(null, data);
-                  } catch (error) {
-                    cb(error);
+                  } else {
+                    // Production: inject Proxy that returns escaped template strings
+                    // This allows the template to process without errors
+                    // but outputs <%= syntax %> that will be evaluated at runtime
+                    const escapeProxy = new Proxy(
+                      {},
+                      {
+                        get(_, prop) {
+                          // Return a string that, when processed by lodash, will output <%= runtimeEnv.PROP %>
+                          return `<%= ${globalVariableName}.${String(prop)} %>`;
+                        },
+                      },
+                    );
+                    data.plugin.options.templateParameters = {
+                      ...data.plugin.options.templateParameters,
+                      [globalVariableName]: escapeProxy,
+                    };
                   }
-                },
-              );
-            }
-            // Production: HTML passes through unchanged (no hook needed)
-            // Template syntax <%= runtimeEnv.FOO %> is preserved for server-side processing
+                  cb(null, data);
+                } catch (error) {
+                  cb(error);
+                }
+              },
+            );
           },
         );
       }
@@ -188,16 +206,19 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
 
             const hooks = HtmlRspackPlugin.getHooks(compilation);
 
-            if (isDev) {
-              // Dev: inject templateParameters with runtime env values
-              hooks.beforeTemplateExecution.tapAsync(
-                "@runtime-env/unplugin",
-                async (data: any, cb: any) => {
-                  try {
-                    const schemaFile =
-                      options.schemaFile || ".runtimeenvschema.json";
-                    const globalVariableName =
-                      options.globalVariableName || "runtimeEnv";
+            // In both dev and production, we need to inject templateParameters
+            // so that lodash template processing doesn't fail
+            hooks.beforeAssetTagGeneration.tapAsync(
+              "@runtime-env/unplugin",
+              async (data: any, cb: any) => {
+                try {
+                  const schemaFile =
+                    options.schemaFile || ".runtimeenvschema.json";
+                  const globalVariableName =
+                    options.globalVariableName || "runtimeEnv";
+
+                  if (isDev) {
+                    // Dev: inject actual runtime env values
                     const envValues = await loadEnvValues(
                       schemaFile,
                       globalVariableName,
@@ -207,15 +228,30 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
                       ...data.plugin.options.templateParameters,
                       [globalVariableName]: envValues,
                     };
-                    cb(null, data);
-                  } catch (error) {
-                    cb(error);
+                  } else {
+                    // Production: inject Proxy that returns escaped template strings
+                    // This allows the template to process without errors
+                    // but outputs <%= syntax %> that will be evaluated at runtime
+                    const escapeProxy = new Proxy(
+                      {},
+                      {
+                        get(_, prop) {
+                          // Return a string that, when processed by lodash, will output <%= runtimeEnv.PROP %>
+                          return `<%= ${globalVariableName}.${String(prop)} %>`;
+                        },
+                      },
+                    );
+                    data.plugin.options.templateParameters = {
+                      ...data.plugin.options.templateParameters,
+                      [globalVariableName]: escapeProxy,
+                    };
                   }
-                },
-              );
-            }
-            // Production: HTML passes through unchanged (no hook needed)
-            // Template syntax <%= runtimeEnv.FOO %> is preserved for server-side processing
+                  cb(null, data);
+                } catch (error) {
+                  cb(error);
+                }
+              },
+            );
           },
         );
       }

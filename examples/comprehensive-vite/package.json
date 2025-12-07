@@ -4,14 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail \"npm:dev:*\"",
-    "dev:runtime-env:gen-ts": "runtime-env --watch gen-ts --output-file src/runtime-env.d.ts",
-    "dev:runtime-env:gen-js": "runtime-env --watch gen-js --env-file .env --output-file public/runtime-env.js",
-    "dev:runtime-env:interpolate": "mkdir -p node_modules/.cache/runtime-env && runtime-env --watch interpolate --env-file .env --input-file index.html --output-file node_modules/.cache/runtime-env/index.html",
-    "dev:vite": "vite",
-    "build": "npm run build:runtime-env && npm run build:vite",
-    "build:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts",
-    "build:vite": "rm -f public/runtime-env.js && tsc && vite build",
+    "dev": "vite",
+    "build": "tsc && vite build",
     "preview": "npm run preview:runtime-env:gen-js && npm run preview:runtime-env:interpolate && npm run preview:runtime-env:pwa && npm run preview:vite",
     "preview:runtime-env:gen-js": "runtime-env gen-js --env-file .env --output-file dist/runtime-env.js",
     "preview:runtime-env:interpolate": "[ -f dist/index.html.bak ] || cp dist/index.html dist/index.html.bak && cp dist/index.html.bak dist/index.html && runtime-env interpolate --env-file .env --input-file dist/index.html --output-file dist/index.html",
@@ -22,8 +16,9 @@
     "test:vitest": "vitest --run"
   },
   "devDependencies": {
+    "@runtime-env/cli": "file:../../packages/cli",
+    "@runtime-env/unplugin": "file:../../packages/unplugin",
     "@types/node": "22.19.1",
-    "concurrently": "9.2.1",
     "typescript": "5.9.3",
     "vite": "7.2.6",
     "vite-plugin-pwa": "1.2.0",

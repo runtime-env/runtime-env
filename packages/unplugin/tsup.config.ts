@@ -9,7 +9,7 @@ export default defineConfig({
     rollup: "src/rollup.ts",
     esbuild: "src/esbuild.ts",
   },
-  format: ["esm"],
+  format: ["esm", "cjs"],
   dts: true,
   clean: true,
   sourcemap: true,

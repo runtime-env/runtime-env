@@ -1,7 +1,8 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { GenerateSW } = require("workbox-webpack-plugin");
+const runtimeEnvPlugin = require("@runtime-env/unplugin/webpack");
+const runtimeEnv = runtimeEnvPlugin.default || runtimeEnvPlugin;
 const path = require("path");
-const fs = require("fs");
 
 module.exports = (env, argv) => {
   const isProduction = argv.mode === "production";
@@ -28,17 +29,15 @@ module.exports = (env, argv) => {
       clean: true,
     },
     plugins: [
-      new HtmlWebpackPlugin(
-        isProduction
-          ? {
-              templateContent: fs.readFileSync("index.html", "utf8"),
-              inject: "body",
-            }
-          : {
-              template: "node_modules/.cache/runtime-env/index.html",
-              inject: "body",
-            },
-      ),
+      runtimeEnv({
+        ts: { outputFile: "src/runtime-env.d.ts" },
+        js: { envFile: [".env"] },
+        interpolate: { envFile: [".env"] },
+      }),
+      new HtmlWebpackPlugin({
+        template: "index.html",
+        inject: "body",
+      }),
       isProduction &&
         new GenerateSW({
           additionalManifestEntries: [
@@ -59,7 +58,6 @@ module.exports = (env, argv) => {
       ],
       hot: true,
       port: 5173,
-      watchFiles: ["node_modules/.cache/runtime-env/index.html", "index.html"],
     },
   };
 };
