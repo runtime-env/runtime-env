@@ -1,5 +1,5 @@
-import { spawn, type ChildProcess } from "child_process";
-import { execSync } from "child_process";
+import { spawn, spawnSync, type ChildProcess } from "child_process";
+import * as crypto from "crypto";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
@@ -131,12 +131,10 @@ export async function interpolateHtml(
 ): Promise<string> {
   const envFiles = Array.isArray(envFile) ? envFile : envFile ? [envFile] : [];
 
-  // Write HTML to temp file
-  const tempInput = path.join(os.tmpdir(), `runtime-env-${Date.now()}.html`);
-  const tempOutput = path.join(
-    os.tmpdir(),
-    `runtime-env-${Date.now()}-out.html`,
-  );
+  // Write HTML to temp file with unique names to avoid race conditions
+  const uniqueId = crypto.randomBytes(8).toString("hex");
+  const tempInput = path.join(os.tmpdir(), `runtime-env-${uniqueId}-in.html`);
+  const tempOutput = path.join(os.tmpdir(), `runtime-env-${uniqueId}-out.html`);
   fs.writeFileSync(tempInput, html);
 
   const args = [
@@ -155,14 +153,19 @@ export async function interpolateHtml(
   envFiles.forEach((f) => args.push("--env-file", f));
 
   try {
-    execSync(args.join(" "), { stdio: "pipe" });
-    const result = fs.readFileSync(tempOutput, "utf-8");
+    const result = spawnSync("npx", args.slice(1), { stdio: "pipe" });
+    if (result.status !== 0) {
+      throw new Error(
+        `CLI interpolate failed: ${result.stderr?.toString() || "Unknown error"}`,
+      );
+    }
+    const interpolated = fs.readFileSync(tempOutput, "utf-8");
 
     // Cleanup
     fs.unlinkSync(tempInput);
     fs.unlinkSync(tempOutput);
 
-    return result;
+    return interpolated;
   } catch (error) {
     // Cleanup on error
     if (fs.existsSync(tempInput)) fs.unlinkSync(tempInput);
@@ -188,7 +191,8 @@ export async function loadEnvValues(
   const envFiles = Array.isArray(envFile) ? envFile : envFile ? [envFile] : [];
 
   // Use CLI to generate JS temporarily and parse it to extract values
-  const tempOutput = path.join(os.tmpdir(), `runtime-env-${Date.now()}.js`);
+  const uniqueId = crypto.randomBytes(8).toString("hex");
+  const tempOutput = path.join(os.tmpdir(), `runtime-env-${uniqueId}.js`);
 
   const args = [
     "npx",
@@ -204,7 +208,12 @@ export async function loadEnvValues(
   envFiles.forEach((f) => args.push("--env-file", f));
 
   try {
-    execSync(args.join(" "), { stdio: "pipe" });
+    const result = spawnSync("npx", args.slice(1), { stdio: "pipe" });
+    if (result.status !== 0) {
+      throw new Error(
+        `CLI gen-js failed: ${result.stderr?.toString() || "Unknown error"}`,
+      );
+    }
     const jsContent = fs.readFileSync(tempOutput, "utf-8");
 
     // Parse the generated JS to extract values
@@ -213,16 +222,23 @@ export async function loadEnvValues(
       /[.*+?^${}()|[\]\\]/g,
       "\\$&",
     );
+    // More robust regex that handles multiline JSON with proper bracket matching
     const matches = jsContent.match(
       new RegExp(
-        `(?:window|globalThis)\\[['"]${globalVarPattern}['"]\\]\\s*=\\s*({[^;]+});`,
+        `(?:window|globalThis)\\[['"]${globalVarPattern}['"]\\]\\s*=\\s*({[\\s\\S]+?});`,
       ),
     );
 
     if (matches && matches[1]) {
-      const envValues = JSON.parse(matches[1]);
-      fs.unlinkSync(tempOutput);
-      return envValues;
+      try {
+        const envValues = JSON.parse(matches[1]);
+        fs.unlinkSync(tempOutput);
+        return envValues;
+      } catch (parseError) {
+        console.error("Failed to parse environment values:", parseError);
+        fs.unlinkSync(tempOutput);
+        return {};
+      }
     }
 
     fs.unlinkSync(tempOutput);

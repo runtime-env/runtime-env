@@ -113,10 +113,18 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
         compiler.hooks.compilation.tap(
           "@runtime-env/unplugin",
           (compilation: any) => {
-            // Find HtmlWebpackPlugin
-            const HtmlWebpackPlugin = compiler.options.plugins?.find(
-              (p: any) => p.constructor.name === "HtmlWebpackPlugin",
-            )?.constructor as any;
+            // Find HtmlWebpackPlugin - look for plugin with getHooks static method
+            let HtmlWebpackPlugin: any = null;
+            for (const plugin of compiler.options.plugins || []) {
+              if (
+                plugin &&
+                plugin.constructor &&
+                typeof (plugin.constructor as any).getHooks === "function"
+              ) {
+                HtmlWebpackPlugin = plugin.constructor;
+                break;
+              }
+            }
 
             if (!HtmlWebpackPlugin) {
               throw new Error(
@@ -192,10 +200,18 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
         compiler.hooks.compilation.tap(
           "@runtime-env/unplugin",
           (compilation: any) => {
-            // Find html-rspack-plugin
-            const HtmlRspackPlugin = compiler.options.plugins?.find(
-              (p: any) => p.constructor.name === "HtmlRspackPlugin",
-            )?.constructor as any;
+            // Find html-rspack-plugin - look for plugin with getHooks static method
+            let HtmlRspackPlugin: any = null;
+            for (const plugin of compiler.options.plugins || []) {
+              if (
+                plugin &&
+                plugin.constructor &&
+                typeof (plugin.constructor as any).getHooks === "function"
+              ) {
+                HtmlRspackPlugin = plugin.constructor;
+                break;
+              }
+            }
 
             if (!HtmlRspackPlugin) {
               throw new Error(

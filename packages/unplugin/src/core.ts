@@ -33,20 +33,4 @@ export function validateInterpolateSupport(
   }
 }
 
-/**
- * Parses runtime-env options and applies defaults where needed.
- *
- * @param options - User-provided options
- * @returns Normalized options
- */
-export function normalizeOptions(
-  options: RuntimeEnvOptions,
-): Required<RuntimeEnvOptions> {
-  return {
-    schemaFile: options.schemaFile || ".runtimeenvschema.json",
-    globalVariableName: options.globalVariableName || "runtimeEnv",
-    ts: options.ts || { outputFile: "" },
-    js: options.js || { outputFile: "", envFile: [] },
-    interpolate: options.interpolate || { envFile: [] },
-  };
-}
+
