@@ -1,5 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
+import type { Compiler as WebpackCompiler, Compilation } from "webpack";
+import type { Compiler as RspackCompiler } from "@rspack/core";
+import type { ResolvedConfig } from "vite";
+import type { OutputOptions, InputOptions } from "rollup";
+import type { PluginBuild, BuildOptions } from "esbuild";
 import { createUnplugin } from "unplugin";
 import { validateInterpolateSupport } from "./core";
 import {
@@ -12,10 +17,35 @@ import {
 } from "./generators";
 import type { Bundler, RuntimeEnvOptions } from "./types";
 
+// Types for html-webpack-plugin and html-rspack-plugin hooks
+interface HtmlPluginData {
+  plugin: {
+    options: {
+      templateParameters?: Record<string, unknown>;
+    };
+  };
+}
+
+interface HtmlPluginHooks {
+  beforeAssetTagGeneration: {
+    tapAsync: (
+      name: string,
+      callback: (
+        data: HtmlPluginData,
+        cb: (error: Error | null, data?: HtmlPluginData) => void,
+      ) => void,
+    ) => void;
+  };
+}
+
+interface HtmlPluginConstructor {
+  getHooks: (compilation: Compilation) => HtmlPluginHooks;
+}
+
 /**
  * Creates the runtime-env unplugin for all supported bundlers.
  */
-export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
+const unplugin = createUnplugin<RuntimeEnvOptions>((options, meta) => {
   let watchProcesses: WatchProcesses | null = null;
   let isDev = false;
   const bundler = meta.framework as Bundler;
@@ -63,7 +93,7 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
 
     // Vite-specific hooks
     vite: {
-      configResolved(config: any) {
+      configResolved(config: ResolvedConfig) {
         isDev = config.command === "serve";
 
         // Set default js outputFile based on Vite's publicDir
@@ -100,7 +130,7 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
     },
 
     // Webpack-specific hooks
-    webpack(compiler) {
+    webpack(compiler: WebpackCompiler) {
       isDev = compiler.options.mode !== "production";
 
       // Set default js outputFile for Webpack
@@ -112,16 +142,18 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
         // Hook into HtmlWebpackPlugin to handle HTML template
         compiler.hooks.compilation.tap(
           "@runtime-env/unplugin",
-          (compilation: any) => {
+          (compilation: Compilation) => {
             // Find HtmlWebpackPlugin - look for plugin with getHooks static method
-            let HtmlWebpackPlugin: any = null;
+            let HtmlWebpackPlugin: HtmlPluginConstructor | null = null;
             for (const plugin of compiler.options.plugins || []) {
               if (
                 plugin &&
                 plugin.constructor &&
-                typeof (plugin.constructor as any).getHooks === "function"
+                typeof (plugin.constructor as unknown as HtmlPluginConstructor)
+                  .getHooks === "function"
               ) {
-                HtmlWebpackPlugin = plugin.constructor;
+                HtmlWebpackPlugin =
+                  plugin.constructor as unknown as HtmlPluginConstructor;
                 break;
               }
             }
@@ -139,7 +171,10 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
             // so that lodash template processing doesn't fail
             hooks.beforeAssetTagGeneration.tapAsync(
               "@runtime-env/unplugin",
-              async (data: any, cb: any) => {
+              async (
+                data: HtmlPluginData,
+                cb: (error: Error | null, data?: HtmlPluginData) => void,
+              ) => {
                 try {
                   const schemaFile =
                     options.schemaFile || ".runtimeenvschema.json";
@@ -177,7 +212,7 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
                   }
                   cb(null, data);
                 } catch (error) {
-                  cb(error);
+                  cb(error as Error);
                 }
               },
             );
@@ -187,7 +222,7 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
     },
 
     // Rspack-specific hooks
-    rspack(compiler) {
+    rspack(compiler: RspackCompiler) {
       isDev = compiler.options.mode !== "production";
 
       // Set default js outputFile for Rspack
@@ -197,18 +232,21 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
 
       if (options.interpolate) {
         // Hook into html-rspack-plugin to handle HTML template
+        // Using unknown type for compilation since Rspack's Compilation type differs from Webpack's
         compiler.hooks.compilation.tap(
           "@runtime-env/unplugin",
-          (compilation: any) => {
+          (compilation: unknown) => {
             // Find html-rspack-plugin - look for plugin with getHooks static method
-            let HtmlRspackPlugin: any = null;
+            let HtmlRspackPlugin: HtmlPluginConstructor | null = null;
             for (const plugin of compiler.options.plugins || []) {
               if (
                 plugin &&
                 plugin.constructor &&
-                typeof (plugin.constructor as any).getHooks === "function"
+                typeof (plugin.constructor as unknown as HtmlPluginConstructor)
+                  .getHooks === "function"
               ) {
-                HtmlRspackPlugin = plugin.constructor;
+                HtmlRspackPlugin =
+                  plugin.constructor as unknown as HtmlPluginConstructor;
                 break;
               }
             }
@@ -220,13 +258,18 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
               );
             }
 
-            const hooks = HtmlRspackPlugin.getHooks(compilation);
+            const hooks = HtmlRspackPlugin.getHooks(
+              compilation as unknown as Compilation,
+            );
 
             // In both dev and production, we need to inject templateParameters
             // so that lodash template processing doesn't fail
             hooks.beforeAssetTagGeneration.tapAsync(
               "@runtime-env/unplugin",
-              async (data: any, cb: any) => {
+              async (
+                data: HtmlPluginData,
+                cb: (error: Error | null, data?: HtmlPluginData) => void,
+              ) => {
                 try {
                   const schemaFile =
                     options.schemaFile || ".runtimeenvschema.json";
@@ -264,7 +307,7 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
                   }
                   cb(null, data);
                 } catch (error) {
-                  cb(error);
+                  cb(error as Error);
                 }
               },
             );
@@ -275,29 +318,35 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
 
     // Rollup-specific hooks
     rollup: {
-      options(rollupOptions: any) {
+      options(rollupOptions: InputOptions) {
         // Detect build mode (assume build unless watch mode)
-        isDev = !!rollupOptions.watch;
+        isDev = !!(rollupOptions as InputOptions & { watch?: boolean }).watch;
 
         // Set default js outputFile based on Rollup's output.dir
+        // Note: InputOptions.output is not directly available, we handle it in outputOptions hook instead
         if (options.js && !options.js.outputFile) {
-          const outputs = Array.isArray(rollupOptions.output)
-            ? rollupOptions.output
-            : [rollupOptions.output];
-          const output = outputs[0];
-          if (output?.dir) {
-            options.js.outputFile = path.join(output.dir, "runtime-env.js");
-          } else {
-            options.js.outputFile = "runtime-env.js";
-          }
+          // Default fallback for Rollup
+          options.js.outputFile = "runtime-env.js";
         }
         return rollupOptions;
+      },
+      outputOptions(outputOptions: OutputOptions) {
+        // Set default based on output.dir if available
+        if (options.js && options.js.outputFile === "runtime-env.js") {
+          if (outputOptions.dir) {
+            options.js.outputFile = path.join(
+              outputOptions.dir,
+              "runtime-env.js",
+            );
+          }
+        }
+        return outputOptions;
       },
     },
 
     // esbuild-specific hooks
     esbuild: {
-      setup(build) {
+      setup(build: PluginBuild) {
         // esbuild doesn't have a clear dev/build distinction, assume build mode
         isDev = false;
 
@@ -323,4 +372,15 @@ export default createUnplugin<RuntimeEnvOptions>((options, meta) => {
   };
 });
 
+// Export the unplugin instance as default
+export default unplugin;
+
+// Export bundler-specific plugins for convenience
+export const vite = unplugin.vite;
+export const webpack = unplugin.webpack;
+export const rspack = unplugin.rspack;
+export const rollup = unplugin.rollup;
+export const esbuild = unplugin.esbuild;
+
+// Export types
 export type { RuntimeEnvOptions, Bundler } from "./types";

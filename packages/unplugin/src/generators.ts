@@ -187,7 +187,7 @@ export async function loadEnvValues(
   schemaFile: string,
   globalVariableName: string,
   envFile?: string | string[],
-): Promise<Record<string, any>> {
+): Promise<Record<string, unknown>> {
   const envFiles = Array.isArray(envFile) ? envFile : envFile ? [envFile] : [];
 
   // Use CLI to generate JS temporarily and parse it to extract values

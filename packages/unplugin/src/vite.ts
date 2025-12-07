@@ -1,5 +1,3 @@
-import unplugin from "./index";
-
 /**
  * Vite plugin for runtime-env integration.
  * @example
@@ -18,4 +16,4 @@ import unplugin from "./index";
  * });
  * ```
  */
-export default unplugin.vite;
+export { vite as default } from "./index";

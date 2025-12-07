@@ -1,5 +1,3 @@
-import unplugin from "./index";
-
 /**
  * Rspack plugin for runtime-env integration.
  * @example
@@ -17,4 +15,4 @@ import unplugin from "./index";
  * };
  * ```
  */
-export default unplugin.rspack;
+export { rspack as default } from "./index";

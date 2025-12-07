@@ -1,5 +1,3 @@
-import unplugin from "./index";
-
 /**
  * esbuild plugin for runtime-env integration.
  * Note: HTML interpolation is not supported in esbuild.
@@ -18,4 +16,4 @@ import unplugin from "./index";
  * });
  * ```
  */
-export default unplugin.esbuild;
+export { esbuild as default } from "./index";

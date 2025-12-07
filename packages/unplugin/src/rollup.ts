@@ -1,5 +1,3 @@
-import unplugin from "./index";
-
 /**
  * Rollup plugin for runtime-env integration.
  * Note: HTML interpolation is not supported in Rollup.
@@ -17,4 +15,4 @@ import unplugin from "./index";
  * };
  * ```
  */
-export default unplugin.rollup;
+export { rollup as default } from "./index";

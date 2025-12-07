@@ -73,9 +73,15 @@
     "unplugin": "^1.15.0"
   },
   "devDependencies": {
+    "@rspack/core": "^1.6.6",
     "@types/node": "^22.10.2",
+    "@types/webpack": "^5.28.5",
+    "esbuild": "^0.27.1",
     "rimraf": "^6.1.2",
+    "rollup": "^4.53.3",
     "tsup": "^8.3.5",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "vite": "^7.2.6",
+    "webpack": "^5.103.0"
   }
 }
