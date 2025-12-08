@@ -25,7 +25,7 @@
     "@types/node": "22.19.1",
     "concurrently": "9.2.1",
     "typescript": "5.9.3",
-    "vite": "7.2.6",
+    "vite": "7.2.7",
     "vite-plugin-pwa": "1.2.0",
     "vitest": "4.0.15"
   }
