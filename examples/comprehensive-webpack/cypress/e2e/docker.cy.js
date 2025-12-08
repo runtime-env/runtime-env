@@ -4,13 +4,10 @@ describe("Docker Deployment E2E - Initial Load", () => {
     cy.visit("http://localhost:3000");
 
     // Verify page displays docker environment value
-    cy.get("#app").should("not.contain", "<%=");
-    cy.get("#app").should("not.contain", "undefined");
-    cy.get("#app").invoke("text").should("match", /\w+/);
+    cy.get("#app").should("contain", "docker-initial");
 
     // Verify page title contains docker value
-    cy.title().should("not.include", "<%=");
-    cy.title().should("not.include", "undefined");
+    cy.title().should("include", "docker-initial");
 
     // Verify service worker loads and was patched correctly
     cy.window().then((win) => {

@@ -163,7 +163,7 @@ jobs:
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           docker build -t comprehensive-vite .
-          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
 
       - name: Test examples/comprehensive-webpack (dev)
@@ -194,7 +194,7 @@ jobs:
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           docker build -t comprehensive-webpack .
-          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
 
   release:
