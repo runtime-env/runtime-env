@@ -19,6 +19,10 @@ dist-ssr
 *.bak
 .env
 
+# Cypress
+cypress/screenshots/
+cypress/videos/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
