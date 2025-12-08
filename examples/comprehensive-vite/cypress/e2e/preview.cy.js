@@ -62,15 +62,18 @@ describe("comprehensive-vite preview mode", () => {
     // Wait for server to be ready
     cy.waitForServer("http://localhost:4173");
 
-    // Visit page
+    // Visit page and wait for service worker to be ready
     cy.visit("http://localhost:4173");
     
-    // Wait for service worker to update and reload twice to ensure activation
-    cy.wait(2000);
-    cy.reload();
+    // Reload to allow service worker to install new version
     cy.wait(2000);
     cy.reload();
     
+    // Second reload to activate the new service worker
+    cy.wait(2000);
+    cy.reload();
+    
+    // Verify new value is displayed
     cy.get("#app").should("contain", "preview-updated");
     cy.title().should("include", "preview-updated");
   });
