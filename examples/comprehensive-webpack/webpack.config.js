@@ -58,7 +58,7 @@ module.exports = (env, argv) => {
         },
       ],
       hot: true,
-      port: 5173,
+      port: 8080,
       watchFiles: ["node_modules/.cache/runtime-env/index.html", "index.html"],
     },
   };

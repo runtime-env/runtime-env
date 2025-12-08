@@ -40,7 +40,7 @@ npm install
 
 ### Development
 
-Start development server with hot reloading on `http://localhost:5173`:
+Start development server with hot reloading on `http://localhost:8080`:
 
 ```bash
 npm run dev
