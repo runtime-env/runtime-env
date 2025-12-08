@@ -20,9 +20,10 @@ export function createWebpackAdapter(
   context: WebpackAdapterContext,
 ): (compiler: WebpackCompiler) => void {
   return (compiler: WebpackCompiler) => {
-    context.setIsDev(compiler.options.mode !== "production");
+    const isDev = compiler.options.mode !== "production";
+    context.setIsDev(isDev);
 
-    setDefaultOutputFile(context.options);
+    ensureDefaultOutputFile(context.options);
 
     if (context.options.interpolate) {
       setupHtmlInterpolation(compiler, context);
@@ -31,11 +32,24 @@ export function createWebpackAdapter(
 }
 
 /**
- * Sets default output file for Webpack if not provided.
+ * Gets the output file path, using default if not provided.
+ * Pure function that doesn't mutate the input.
  */
-function setDefaultOutputFile(options: RuntimeEnvOptions): void {
-  if (options.js && !options.js.outputFile) {
-    options.js.outputFile = `${DEFAULT_PUBLIC_DIR}/${DEFAULT_JS_OUTPUT_FILE}`;
+function getOutputFile(options: RuntimeEnvOptions): string | undefined {
+  if (options.js) {
+    return options.js.outputFile || `${DEFAULT_PUBLIC_DIR}/${DEFAULT_JS_OUTPUT_FILE}`;
+  }
+  return undefined;
+}
+
+/**
+ * Ensures options have the default output file set.
+ * This mutation is necessary as the options object is shared across the plugin lifecycle.
+ */
+function ensureDefaultOutputFile(options: RuntimeEnvOptions): void {
+  const outputFile = getOutputFile(options);
+  if (options.js && outputFile) {
+    options.js.outputFile = outputFile;
   }
 }
 
@@ -70,13 +84,25 @@ function setupHtmlInterpolation(
               )
             : null;
 
-          data.plugin.options.templateParameters = createTemplateParameters(
+          const updatedTemplateParameters = createTemplateParameters(
             globalVariableName,
             envValues,
             data.plugin.options.templateParameters,
           );
 
-          cb(null, data);
+          // Create a new data object with updated template parameters
+          const updatedData: HtmlPluginData = {
+            ...data,
+            plugin: {
+              ...data.plugin,
+              options: {
+                ...data.plugin.options,
+                templateParameters: updatedTemplateParameters,
+              },
+            },
+          };
+
+          cb(null, updatedData);
         } catch (error) {
           cb(error as Error);
         }

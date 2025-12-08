@@ -13,8 +13,9 @@ export function createRollupAdapter(
 ): Partial<Plugin> {
   return {
     options(rollupOptions: InputOptions) {
-      detectDevMode(rollupOptions, context);
-      setDefaultOutputFile(context.options);
+      const isDev = isDevMode(rollupOptions);
+      context.setIsDev(isDev);
+      ensureDefaultOutputFile(context.options);
       return rollupOptions;
     },
     outputOptions(outputOptions: OutputOptions) {
@@ -25,37 +26,63 @@ export function createRollupAdapter(
 }
 
 /**
- * Detects development mode from rollup options.
+ * Detects if development mode is enabled from rollup options.
+ * Pure function that doesn't mutate the input.
  */
-function detectDevMode(
-  rollupOptions: InputOptions,
-  context: RollupAdapterContext,
-): void {
-  const hasWatch = !!(rollupOptions as InputOptions & { watch?: boolean }).watch;
-  context.setIsDev(hasWatch);
+function isDevMode(rollupOptions: InputOptions): boolean {
+  return !!(rollupOptions as InputOptions & { watch?: boolean }).watch;
 }
 
 /**
- * Sets default output file for Rollup if not provided.
+ * Gets the output file path, using default if not provided.
+ * Pure function that doesn't mutate the input.
  */
-function setDefaultOutputFile(options: RuntimeEnvOptions): void {
-  if (options.js && !options.js.outputFile) {
-    options.js.outputFile = DEFAULT_JS_OUTPUT_FILE;
+function getOutputFile(options: RuntimeEnvOptions): string | undefined {
+  if (options.js) {
+    return options.js.outputFile || DEFAULT_JS_OUTPUT_FILE;
+  }
+  return undefined;
+}
+
+/**
+ * Ensures options have the default output file set.
+ * This mutation is necessary as the options object is shared across the plugin lifecycle.
+ */
+function ensureDefaultOutputFile(options: RuntimeEnvOptions): void {
+  const outputFile = getOutputFile(options);
+  if (options.js && outputFile) {
+    options.js.outputFile = outputFile;
   }
 }
 
 /**
+ * Gets the output file path with directory from output options if available.
+ * Pure function that doesn't mutate the input.
+ */
+function getOutputFileWithDir(
+  options: RuntimeEnvOptions,
+  outputOptions: OutputOptions,
+): string | undefined {
+  if (options.js) {
+    const currentFile = options.js.outputFile;
+    if (currentFile === DEFAULT_JS_OUTPUT_FILE && outputOptions.dir) {
+      return path.join(outputOptions.dir, DEFAULT_JS_OUTPUT_FILE);
+    }
+    return currentFile;
+  }
+  return undefined;
+}
+
+/**
  * Updates output file with directory from output options if available.
+ * This mutation is necessary as the options object is shared across the plugin lifecycle.
  */
 function updateOutputFileWithDir(
   options: RuntimeEnvOptions,
   outputOptions: OutputOptions,
 ): void {
-  if (
-    options.js &&
-    options.js.outputFile === DEFAULT_JS_OUTPUT_FILE &&
-    outputOptions.dir
-  ) {
-    options.js.outputFile = path.join(outputOptions.dir, DEFAULT_JS_OUTPUT_FILE);
+  const outputFile = getOutputFileWithDir(options, outputOptions);
+  if (options.js && outputFile) {
+    options.js.outputFile = outputFile;
   }
 }
