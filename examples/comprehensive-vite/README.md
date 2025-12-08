@@ -206,6 +206,65 @@ Ignores generated files:
 3. **Single Docker image** - Same build artifact works across all environments
 4. **No modification of generated files** - Generated files are cached and regenerated as needed
 
+## E2E Testing
+
+This example includes comprehensive end-to-end tests using Cypress to verify all workflows:
+
+### Test Modes
+
+1. **Dev Mode** (`cypress/e2e/dev.cy.js`)
+   - Verifies dev server starts on port 5173
+   - Verifies runtime-env values are displayed
+   - Verifies HMR updates when .env changes
+
+2. **Preview Mode** (`cypress/e2e/preview.cy.js`)
+   - Verifies preview server serves interpolated content
+   - Verifies service worker loads correctly
+   - Verifies preview can be rerun with different env values
+
+3. **Docker Mode** (`cypress/e2e/docker.cy.js`)
+   - Verifies Docker image builds successfully
+   - Verifies container serves app with runtime injection
+   - Verifies service worker is patched
+   - Verifies containers can be restarted with different env values
+
+### Running Tests Locally
+
+**Prerequisites:**
+- Node.js and npm
+- Docker (for docker tests)
+- Cypress dependencies installed (`npm ci`)
+
+**Run dev mode test:**
+```bash
+echo "FOO=test-value" > .env
+npx start-server-and-test 'npm run dev' http://localhost:5173 'npx cypress run --spec cypress/e2e/dev.cy.js'
+```
+
+**Run preview mode test:**
+```bash
+npm run build
+echo "FOO=test-value" > .env
+npx start-server-and-test 'npm run preview' http://localhost:4173 'npx cypress run --spec cypress/e2e/preview.cy.js'
+```
+
+**Run docker test:**
+```bash
+docker build . -t runtime-env-comprehensive-vite
+npx start-server-and-test 'docker run -p 3000:80 -e FOO=test-value runtime-env-comprehensive-vite' http://localhost:3000 'npx cypress run --spec cypress/e2e/docker.cy.js'
+# Clean up
+docker ps -a -q -f ancestor=runtime-env-comprehensive-vite | xargs -r docker rm -f
+```
+
+### CI Integration
+
+All test modes run in CI with proper environment isolation:
+- Each test mode runs in a separate CI step
+- `git clean -xdf` runs between modes to ensure clean state
+- Tests use the packed tarball installation pattern
+- Builds run WITHOUT .env file to preserve template syntax
+- Docker containers are properly cleaned up after tests
+
 ## Learn More
 
 - [@runtime-env/cli documentation](../../packages/cli/README.md)

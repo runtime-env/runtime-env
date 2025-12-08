@@ -276,6 +276,57 @@ Ensure `.runtimeenvschema.json` is in the root directory and `start.sh` is execu
 
 Ensure `public/runtime-env.js` exists by running `npm run test:runtime-env` first.
 
+## E2E Testing
+
+This example includes comprehensive end-to-end tests using Cypress to verify all workflows:
+
+### Test Modes
+
+1. **Dev Mode** (`cypress/e2e/dev.cy.js`)
+   - Verifies dev server starts on port 8080
+   - Verifies runtime-env values are displayed
+   - Verifies HMR updates when .env changes
+
+2. **Docker Mode** (`cypress/e2e/docker.cy.js`)
+   - Verifies Docker image builds successfully
+   - Verifies container serves app with runtime injection
+   - Verifies service worker is patched
+   - Verifies containers can be restarted with different env values
+
+### Running Tests Locally
+
+**Prerequisites:**
+- Node.js and npm
+- Docker (for docker tests)
+- Cypress dependencies installed (`npm ci`)
+
+**Run dev mode test:**
+```bash
+echo "FOO=test-value" > .env
+npx start-server-and-test 'npm run dev' http://localhost:8080 'npx cypress run --spec cypress/e2e/dev.cy.js'
+```
+
+**Run docker test:**
+```bash
+docker build . -t runtime-env-comprehensive-webpack
+npx start-server-and-test 'docker run -p 3000:80 -e FOO=test-value runtime-env-comprehensive-webpack' http://localhost:3000 'npx cypress run --spec cypress/e2e/docker.cy.js'
+# Clean up
+docker ps -a -q -f ancestor=runtime-env-comprehensive-webpack | xargs -r docker rm -f
+```
+
+### CI Integration
+
+All test modes run in CI with proper environment isolation:
+- Each test mode runs in a separate CI step
+- `git clean -xdf` runs between modes to ensure clean state
+- Tests use the packed tarball installation pattern
+- Builds run WITHOUT .env file to preserve template syntax
+- Docker containers are properly cleaned up after tests
+
+### Differences from Vite Example
+
+The webpack example has 3 test modes (dev, test, docker) compared to vite's 4 modes (dev, test, preview, docker). Preview mode is not implemented for webpack as it follows a different architecture pattern.
+
 ## License
 
 MIT
