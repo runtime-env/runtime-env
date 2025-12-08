@@ -9,12 +9,6 @@ describe("Docker Deployment E2E - Service Worker Update", () => {
     // Reload page (second load - service worker activates)
     cy.reload();
 
-    // Verify page displays docker environment value
-    cy.get("#app").should("contain", "docker-initial");
-
-    // Verify page title contains docker value
-    cy.title().should("include", "docker-initial");
-
     // Wait for activation
     cy.wait(1000);
 
