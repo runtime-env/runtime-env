@@ -31,6 +31,8 @@ The comprehensive examples (vite and webpack) SHALL provide E2E tests that verif
 **Given** a test mode has completed
 **When** the next test mode runs
 **Then** `git clean -xdf` removes all untracked files including `.env`
+**And** `git restore .` restores all tracked files to their committed state
+**And** this ensures both untracked and modified tracked files are reset
 **And** a fresh `.env` is generated for the next test
 
 ---
@@ -134,7 +136,7 @@ The comprehensive example E2E tests SHALL run in CI using the packed tarball ins
 **When** the comprehensive example test steps run
 **Then** each test mode has its own separate CI step
 **And** each step changes to the example directory
-**And** each step runs `git clean -xdf` inside the example directory to reset environment
+**And** each step runs `git clean -xdf` and `git restore .` inside the example directory to reset environment
 **And** each step runs `npm ci` to install dependencies
 **And** each step (except docker) installs the tarball with `npm i ../../packages/cli/runtime-env-cli-test.tgz`
 **And** docker copies the tarball into the build context for installation in the Dockerfile
@@ -159,11 +161,13 @@ The comprehensive example E2E tests SHALL run in CI using the packed tarball ins
 **Given** a test mode has completed in CI
 **When** the next test mode is about to run
 **Then** `git clean -xdf` is executed inside the example directory to remove all untracked files
+**And** `git restore .` is executed to restore all tracked files to their committed state
 **And** the tarball at `../../packages/cli/runtime-env-cli-test.tgz` remains available (outside example directory)
 **And** `.env` file is regenerated based on test mode requirements
-**And** `node_modules` and `dist` directories are removed
-**And** generated files (`runtime-env.js`, `runtime-env.d.ts`) are removed
-**And** the environment is in a clean state for the next test
+**And** `node_modules` and `dist` directories are removed (untracked)
+**And** generated files (`runtime-env.js`, `runtime-env.d.ts`) are removed (untracked)
+**And** modified tracked files like test files are restored to original state
+**And** the environment is in a completely clean state for the next test
 **And** each test mode can run its appropriate workflow (dev/test/preview/docker)
 
 ---
@@ -277,11 +281,13 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 **Given** CI is running multiple test modes sequentially
 **When** transitioning between test modes
 **Then** `git clean -xdf` runs inside the example directory to remove all untracked files
+**And** `git restore .` runs to restore all tracked files to their committed state
 **And** all `node_modules`, `dist`, and generated files in the example are cleaned
+**And** any modifications to tracked files (like test files) are reverted
 **And** the tarball at `../../packages/cli/runtime-env-cli-test.tgz` remains available
 **And** `.env` is NOT present during builds
 **And** `.env` is only created AFTER build for runtime use
-**And** each test mode starts from a pristine state
+**And** each test mode starts from a completely pristine state
 
 ---
 

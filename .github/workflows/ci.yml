@@ -126,6 +126,7 @@ jobs:
         run: |
           cd examples/comprehensive-vite
           git clean -xdf
+          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           echo "FOO=dev-initial" > .env
@@ -135,6 +136,7 @@ jobs:
         run: |
           cd examples/comprehensive-vite
           git clean -xdf
+          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           echo "FOO=test-value" > .env
@@ -144,6 +146,7 @@ jobs:
         run: |
           cd examples/comprehensive-vite
           git clean -xdf
+          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm run build
@@ -156,6 +159,7 @@ jobs:
         run: |
           cd examples/comprehensive-vite
           git clean -xdf
+          git restore .
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           docker build -t comprehensive-vite .
@@ -166,6 +170,7 @@ jobs:
         run: |
           cd examples/comprehensive-webpack
           git clean -xdf
+          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           echo "FOO=dev-initial" > .env
@@ -175,6 +180,7 @@ jobs:
         run: |
           cd examples/comprehensive-webpack
           git clean -xdf
+          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           echo "FOO=test-value" > .env
@@ -184,6 +190,7 @@ jobs:
         run: |
           cd examples/comprehensive-webpack
           git clean -xdf
+          git restore .
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           docker build -t comprehensive-webpack .
