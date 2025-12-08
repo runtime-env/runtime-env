@@ -2,31 +2,14 @@ import type { Compiler as RspackCompiler } from "@rspack/core";
 import type { Compilation } from "webpack";
 import { loadEnvValues } from "../generators";
 import type { RuntimeEnvOptions } from "../types";
-
-// Types for html-rspack-plugin hooks (compatible with html-webpack-plugin)
-interface HtmlPluginData {
-  plugin: {
-    options: {
-      templateParameters?: Record<string, unknown>;
-    };
-  };
-}
-
-interface HtmlPluginHooks {
-  beforeAssetTagGeneration: {
-    tapAsync: (
-      name: string,
-      callback: (
-        data: HtmlPluginData,
-        cb: (error: Error | null, data?: HtmlPluginData) => void,
-      ) => void,
-    ) => void;
-  };
-}
-
-interface HtmlPluginConstructor {
-  getHooks: (compilation: Compilation) => HtmlPluginHooks;
-}
+import { getSchemaFile, getGlobalVariableName } from "../utils";
+import { DEFAULT_PUBLIC_DIR, DEFAULT_JS_OUTPUT_FILE, PLUGIN_NAME } from "../constants";
+import {
+  findHtmlPlugin,
+  validateHtmlPlugin,
+  createTemplateParameters,
+  type HtmlPluginData,
+} from "./html-plugin-utils";
 
 interface RspackAdapterContext {
   options: RuntimeEnvOptions;
@@ -40,94 +23,66 @@ export function createRspackAdapter(
   return (compiler: RspackCompiler) => {
     context.setIsDev(compiler.options.mode !== "production");
 
-    // Set default js outputFile for Rspack
-    if (context.options.js && !context.options.js.outputFile) {
-      context.options.js.outputFile = "public/runtime-env.js";
-    }
+    setDefaultOutputFile(context.options);
 
     if (context.options.interpolate) {
-      // Hook into html-rspack-plugin to handle HTML template
-      // Using unknown type for compilation since Rspack's Compilation type differs from Webpack's
-      compiler.hooks.compilation.tap(
-        "@runtime-env/unplugin",
-        (compilation: unknown) => {
-          // Find html-rspack-plugin - look for plugin with getHooks static method
-          let HtmlRspackPlugin: HtmlPluginConstructor | null = null;
-          for (const plugin of compiler.options.plugins || []) {
-            if (
-              plugin &&
-              plugin.constructor &&
-              typeof (plugin.constructor as unknown as HtmlPluginConstructor)
-                .getHooks === "function"
-            ) {
-              HtmlRspackPlugin =
-                plugin.constructor as unknown as HtmlPluginConstructor;
-              break;
-            }
-          }
-
-          if (!HtmlRspackPlugin) {
-            throw new Error(
-              "[@runtime-env/unplugin] interpolate option requires html-rspack-plugin. " +
-                "Install html-rspack-plugin or remove the interpolate option.",
-            );
-          }
-
-          const hooks = HtmlRspackPlugin.getHooks(
-            compilation as unknown as Compilation,
-          );
-
-          // In both dev and production, we need to inject templateParameters
-          // so that lodash template processing doesn't fail
-          hooks.beforeAssetTagGeneration.tapAsync(
-            "@runtime-env/unplugin",
-            async (
-              data: HtmlPluginData,
-              cb: (error: Error | null, data?: HtmlPluginData) => void,
-            ) => {
-              try {
-                const schemaFile =
-                  context.options.schemaFile || ".runtimeenvschema.json";
-                const globalVariableName =
-                  context.options.globalVariableName || "runtimeEnv";
-
-                if (context.isDev) {
-                  // Dev: inject actual runtime env values
-                  const envValues = await loadEnvValues(
-                    schemaFile,
-                    globalVariableName,
-                    context.options.interpolate!.envFile,
-                  );
-                  data.plugin.options.templateParameters = {
-                    ...data.plugin.options.templateParameters,
-                    [globalVariableName]: envValues,
-                  };
-                } else {
-                  // Production: inject Proxy that returns escaped template strings
-                  // This allows the template to process without errors
-                  // but outputs <%= syntax %> that will be evaluated at runtime
-                  const escapeProxy = new Proxy(
-                    {},
-                    {
-                      get(_, prop) {
-                        // Return a string that, when processed by lodash, will output <%= runtimeEnv.PROP %>
-                        return `<%= ${globalVariableName}.${String(prop)} %>`;
-                      },
-                    },
-                  );
-                  data.plugin.options.templateParameters = {
-                    ...data.plugin.options.templateParameters,
-                    [globalVariableName]: escapeProxy,
-                  };
-                }
-                cb(null, data);
-              } catch (error) {
-                cb(error as Error);
-              }
-            },
-          );
-        },
-      );
+      setupHtmlInterpolation(compiler, context);
     }
   };
+}
+
+/**
+ * Sets default output file for Rspack if not provided.
+ */
+function setDefaultOutputFile(options: RuntimeEnvOptions): void {
+  if (options.js && !options.js.outputFile) {
+    options.js.outputFile = `${DEFAULT_PUBLIC_DIR}/${DEFAULT_JS_OUTPUT_FILE}`;
+  }
+}
+
+/**
+ * Sets up HTML interpolation by hooking into html-rspack-plugin.
+ */
+function setupHtmlInterpolation(
+  compiler: RspackCompiler,
+  context: RspackAdapterContext,
+): void {
+  // Using unknown type for compilation since Rspack's Compilation type differs from Webpack's
+  compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation: unknown) => {
+    const HtmlRspackPlugin = findHtmlPlugin(compiler.options.plugins);
+    validateHtmlPlugin(HtmlRspackPlugin, "html-rspack-plugin");
+
+    const hooks = HtmlRspackPlugin.getHooks(compilation as unknown as Compilation);
+
+    hooks.beforeAssetTagGeneration.tapAsync(
+      PLUGIN_NAME,
+      async (
+        data: HtmlPluginData,
+        cb: (error: Error | null, data?: HtmlPluginData) => void,
+      ) => {
+        try {
+          const schemaFile = getSchemaFile(context.options);
+          const globalVariableName = getGlobalVariableName(context.options);
+
+          const envValues = context.isDev
+            ? await loadEnvValues(
+                schemaFile,
+                globalVariableName,
+                context.options.interpolate!.envFile,
+              )
+            : null;
+
+          data.plugin.options.templateParameters = createTemplateParameters(
+            globalVariableName,
+            envValues,
+            data.plugin.options.templateParameters,
+          );
+
+          cb(null, data);
+        } catch (error) {
+          cb(error as Error);
+        }
+      },
+    );
+  });
 }

@@ -1,6 +1,7 @@
 import * as path from "path";
 import type { OutputOptions, InputOptions, Plugin } from "rollup";
 import type { RuntimeEnvOptions } from "../types";
+import { DEFAULT_JS_OUTPUT_FILE } from "../constants";
 
 interface RollupAdapterContext {
   options: RuntimeEnvOptions;
@@ -12,33 +13,49 @@ export function createRollupAdapter(
 ): Partial<Plugin> {
   return {
     options(rollupOptions: InputOptions) {
-      // Detect build mode (assume build unless watch mode)
-      context.setIsDev(
-        !!(rollupOptions as InputOptions & { watch?: boolean }).watch,
-      );
-
-      // Set default js outputFile based on Rollup's output.dir
-      // Note: InputOptions.output is not directly available, we handle it in outputOptions hook instead
-      if (context.options.js && !context.options.js.outputFile) {
-        // Default fallback for Rollup
-        context.options.js.outputFile = "runtime-env.js";
-      }
+      detectDevMode(rollupOptions, context);
+      setDefaultOutputFile(context.options);
       return rollupOptions;
     },
     outputOptions(outputOptions: OutputOptions) {
-      // Set default based on output.dir if available
-      if (
-        context.options.js &&
-        context.options.js.outputFile === "runtime-env.js"
-      ) {
-        if (outputOptions.dir) {
-          context.options.js.outputFile = path.join(
-            outputOptions.dir,
-            "runtime-env.js",
-          );
-        }
-      }
+      updateOutputFileWithDir(context.options, outputOptions);
       return outputOptions;
     },
   };
+}
+
+/**
+ * Detects development mode from rollup options.
+ */
+function detectDevMode(
+  rollupOptions: InputOptions,
+  context: RollupAdapterContext,
+): void {
+  const hasWatch = !!(rollupOptions as InputOptions & { watch?: boolean }).watch;
+  context.setIsDev(hasWatch);
+}
+
+/**
+ * Sets default output file for Rollup if not provided.
+ */
+function setDefaultOutputFile(options: RuntimeEnvOptions): void {
+  if (options.js && !options.js.outputFile) {
+    options.js.outputFile = DEFAULT_JS_OUTPUT_FILE;
+  }
+}
+
+/**
+ * Updates output file with directory from output options if available.
+ */
+function updateOutputFileWithDir(
+  options: RuntimeEnvOptions,
+  outputOptions: OutputOptions,
+): void {
+  if (
+    options.js &&
+    options.js.outputFile === DEFAULT_JS_OUTPUT_FILE &&
+    outputOptions.dir
+  ) {
+    options.js.outputFile = path.join(outputOptions.dir, DEFAULT_JS_OUTPUT_FILE);
+  }
 }

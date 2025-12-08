@@ -7,6 +7,7 @@ import { createRspackAdapter } from "./adapters/rspack";
 import { createRollupAdapter } from "./adapters/rollup";
 import { createEsbuildAdapter } from "./adapters/esbuild";
 import { validateInterpolateSupport } from "./core";
+import { getSchemaFile } from "./utils";
 import {
   genTypes,
   startWatchProcesses,
@@ -14,6 +15,31 @@ import {
   type WatchProcesses,
 } from "./generators";
 import type { Bundler, RuntimeEnvOptions } from "./types";
+
+/**
+ * Handles build mode operations: generating types and cleaning up JS files.
+ */
+async function handleBuildMode(options: RuntimeEnvOptions): Promise<void> {
+  const schemaFile = getSchemaFile(options);
+
+  if (options.ts?.outputFile) {
+    await genTypes(schemaFile, options.ts.outputFile, options.globalVariableName);
+  }
+
+  if (options.js?.outputFile) {
+    cleanupJsFile(options.js.outputFile);
+  }
+}
+
+/**
+ * Cleans up the runtime-env.js file if it exists.
+ */
+function cleanupJsFile(outputFile: string): void {
+  const jsPath = path.resolve(outputFile);
+  if (fs.existsSync(jsPath)) {
+    fs.unlinkSync(jsPath);
+  }
+}
 
 /**
  * Creates the runtime-env unplugin for all supported bundlers.
@@ -40,28 +66,12 @@ const unplugin = createUnplugin<RuntimeEnvOptions>((options, meta) => {
 
     // Unified hooks work across all bundlers
     async buildStart() {
-      const schemaFile = options.schemaFile || ".runtimeenvschema.json";
-
       if (isDev) {
         // Development mode: start CLI watch processes
         watchProcesses = startWatchProcesses(options);
       } else {
         // Build mode: generate types once (for type checking)
-        if (options.ts?.outputFile) {
-          await genTypes(
-            schemaFile,
-            options.ts.outputFile,
-            options.globalVariableName,
-          );
-        }
-
-        // Clean runtime-env.js if it exists
-        if (options.js?.outputFile) {
-          const jsPath = path.resolve(options.js.outputFile);
-          if (fs.existsSync(jsPath)) {
-            fs.unlinkSync(jsPath);
-          }
-        }
+        await handleBuildMode(options);
       }
     },
 

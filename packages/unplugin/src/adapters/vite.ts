@@ -2,6 +2,8 @@ import * as path from "path";
 import type { ResolvedConfig, Plugin } from "vite";
 import { interpolateHtml } from "../generators";
 import type { RuntimeEnvOptions } from "../types";
+import { getSchemaFile, getGlobalVariableName } from "../utils";
+import { DEFAULT_PUBLIC_DIR, DEFAULT_JS_OUTPUT_FILE } from "../constants";
 
 interface ViteAdapterContext {
   options: RuntimeEnvOptions;
@@ -13,12 +15,7 @@ export function createViteAdapter(context: ViteAdapterContext): Partial<Plugin> 
   return {
     configResolved(config: ResolvedConfig) {
       context.setIsDev(config.command === "serve");
-
-      // Set default js outputFile based on Vite's publicDir
-      if (context.options.js && !context.options.js.outputFile) {
-        const publicDir = config.publicDir || "public";
-        context.options.js.outputFile = path.join(publicDir, "runtime-env.js");
-      }
+      setDefaultOutputFile(context.options, config);
     },
 
     transformIndexHtml: {
@@ -27,18 +24,7 @@ export function createViteAdapter(context: ViteAdapterContext): Partial<Plugin> 
         if (!context.options.interpolate) return html;
 
         if (context.isDev) {
-          // Dev: inline interpolate HTML with runtime env values
-          const schemaFile =
-            context.options.schemaFile || ".runtimeenvschema.json";
-          const globalVariableName =
-            context.options.globalVariableName || "runtimeEnv";
-          const interpolated = await interpolateHtml(
-            html,
-            schemaFile,
-            globalVariableName,
-            context.options.interpolate.envFile,
-          );
-          return interpolated;
+          return await transformHtmlForDev(html, context.options);
         } else {
           // Build: keep template syntax as-is (<%= runtimeEnv.FOO %> stays unchanged)
           // Server-side runtime-env CLI will process this at container startup
@@ -47,4 +33,35 @@ export function createViteAdapter(context: ViteAdapterContext): Partial<Plugin> 
       },
     },
   };
+}
+
+/**
+ * Sets default output file for Vite if not provided.
+ */
+function setDefaultOutputFile(
+  options: RuntimeEnvOptions,
+  config: ResolvedConfig,
+): void {
+  if (options.js && !options.js.outputFile) {
+    const publicDir = config.publicDir || DEFAULT_PUBLIC_DIR;
+    options.js.outputFile = path.join(publicDir, DEFAULT_JS_OUTPUT_FILE);
+  }
+}
+
+/**
+ * Transforms HTML for development mode with inline runtime env values.
+ */
+async function transformHtmlForDev(
+  html: string,
+  options: RuntimeEnvOptions,
+): Promise<string> {
+  const schemaFile = getSchemaFile(options);
+  const globalVariableName = getGlobalVariableName(options);
+
+  return await interpolateHtml(
+    html,
+    schemaFile,
+    globalVariableName,
+    options.interpolate!.envFile,
+  );
 }

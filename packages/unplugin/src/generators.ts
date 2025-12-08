@@ -1,9 +1,16 @@
 import { spawn, spawnSync, type ChildProcess } from "child_process";
-import * as crypto from "crypto";
 import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
 import type { RuntimeEnvOptions } from "./types";
+import { ERROR_MESSAGES } from "./constants";
+import {
+  getSchemaFile,
+  getGlobalVariableName,
+  normalizeEnvFiles,
+  getTempFilePath,
+  cleanupTempFiles,
+  buildCliArgs,
+  escapeRegExp,
+} from "./utils";
 
 /**
  * Holds references to running watch processes.
@@ -25,45 +32,29 @@ export function startWatchProcesses(
   options: RuntimeEnvOptions,
 ): WatchProcesses {
   const processes: WatchProcesses = {};
-  const schemaFile = options.schemaFile || ".runtimeenvschema.json";
-  const globalVarName = options.globalVariableName || "runtimeEnv";
+  const schemaFile = getSchemaFile(options);
+  const globalVariableName = getGlobalVariableName(options);
 
   // Start gen-ts watch if ts option is provided
   if (options.ts?.outputFile) {
-    const args = [
-      "runtime-env",
-      "--watch",
-      "--schema-file",
+    const args = buildCliArgs("gen-ts", {
       schemaFile,
-      "--global-variable-name",
-      globalVarName,
-      "gen-ts",
-      "--output-file",
-      options.ts.outputFile,
-    ];
+      globalVariableName,
+      outputFile: options.ts.outputFile,
+      watch: true,
+    });
     processes.genTs = spawn("npx", args, { stdio: "inherit" });
   }
 
   // Start gen-js watch if js option is provided
   if (options.js?.outputFile) {
-    const envFiles = Array.isArray(options.js.envFile)
-      ? options.js.envFile
-      : options.js.envFile
-        ? [options.js.envFile]
-        : [];
-
-    const args = [
-      "runtime-env",
-      "--watch",
-      "--schema-file",
+    const args = buildCliArgs("gen-js", {
       schemaFile,
-      "--global-variable-name",
-      globalVarName,
-      "gen-js",
-      "--output-file",
-      options.js.outputFile,
-    ];
-    envFiles.forEach((f) => args.push("--env-file", f));
+      globalVariableName,
+      outputFile: options.js.outputFile,
+      envFiles: normalizeEnvFiles(options.js.envFile),
+      watch: true,
+    });
     processes.genJs = spawn("npx", args, { stdio: "inherit" });
   }
 
@@ -97,17 +88,11 @@ export async function genTypes(
   globalVariableName?: string,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
-    const args = [
-      "runtime-env",
-      "--schema-file",
+    const args = buildCliArgs("gen-ts", {
       schemaFile,
-      "gen-ts",
-      "--output-file",
-      output,
-    ];
-    if (globalVariableName) {
-      args.splice(2, 0, "--global-variable-name", globalVariableName);
-    }
+      globalVariableName,
+      outputFile: output,
+    });
     const proc = spawn("npx", args, { stdio: "inherit" });
     proc.on("close", (code) => (code === 0 ? resolve() : reject()));
   });
@@ -129,47 +114,35 @@ export async function interpolateHtml(
   globalVariableName: string,
   envFile?: string | string[],
 ): Promise<string> {
-  const envFiles = Array.isArray(envFile) ? envFile : envFile ? [envFile] : [];
-
-  // Write HTML to temp file with unique names to avoid race conditions
-  const uniqueId = crypto.randomBytes(8).toString("hex");
-  const tempInput = path.join(os.tmpdir(), `runtime-env-${uniqueId}-in.html`);
-  const tempOutput = path.join(os.tmpdir(), `runtime-env-${uniqueId}-out.html`);
+  const tempInput = getTempFilePath("-in.html");
+  const tempOutput = getTempFilePath("-out.html");
+  
   fs.writeFileSync(tempInput, html);
 
-  const args = [
-    "npx",
-    "runtime-env",
-    "--schema-file",
-    schemaFile,
-    "--global-variable-name",
-    globalVariableName,
-    "interpolate",
-    "--input-file",
-    tempInput,
-    "--output-file",
-    tempOutput,
-  ];
-  envFiles.forEach((f) => args.push("--env-file", f));
-
   try {
-    const result = spawnSync("npx", args.slice(1), { stdio: "pipe" });
+    const args = buildCliArgs("interpolate", {
+      schemaFile,
+      globalVariableName,
+      inputFile: tempInput,
+      outputFile: tempOutput,
+      envFiles: normalizeEnvFiles(envFile),
+    });
+
+    const result = spawnSync("npx", args, { stdio: "pipe" });
     if (result.status !== 0) {
       throw new Error(
-        `CLI interpolate failed: ${result.stderr?.toString() || "Unknown error"}`,
+        ERROR_MESSAGES.CLI_COMMAND_FAILED(
+          "interpolate",
+          result.stderr?.toString() || "Unknown error",
+        ),
       );
     }
+
     const interpolated = fs.readFileSync(tempOutput, "utf-8");
-
-    // Cleanup
-    fs.unlinkSync(tempInput);
-    fs.unlinkSync(tempOutput);
-
+    cleanupTempFiles(tempInput, tempOutput);
     return interpolated;
   } catch (error) {
-    // Cleanup on error
-    if (fs.existsSync(tempInput)) fs.unlinkSync(tempInput);
-    if (fs.existsSync(tempOutput)) fs.unlinkSync(tempOutput);
+    cleanupTempFiles(tempInput, tempOutput);
     throw error;
   }
 }
@@ -188,64 +161,59 @@ export async function loadEnvValues(
   globalVariableName: string,
   envFile?: string | string[],
 ): Promise<Record<string, unknown>> {
-  const envFiles = Array.isArray(envFile) ? envFile : envFile ? [envFile] : [];
-
-  // Use CLI to generate JS temporarily and parse it to extract values
-  const uniqueId = crypto.randomBytes(8).toString("hex");
-  const tempOutput = path.join(os.tmpdir(), `runtime-env-${uniqueId}.js`);
-
-  const args = [
-    "npx",
-    "runtime-env",
-    "--schema-file",
-    schemaFile,
-    "--global-variable-name",
-    globalVariableName,
-    "gen-js",
-    "--output-file",
-    tempOutput,
-  ];
-  envFiles.forEach((f) => args.push("--env-file", f));
+  const tempOutput = getTempFilePath(".js");
 
   try {
-    const result = spawnSync("npx", args.slice(1), { stdio: "pipe" });
+    const args = buildCliArgs("gen-js", {
+      schemaFile,
+      globalVariableName,
+      outputFile: tempOutput,
+      envFiles: normalizeEnvFiles(envFile),
+    });
+
+    const result = spawnSync("npx", args, { stdio: "pipe" });
     if (result.status !== 0) {
       throw new Error(
-        `CLI gen-js failed: ${result.stderr?.toString() || "Unknown error"}`,
+        ERROR_MESSAGES.CLI_COMMAND_FAILED(
+          "gen-js",
+          result.stderr?.toString() || "Unknown error",
+        ),
       );
     }
+
     const jsContent = fs.readFileSync(tempOutput, "utf-8");
-
-    // Parse the generated JS to extract values
-    // The JS file assigns to window[globalVariableName], extract that object
-    const globalVarPattern = globalVariableName.replace(
-      /[.*+?^${}()|[\]\\]/g,
-      "\\$&",
-    );
-    // More robust regex that handles multiline JSON with proper bracket matching
-    const matches = jsContent.match(
-      new RegExp(
-        `(?:window|globalThis)\\[['"]${globalVarPattern}['"]\\]\\s*=\\s*({[\\s\\S]+?});`,
-      ),
-    );
-
-    if (matches && matches[1]) {
-      try {
-        const envValues = JSON.parse(matches[1]);
-        fs.unlinkSync(tempOutput);
-        return envValues;
-      } catch (parseError) {
-        console.error("Failed to parse environment values:", parseError);
-        fs.unlinkSync(tempOutput);
-        return {};
-      }
-    }
-
-    fs.unlinkSync(tempOutput);
-    return {};
+    const envValues = extractEnvValuesFromJs(jsContent, globalVariableName);
+    
+    cleanupTempFiles(tempOutput);
+    return envValues;
   } catch (error) {
-    // Cleanup on error
-    if (fs.existsSync(tempOutput)) fs.unlinkSync(tempOutput);
+    cleanupTempFiles(tempOutput);
     throw error;
   }
+}
+
+/**
+ * Extracts environment values from generated JavaScript content.
+ * @private
+ */
+function extractEnvValuesFromJs(
+  jsContent: string,
+  globalVariableName: string,
+): Record<string, unknown> {
+  const globalVarPattern = escapeRegExp(globalVariableName);
+  const regex = new RegExp(
+    `(?:window|globalThis)\\[['"]${globalVarPattern}['"]\\]\\s*=\\s*({[\\s\\S]+?});`,
+  );
+  const matches = jsContent.match(regex);
+
+  if (matches && matches[1]) {
+    try {
+      return JSON.parse(matches[1]);
+    } catch (parseError) {
+      console.error("Failed to parse environment values:", parseError);
+      return {};
+    }
+  }
+
+  return {};
 }

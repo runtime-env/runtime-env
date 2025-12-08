@@ -1,4 +1,5 @@
-import type { Bundler, RuntimeEnvOptions } from "./types";
+import type { Bundler } from "./types";
+import { ERROR_MESSAGES } from "./constants";
 
 /**
  * List of bundlers that support HTML interpolation.
@@ -26,9 +27,7 @@ export function validateInterpolateSupport(
   if (hasInterpolate && !BUNDLERS_WITH_HTML_SUPPORT.includes(bundler)) {
     const supported = BUNDLERS_WITH_HTML_SUPPORT.join(", ");
     throw new Error(
-      `[@runtime-env/unplugin] HTML interpolation is not supported in ${bundler}. ` +
-        `Supported bundlers: ${supported}. ` +
-        `Remove the interpolate option or switch to a supported bundler.`,
+      ERROR_MESSAGES.HTML_INTERPOLATION_NOT_SUPPORTED(bundler, supported),
     );
   }
 }

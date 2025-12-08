@@ -1,6 +1,7 @@
 import * as path from "path";
 import type { PluginBuild, Plugin } from "esbuild";
 import type { RuntimeEnvOptions } from "../types";
+import { DEFAULT_JS_OUTPUT_FILE } from "../constants";
 
 interface EsbuildAdapterContext {
   options: RuntimeEnvOptions;
@@ -14,24 +15,31 @@ export function createEsbuildAdapter(
     setup(build: PluginBuild) {
       // esbuild doesn't have a clear dev/build distinction, assume build mode
       context.setIsDev(false);
-
-      // Set default js outputFile based on esbuild's outdir
-      if (context.options.js && !context.options.js.outputFile) {
-        if (build.initialOptions.outdir) {
-          context.options.js.outputFile = path.join(
-            build.initialOptions.outdir,
-            "runtime-env.js",
-          );
-        } else if (build.initialOptions.outfile) {
-          // If using outfile, put runtime-env.js in the same directory
-          context.options.js.outputFile = path.join(
-            path.dirname(build.initialOptions.outfile),
-            "runtime-env.js",
-          );
-        } else {
-          context.options.js.outputFile = "runtime-env.js";
-        }
-      }
+      setDefaultOutputFile(context.options, build);
     },
   };
+}
+
+/**
+ * Sets default output file for esbuild if not provided.
+ */
+function setDefaultOutputFile(
+  options: RuntimeEnvOptions,
+  build: PluginBuild,
+): void {
+  if (options.js && !options.js.outputFile) {
+    const { outdir, outfile } = build.initialOptions;
+
+    if (outdir) {
+      options.js.outputFile = path.join(outdir, DEFAULT_JS_OUTPUT_FILE);
+    } else if (outfile) {
+      // If using outfile, put runtime-env.js in the same directory
+      options.js.outputFile = path.join(
+        path.dirname(outfile),
+        DEFAULT_JS_OUTPUT_FILE,
+      );
+    } else {
+      options.js.outputFile = DEFAULT_JS_OUTPUT_FILE;
+    }
+  }
 }
