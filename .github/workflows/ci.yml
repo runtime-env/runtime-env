@@ -127,8 +127,7 @@ jobs:
           cd examples/comprehensive-vite
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
-          echo "FOO=dev-test" > .env
-          npx start-server-and-test 'npm run dev' 5173 'cypress run --spec cypress/e2e/dev.cy.js'
+          npx cypress run --spec cypress/e2e/dev.cy.js
 
       - name: Test examples/comprehensive-vite (test)
         run: |
@@ -145,9 +144,7 @@ jobs:
           git clean -xdf
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
-          npm run build
-          echo "FOO=preview-test" > .env
-          npx start-server-and-test 'npm run preview' 4173 'cypress run --spec cypress/e2e/preview.cy.js'
+          npx cypress run --spec cypress/e2e/preview.cy.js
 
       - name: Test examples/comprehensive-vite (docker)
         run: |
@@ -162,8 +159,7 @@ jobs:
           cd examples/comprehensive-webpack
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
-          echo "FOO=dev-test" > .env
-          npx start-server-and-test 'npm run dev' 8080 'cypress run --spec cypress/e2e/dev.cy.js'
+          npx cypress run --spec cypress/e2e/dev.cy.js
 
       - name: Test examples/comprehensive-webpack (test)
         run: |

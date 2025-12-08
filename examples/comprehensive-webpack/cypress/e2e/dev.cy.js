@@ -1,16 +1,41 @@
 /// <reference types="cypress" />
 
 describe("comprehensive-webpack dev mode", () => {
-  it("displays runtime-env value", () => {
+  let serverPid;
+
+  before(() => {
+    // Create initial .env file
+    cy.writeFile(".env", "FOO=dev-initial");
+
+    // Start dev server in background and capture PID
+    cy.exec("npm run dev > dev.log 2>&1 & echo $!", { timeout: 10000 }).then(
+      (result) => {
+        serverPid = result.stdout.trim();
+        cy.log(`Dev server PID: ${serverPid}`);
+      },
+    );
+
+    // Wait for server to be ready
+    cy.waitForServer("http://localhost:8080");
+  });
+
+  after(() => {
+    // Kill the dev server
+    if (serverPid) {
+      cy.exec(`kill ${serverPid}`, { failOnNonZeroExit: false });
+    }
+  });
+
+  it("displays initial runtime-env value", () => {
     cy.visit("http://localhost:8080");
-    cy.get("#app").should("contain", "dev-test");
-    cy.title().should("include", "dev-test");
+    cy.get("#app").should("contain", "dev-initial");
+    cy.title().should("include", "dev-initial");
   });
 
   it("updates value via HMR when .env changes", () => {
     // Visit page first
     cy.visit("http://localhost:8080");
-    cy.get("#app").should("contain", "dev-test");
+    cy.get("#app").should("contain", "dev-initial");
 
     // Update .env file
     cy.writeFile(".env", "FOO=dev-updated");
