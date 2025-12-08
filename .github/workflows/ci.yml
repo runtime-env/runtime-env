@@ -151,7 +151,7 @@ jobs:
           cd examples/comprehensive-vite
           git clean -xdf
           npm ci
-          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
           npx cypress run --spec cypress/e2e/docker.cy.js
 
       - name: Test examples/comprehensive-webpack (dev)
@@ -175,7 +175,7 @@ jobs:
           cd examples/comprehensive-webpack
           git clean -xdf
           npm ci
-          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
           npx cypress run --spec cypress/e2e/docker.cy.js
 
   release:
