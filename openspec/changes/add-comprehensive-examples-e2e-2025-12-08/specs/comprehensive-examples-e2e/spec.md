@@ -6,7 +6,7 @@
 
 The comprehensive examples (vite and webpack) SHALL provide E2E tests that verify the development server workflow, including runtime environment variable injection and hot module replacement (HMR). Development mode runs all three commands: gen-ts (types), gen-js (runtime values), and interpolate (HTML templates).
 
-#### Scenario: Dev server starts and displays runtime-env values
+#### Scenario: Dev server starts and displays runtime-env values (Vite)
 
 **Given** the comprehensive-vite example is installed with runtime-env CLI
 **And** `.env` file is created by CI with `echo "FOO=dev-initial" > .env` before starting server
@@ -16,7 +16,17 @@ The comprehensive examples (vite and webpack) SHALL provide E2E tests that verif
 **And** the page title contains the runtime-env value
 **And** no console errors are present
 
-#### Scenario: HMR updates runtime-env values when .env changes
+#### Scenario: Dev server starts and displays runtime-env values (Webpack)
+
+**Given** the comprehensive-webpack example is installed with runtime-env CLI
+**And** `.env` file is created by CI with `echo "FOO=dev-initial" > .env` before starting server
+**When** the dev server is started with `npm run dev` via start-server-and-test
+**And** Cypress test visits `http://localhost:8080`
+**Then** the page displays the value of `runtimeEnv.FOO` from `.env`
+**And** the page title contains the runtime-env value
+**And** no console errors are present
+
+#### Scenario: HMR updates runtime-env values when .env changes (Vite)
 
 **Given** the vite dev server is running (via `npm run dev`)
 **And** the page is displaying initial value
@@ -25,6 +35,16 @@ The comprehensive examples (vite and webpack) SHALL provide E2E tests that verif
 **Then** the page automatically displays the new runtime-env value WITHOUT manual reload
 **And** the page title updates to reflect the new value
 **And** this demonstrates true HMR functionality in Vite
+
+#### Scenario: Runtime-env updates when .env changes (Webpack)
+
+**Given** the webpack dev server is running (via `npm run dev`)
+**And** the page is displaying initial value
+**When** Cypress updates `.env` file with `cy.exec('echo "FOO=dev-updated" > .env')`
+**And** Cypress waits 2000ms for file system change detection
+**Then** the page displays the new runtime-env value (webpack-dev-server auto-reloads)
+**And** the page title updates to reflect the new value
+**And** this demonstrates runtime-env updates work in webpack dev mode
 
 #### Scenario: Test artifacts are cleaned between tests
 
