@@ -12,7 +12,7 @@ describe("comprehensive-vite dev mode", () => {
       (result) => {
         serverPid = result.stdout.trim();
         cy.log(`Dev server PID: ${serverPid}`);
-      }
+      },
     );
 
     // Wait for server to be ready

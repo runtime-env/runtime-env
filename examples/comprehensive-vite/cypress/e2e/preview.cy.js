@@ -64,15 +64,15 @@ describe("comprehensive-vite preview mode", () => {
 
     // Visit page and wait for service worker to be ready
     cy.visit("http://localhost:4173");
-    
+
     // Reload to allow service worker to install new version
     cy.wait(2000);
     cy.reload();
-    
+
     // Second reload to activate the new service worker
     cy.wait(2000);
     cy.reload();
-    
+
     // Verify new value is displayed
     cy.get("#app").should("contain", "preview-updated");
     cy.title().should("include", "preview-updated");

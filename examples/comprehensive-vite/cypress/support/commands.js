@@ -14,7 +14,7 @@ Cypress.Commands.add("waitForServer", (url, maxAttempts = 60) => {
     if (attempts >= maxAttempts) {
       throw new Error(`Server at ${url} did not start in time`);
     }
-    
+
     return cy
       .request({ url, failOnStatusCode: false, timeout: 1000 })
       .then((response) => {
@@ -25,6 +25,6 @@ Cypress.Commands.add("waitForServer", (url, maxAttempts = 60) => {
         }
       });
   };
-  
+
   return checkServerIterative();
 });

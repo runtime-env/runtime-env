@@ -13,7 +13,7 @@ describe("comprehensive-webpack docker deployment", () => {
     // Clean up all containers with this image
     cy.exec(
       `docker ps -a -q --filter ancestor=${imageName} | xargs -r docker rm -f`,
-      { failOnNonZeroExit: false }
+      { failOnNonZeroExit: false },
     );
   });
 
@@ -36,7 +36,7 @@ describe("comprehensive-webpack docker deployment", () => {
     // Start container with environment variable
     cy.exec(
       `docker run -d --name ${containerName} -p 3000:80 -e FOO=docker-test ${imageName}`,
-      { timeout: 30000 }
+      { timeout: 30000 },
     );
 
     // Wait for container to be ready
@@ -55,7 +55,7 @@ describe("comprehensive-webpack docker deployment", () => {
     // Start container
     cy.exec(
       `docker run -d --name ${containerName} -p 3000:80 -e FOO=docker-sw-test ${imageName}`,
-      { timeout: 30000 }
+      { timeout: 30000 },
     );
 
     cy.wait(5000);
@@ -74,7 +74,7 @@ describe("comprehensive-webpack docker deployment", () => {
     // Start first container
     cy.exec(
       `docker run -d --name ${containerName} -p 3000:80 -e FOO=docker-first ${imageName}`,
-      { timeout: 30000 }
+      { timeout: 30000 },
     );
 
     cy.wait(5000);
@@ -92,7 +92,7 @@ describe("comprehensive-webpack docker deployment", () => {
     // Start new container with different value (NO image rebuild)
     cy.exec(
       `docker run -d --name ${containerName} -p 3000:80 -e FOO=docker-second ${imageName}`,
-      { timeout: 30000 }
+      { timeout: 30000 },
     );
 
     cy.wait(5000);
