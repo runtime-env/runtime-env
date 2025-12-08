@@ -122,6 +122,62 @@ jobs:
           docker build . -t runtime-env-example
           npm run test
 
+      - name: Test examples/comprehensive-vite (dev)
+        run: |
+          cd examples/comprehensive-vite
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npx cypress run --spec cypress/e2e/dev.cy.js
+
+      - name: Test examples/comprehensive-vite (test)
+        run: |
+          cd examples/comprehensive-vite
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          echo "FOO=test-value" > .env
+          npm run test
+
+      - name: Test examples/comprehensive-vite (preview)
+        run: |
+          cd examples/comprehensive-vite
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npx cypress run --spec cypress/e2e/preview.cy.js
+
+      - name: Test examples/comprehensive-vite (docker)
+        run: |
+          cd examples/comprehensive-vite
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npx cypress run --spec cypress/e2e/docker.cy.js
+
+      - name: Test examples/comprehensive-webpack (dev)
+        run: |
+          cd examples/comprehensive-webpack
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npx cypress run --spec cypress/e2e/dev.cy.js
+
+      - name: Test examples/comprehensive-webpack (test)
+        run: |
+          cd examples/comprehensive-webpack
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          echo "FOO=test-value" > .env
+          npm run test
+
+      - name: Test examples/comprehensive-webpack (docker)
+        run: |
+          cd examples/comprehensive-webpack
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npx cypress run --spec cypress/e2e/docker.cy.js
+
   release:
     if: github.ref_name == 'main'
 
