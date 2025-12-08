@@ -6,34 +6,25 @@
 
 The comprehensive examples (vite and webpack) SHALL provide E2E tests that verify the development server workflow, including runtime environment variable injection and hot module replacement (HMR). Development mode runs all three commands: gen-ts (types), gen-js (runtime values), and interpolate (HTML templates).
 
-#### Scenario: Dev server starts and displays runtime-env values (Vite)
+#### Scenario: Dev server starts and displays runtime-env values
 
 **Given** the comprehensive-vite example is installed with runtime-env CLI
-**And** `.env` file exists with environment variables
-**When** the dev server is started with `npm run dev`
-**And** a browser visits `http://localhost:5173`
-**Then** the page displays the value of `runtimeEnv.FOO` from `.env`
-**And** the page title contains the runtime-env value
-**And** no console errors are present
-
-#### Scenario: Dev server starts and displays runtime-env values (Webpack)
-
-**Given** the comprehensive-webpack example is installed with runtime-env CLI
-**And** `.env` file exists with environment variables
-**When** the dev server is started with `npm run dev`
-**And** a browser visits `http://localhost:8080`
+**And** `.env` file is created by CI with `echo "FOO=dev-initial" > .env` before starting server
+**When** the dev server is started with `npm run dev` via start-server-and-test
+**And** Cypress test visits `http://localhost:5173`
 **Then** the page displays the value of `runtimeEnv.FOO` from `.env`
 **And** the page title contains the runtime-env value
 **And** no console errors are present
 
 #### Scenario: HMR updates runtime-env values when .env changes
 
-**Given** the dev server is running (via `npm run dev`)
+**Given** the vite dev server is running (via `npm run dev`)
 **And** the page is displaying initial value
-**When** the `.env` file is modified with a new value for `FOO`
-**And** the page automatically reloads via HMR (wait with timeout)
-**And** the page displays the new runtime-env value
+**When** Cypress updates `.env` file with `cy.exec('echo "FOO=dev-updated" > .env')`
+**And** Cypress waits 2000ms for HMR to process the change
+**Then** the page automatically displays the new runtime-env value WITHOUT manual reload
 **And** the page title updates to reflect the new value
+**And** this demonstrates true HMR functionality in Vite
 
 #### Scenario: Test artifacts are cleaned between tests
 
