@@ -5,9 +5,6 @@ describe("comprehensive-vite docker deployment", () => {
   const containerName = "runtime-env-comprehensive-vite-test";
 
   before(() => {
-    // Copy tarball to example directory
-    cy.exec("cp ../../packages/cli/runtime-env-cli-test.tgz .");
-
     // Build Docker image
     cy.exec(`docker build . -t ${imageName}`, { timeout: 300000 });
   });
