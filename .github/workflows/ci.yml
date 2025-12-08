@@ -122,6 +122,70 @@ jobs:
           docker build . -t runtime-env-example
           npm run test
 
+      - name: Test examples/comprehensive-vite (dev)
+        run: |
+          cd examples/comprehensive-vite
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          echo "FOO=v1" > .env
+          npx start-server-and-test 'npm run dev' http://localhost:5173 'npx cypress run --spec cypress/e2e/dev.cy.js'
+
+      - name: Test examples/comprehensive-vite (test)
+        run: |
+          cd examples/comprehensive-vite
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          echo "FOO=v1" > .env
+          npm run test
+
+      - name: Test examples/comprehensive-vite (preview)
+        run: |
+          cd examples/comprehensive-vite
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm run build
+          echo "FOO=v1" > .env
+          npx start-server-and-test 'npm run preview' http://localhost:4173 'npx cypress run --spec cypress/e2e/preview.cy.js'
+
+      - name: Test examples/comprehensive-vite (docker)
+        run: |
+          cd examples/comprehensive-vite
+          git clean -xdf
+          npm ci
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
+          docker build . -t runtime-env-comprehensive-vite
+          npx start-server-and-test 'docker run -p 3000:80 -e FOO=v1 runtime-env-comprehensive-vite' http://localhost:3000 'npx cypress run --spec cypress/e2e/docker.cy.js'
+          docker ps -a -q -f ancestor=runtime-env-comprehensive-vite | xargs -r docker rm -f
+
+      - name: Test examples/comprehensive-webpack (dev)
+        run: |
+          cd examples/comprehensive-webpack
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          echo "FOO=v1" > .env
+          npx start-server-and-test 'npm run dev' http://localhost:8080 'npx cypress run --spec cypress/e2e/dev.cy.js'
+
+      - name: Test examples/comprehensive-webpack (test)
+        run: |
+          cd examples/comprehensive-webpack
+          git clean -xdf
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          echo "FOO=v1" > .env
+          npm run test
+
+      - name: Test examples/comprehensive-webpack (docker)
+        run: |
+          cd examples/comprehensive-webpack
+          git clean -xdf
+          npm ci
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
+          docker build . -t runtime-env-comprehensive-webpack
+          npx start-server-and-test 'docker run -p 3000:80 -e FOO=v1 runtime-env-comprehensive-webpack' http://localhost:3000 'npx cypress run --spec cypress/e2e/docker.cy.js'
+          docker ps -a -q -f ancestor=runtime-env-comprehensive-webpack | xargs -r docker rm -f
+
   release:
     if: github.ref_name == 'main'
 
