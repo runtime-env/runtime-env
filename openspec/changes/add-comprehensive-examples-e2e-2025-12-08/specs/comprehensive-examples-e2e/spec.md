@@ -9,9 +9,9 @@ The comprehensive examples (vite and webpack) SHALL provide E2E tests that verif
 #### Scenario: Dev server starts and displays runtime-env values (Vite)
 
 **Given** the comprehensive-vite example is installed with runtime-env CLI
-**And** `.env` file exists with environment variables
-**When** the dev server is started with `npm run dev`
-**And** a browser visits `http://localhost:5173`
+**And** `.env` file is created by CI with `echo "FOO=dev-initial" > .env` before starting server
+**When** the dev server is started with `npm run dev` via start-server-and-test
+**And** Cypress test visits `http://localhost:5173`
 **Then** the page displays the value of `runtimeEnv.FOO` from `.env`
 **And** the page title contains the runtime-env value
 **And** no console errors are present
@@ -19,27 +19,40 @@ The comprehensive examples (vite and webpack) SHALL provide E2E tests that verif
 #### Scenario: Dev server starts and displays runtime-env values (Webpack)
 
 **Given** the comprehensive-webpack example is installed with runtime-env CLI
-**And** `.env` file exists with environment variables
-**When** the dev server is started with `npm run dev`
-**And** a browser visits `http://localhost:8080`
+**And** `.env` file is created by CI with `echo "FOO=dev-initial" > .env` before starting server
+**When** the dev server is started with `npm run dev` via start-server-and-test
+**And** Cypress test visits `http://localhost:8080`
 **Then** the page displays the value of `runtimeEnv.FOO` from `.env`
 **And** the page title contains the runtime-env value
 **And** no console errors are present
 
-#### Scenario: HMR updates runtime-env values when .env changes
+#### Scenario: HMR updates runtime-env values when .env changes (Vite)
 
-**Given** the dev server is running (via `npm run dev`)
+**Given** the vite dev server is running (via `npm run dev`)
 **And** the page is displaying initial value
-**When** the `.env` file is modified with a new value for `FOO`
-**And** the page automatically reloads via HMR (wait with timeout)
-**And** the page displays the new runtime-env value
+**When** Cypress updates `.env` file with `cy.exec('echo "FOO=dev-updated" > .env')`
+**And** Cypress waits 2000ms for HMR to process the change
+**Then** the page automatically displays the new runtime-env value WITHOUT manual reload
 **And** the page title updates to reflect the new value
+**And** this demonstrates true HMR functionality in Vite
+
+#### Scenario: Runtime-env updates when .env changes (Webpack)
+
+**Given** the webpack dev server is running (via `npm run dev`)
+**And** the page is displaying initial value
+**When** Cypress updates `.env` file with `cy.exec('echo "FOO=dev-updated" > .env')`
+**And** Cypress waits 2000ms for file system change detection
+**Then** the page displays the new runtime-env value (webpack-dev-server auto-reloads)
+**And** the page title updates to reflect the new value
+**And** this demonstrates runtime-env updates work in webpack dev mode
 
 #### Scenario: Test artifacts are cleaned between tests
 
 **Given** a test mode has completed
 **When** the next test mode runs
 **Then** `git clean -xdf` removes all untracked files including `.env`
+**And** `git restore .` restores all tracked files to their committed state
+**And** this ensures both untracked and modified tracked files are reset
 **And** a fresh `.env` is generated for the next test
 
 ---
@@ -143,16 +156,16 @@ The comprehensive example E2E tests SHALL run in CI using the packed tarball ins
 **When** the comprehensive example test steps run
 **Then** each test mode has its own separate CI step
 **And** each step changes to the example directory
-**And** each step runs `git clean -xdf` inside the example directory to reset environment
+**And** each step runs `git clean -xdf` and `git restore .` inside the example directory to reset environment
 **And** each step runs `npm ci` to install dependencies
 **And** each step (except docker) installs the tarball with `npm i ../../packages/cli/runtime-env-cli-test.tgz`
 **And** docker copies the tarball into the build context for installation in the Dockerfile
 **And** dev mode: creates .env then runs inline `start-server-and-test dev http://localhost:{5173|8080} 'cypress run --spec cypress/e2e/dev.cy.js'`
 **And** test mode: creates .env then runs `npm run test` directly (no Cypress wrapper)
-**And** preview (vite) initial: runs `npm run build`, creates .env, then inline `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview.cy.js'`
-**And** preview (vite) SW update: updates .env then inline `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview-sw.cy.js'`
-**And** docker initial: builds image with `docker build --build-arg FOO=value`, then inline `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker.cy.js'`
-**And** docker SW update: rebuilds image with new FOO value, then inline `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker-sw.cy.js'`
+**And** preview (vite): single CI step runs `npm run build`, creates .env, runs initial test, updates .env, runs SW update test
+**And** preview test runs: `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview.cy.js'` then `echo "FOO=preview-updated" > .env` then `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview-sw.cy.js'`
+**And** docker: single CI step builds image once, runs initial test with one env value, runs SW update test with different env value
+**And** docker test runs: `docker build -t comprehensive-{vite|webpack} .` then `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f` then `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f`
 **And** fails the workflow if any step fails
 
 #### Scenario: E2E tests use tarball not workspace
@@ -168,11 +181,13 @@ The comprehensive example E2E tests SHALL run in CI using the packed tarball ins
 **Given** a test mode has completed in CI
 **When** the next test mode is about to run
 **Then** `git clean -xdf` is executed inside the example directory to remove all untracked files
+**And** `git restore .` is executed to restore all tracked files to their committed state
 **And** the tarball at `../../packages/cli/runtime-env-cli-test.tgz` remains available (outside example directory)
 **And** `.env` file is regenerated based on test mode requirements
-**And** `node_modules` and `dist` directories are removed
-**And** generated files (`runtime-env.js`, `runtime-env.d.ts`) are removed
-**And** the environment is in a clean state for the next test
+**And** `node_modules` and `dist` directories are removed (untracked)
+**And** generated files (`runtime-env.js`, `runtime-env.d.ts`) are removed (untracked)
+**And** modified tracked files like test files are restored to original state
+**And** the environment is in a completely clean state for the next test
 **And** each test mode can run its appropriate workflow (dev/test/preview/docker)
 
 ---
@@ -232,57 +247,45 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 **And** `start-server-and-test` terminates the server automatically after Cypress completes
 **And** completes successfully
 
-#### Scenario: Preview test runs independently in CI (Vite only)
+#### Scenario: Preview test runs both initial and SW update in single CI step (Vite only)
 
 **Given** a clean comprehensive-vite installation
-**And** `.env` file is created for initial test
-**When** the CI preview test step executes inline command
+**When** the CI preview test step executes
 **Then** CI builds the project with `npm run build`
-**And** `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview.cy.js'` is executed
+**And** `.env` file is created with `echo "FOO=preview-value" > .env`
+**And** `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview.cy.js'` is executed
 **And** `start-server-and-test` spawns preview server at localhost:4173
 **And** `start-server-and-test` waits for server to be ready
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/preview.cy.js`
 **And** Cypress tests verify interpolated values and service worker
-**And** if build or preview server fails, the command fails
-**And** `start-server-and-test` terminates the server automatically after Cypress completes
-**And** completes successfully
-
-#### Scenario: Preview SW update test runs independently in CI (Vite only)
-
-**Given** the initial preview test has completed
-**And** `.env` file is updated with new values
-**When** the CI preview SW update step executes inline command
-**Then** `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview-sw.cy.js'` is executed
-**And** `start-server-and-test` spawns preview server with updated env values
+**And** `start-server-and-test` terminates the server after Cypress completes
+**And** `.env` file is updated with `echo "FOO=preview-updated" > .env`
+**And** `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview-sw.cy.js'` is executed
+**And** `start-server-and-test` spawns preview server again with updated env values
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/preview-sw.cy.js`
 **And** Cypress tests reload page twice to verify service worker update
-**And** `start-server-and-test` terminates the server automatically after Cypress completes
-**And** completes successfully
+**And** `start-server-and-test` terminates the server after Cypress completes
+**And** both tests complete successfully in the same CI step without git clean between them
 
-#### Scenario: Docker test runs independently in CI
+#### Scenario: Docker test runs both initial and SW update in single CI step
 
 **Given** a clean comprehensive example installation
-**And** Docker image is built in CI step with `docker build --build-arg FOO=value -t comprehensive-{vite|webpack} .`
-**When** the CI docker test step executes inline command with start-server-and-test
-**Then** `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker.cy.js'`
-**And** docker command runs container in foreground (no -d flag): `docker run -p 3000:80 --rm comprehensive-{vite|webpack}`
-**And** `start-server-and-test` waits for http://localhost:3000 to be ready
+**When** the CI docker test step executes
+**Then** Docker image is built once with `docker build -t comprehensive-{vite|webpack} .`
+**And** `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f` is executed
+**And** docker command runs container in foreground (no -d flag) with runtime env `-e FOO=docker-value`
+**And** `start-server-and-test` waits for port 3000 to be ready
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/docker.cy.js`
 **And** Cypress tests verify runtime-env injection and service worker patching
-**And** `start-server-and-test` terminates the container automatically (sends SIGTERM, --rm flag cleans up)
-**And** completes successfully
-
-#### Scenario: Docker SW update test runs independently in CI
-
-**Given** the initial docker test has completed
-**And** Docker image is rebuilt with new FOO value
-**When** the CI docker SW update step executes inline command
-**Then** `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker-sw.cy.js'`
-**And** docker command runs new container in foreground with updated image
+**And** `start-server-and-test` terminates the container automatically (sends SIGTERM)
+**And** cleanup command runs: `docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f`
+**And** `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f` is executed
+**And** docker command runs new container with different runtime env `-e FOO=docker-updated`
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/docker-sw.cy.js`
 **And** Cypress tests reload page twice to verify service worker update
-**And** `start-server-and-test` terminates the container automatically (sends SIGTERM, --rm flag cleans up)
-**And** completes successfully
+**And** `start-server-and-test` terminates the container automatically (sends SIGTERM)
+**And** cleanup command runs again
+**And** both tests complete successfully in the same CI step using the same image but different runtime env values
 
 #### Scenario: Test mode runs directly without Cypress
 
@@ -298,11 +301,13 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 **Given** CI is running multiple test modes sequentially
 **When** transitioning between test modes
 **Then** `git clean -xdf` runs inside the example directory to remove all untracked files
+**And** `git restore .` runs to restore all tracked files to their committed state
 **And** all `node_modules`, `dist`, and generated files in the example are cleaned
+**And** any modifications to tracked files (like test files) are reverted
 **And** the tarball at `../../packages/cli/runtime-env-cli-test.tgz` remains available
 **And** `.env` is NOT present during builds
 **And** `.env` is only created AFTER build for runtime use
-**And** each test mode starts from a pristine state
+**And** each test mode starts from a completely pristine state
 
 ---
 
@@ -314,7 +319,7 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 - **Test Runner**: Vitest
 - **PWA Plugin**: vite-plugin-pwa
 - **Service Worker**: `dist/sw.js`
-- **Test Modes**: 5 CI steps (dev, test, preview initial, preview SW update, docker initial, docker updated)
+- **Test Modes**: 3 CI steps (dev, test, preview combines initial + SW update, docker combines initial + SW update)
 - **Execution**: All server modes use start-server-and-test inline in CI with existing top-level scripts or inline docker commands
 - **npm scripts**: NO scripts added to package.json
 
@@ -324,7 +329,7 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 - **Test Runner**: Jest
 - **PWA Plugin**: workbox-webpack-plugin
 - **Service Worker**: `dist/service-worker.js`
-- **Test Modes**: 4 CI steps (dev, test, docker initial, docker updated)
+- **Test Modes**: 3 CI steps (dev, test, docker combines initial + SW update)
 - **Execution**: All server modes use start-server-and-test inline in CI with existing top-level scripts or inline docker commands
 - **npm scripts**: NO scripts added to package.json
 

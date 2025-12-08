@@ -19,6 +19,11 @@ dist-ssr
 *.bak
 .env
 
+# Cypress
+cypress/screenshots/
+cypress/videos/
+dev.log
+
 # PWA generated files
 /public/sw.js
 /public/workbox-*.js
