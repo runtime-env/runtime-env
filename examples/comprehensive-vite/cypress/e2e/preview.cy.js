@@ -18,28 +18,8 @@ describe("comprehensive-vite preview mode", () => {
       cy.log(`Preview server PID: ${serverPid}`);
     });
 
-    // Wait for server to be ready by polling with retries
-    let attempts = 0;
-    const maxAttempts = 60;
-    const checkServer = () => {
-      if (attempts >= maxAttempts) {
-        throw new Error("Preview server did not start in time");
-      }
-      attempts++;
-      return cy
-        .request({
-          url: "http://localhost:4173",
-          failOnStatusCode: false,
-          timeout: 1000,
-        })
-        .then((response) => {
-          if (response.status !== 200) {
-            cy.wait(1000);
-            return checkServer();
-          }
-        });
-    };
-    checkServer();
+    // Wait for server to be ready
+    cy.waitForServer("http://localhost:4173");
   });
 
   after(() => {
@@ -80,39 +60,15 @@ describe("comprehensive-vite preview mode", () => {
     });
 
     // Wait for server to be ready
-    let attempts = 0;
-    const maxAttempts = 60;
-    const checkServer = () => {
-      if (attempts >= maxAttempts) {
-        throw new Error("Preview server did not start in time");
-      }
-      attempts++;
-      return cy
-        .request({
-          url: "http://localhost:4173",
-          failOnStatusCode: false,
-          timeout: 1000,
-        })
-        .then((response) => {
-          if (response.status !== 200) {
-            cy.wait(1000);
-            return checkServer();
-          }
-        });
-    };
-    checkServer();
+    cy.waitForServer("http://localhost:4173");
 
-    // Visit and verify new value
+    // Visit page
     cy.visit("http://localhost:4173");
     
-    // Wait for page to be fully loaded and service worker to update
-    cy.wait(3000);
-    
-    // Reload to activate new service worker
+    // Wait for service worker to update and reload twice to ensure activation
+    cy.wait(2000);
     cy.reload();
     cy.wait(2000);
-    
-    // Reload again to get the new content
     cy.reload();
     
     cy.get("#app").should("contain", "preview-updated");

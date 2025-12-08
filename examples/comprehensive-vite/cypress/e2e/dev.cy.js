@@ -15,24 +15,8 @@ describe("comprehensive-vite dev mode", () => {
       }
     );
 
-    // Wait for server to be ready by polling with retries
-    let attempts = 0;
-    const maxAttempts = 60;
-    const checkServer = () => {
-      if (attempts >= maxAttempts) {
-        throw new Error("Dev server did not start in time");
-      }
-      attempts++;
-      return cy
-        .request({ url: "http://localhost:5173", failOnStatusCode: false, timeout: 1000 })
-        .then((response) => {
-          if (response.status !== 200) {
-            cy.wait(1000);
-            return checkServer();
-          }
-        });
-    };
-    checkServer();
+    // Wait for server to be ready
+    cy.waitForServer("http://localhost:5173");
   });
 
   after(() => {

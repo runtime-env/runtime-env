@@ -45,28 +45,8 @@ describe("comprehensive-webpack docker deployment", () => {
     // Wait for container to be ready
     cy.wait(5000);
 
-    // Wait for server to be ready by polling
-    let attempts = 0;
-    const maxAttempts = 30;
-    const checkServer = () => {
-      if (attempts >= maxAttempts) {
-        throw new Error("Docker container did not start in time");
-      }
-      attempts++;
-      return cy
-        .request({
-          url: "http://localhost:3000",
-          failOnStatusCode: false,
-          timeout: 1000,
-        })
-        .then((response) => {
-          if (response.status !== 200) {
-            cy.wait(1000);
-            return checkServer();
-          }
-        });
-    };
-    checkServer();
+    // Wait for server to be ready
+    cy.waitForServer("http://localhost:3000", 30);
 
     // Visit and verify value
     cy.visit("http://localhost:3000");
@@ -84,27 +64,7 @@ describe("comprehensive-webpack docker deployment", () => {
     cy.wait(5000);
 
     // Wait for server to be ready
-    let attempts = 0;
-    const maxAttempts = 30;
-    const checkServer = () => {
-      if (attempts >= maxAttempts) {
-        throw new Error("Docker container did not start in time");
-      }
-      attempts++;
-      return cy
-        .request({
-          url: "http://localhost:3000",
-          failOnStatusCode: false,
-          timeout: 1000,
-        })
-        .then((response) => {
-          if (response.status !== 200) {
-            cy.wait(1000);
-            return checkServer();
-          }
-        });
-    };
-    checkServer();
+    cy.waitForServer("http://localhost:3000", 30);
 
     cy.visit("http://localhost:3000");
     cy.window().then((win) => {
@@ -123,27 +83,7 @@ describe("comprehensive-webpack docker deployment", () => {
     cy.wait(5000);
 
     // Wait for server
-    let attempts = 0;
-    const maxAttempts = 30;
-    const checkServer = () => {
-      if (attempts >= maxAttempts) {
-        throw new Error("Docker container did not start in time");
-      }
-      attempts++;
-      return cy
-        .request({
-          url: "http://localhost:3000",
-          failOnStatusCode: false,
-          timeout: 1000,
-        })
-        .then((response) => {
-          if (response.status !== 200) {
-            cy.wait(1000);
-            return checkServer();
-          }
-        });
-    };
-    checkServer();
+    cy.waitForServer("http://localhost:3000", 30);
 
     cy.visit("http://localhost:3000");
     cy.get("#app").should("contain", "docker-first");
@@ -161,8 +101,7 @@ describe("comprehensive-webpack docker deployment", () => {
     cy.wait(5000);
 
     // Wait for new server
-    attempts = 0;
-    checkServer();
+    cy.waitForServer("http://localhost:3000", 30);
 
     // Visit and verify new value
     cy.visit("http://localhost:3000");
