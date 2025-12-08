@@ -9,20 +9,24 @@
 // ***********************************************
 
 // Custom command to wait for server to be ready
-Cypress.Commands.add("waitForServer", (url, maxAttempts = 60) => {
+Cypress.Commands.add("waitForServer", (url, maxAttempts = 120) => {
   const checkServerIterative = (attempts = 0) => {
     if (attempts >= maxAttempts) {
       throw new Error(`Server at ${url} did not start in time`);
     }
 
     return cy
-      .request({ url, failOnStatusCode: false, timeout: 1000 })
+      .request({ url, failOnStatusCode: false, timeout: 2000 })
       .then((response) => {
         if (response.status === 200) {
           return cy.wrap(response);
         } else {
-          return cy.wait(1000).then(() => checkServerIterative(attempts + 1));
+          return cy.wait(2000).then(() => checkServerIterative(attempts + 1));
         }
+      })
+      .catch(() => {
+        // On error (e.g., ECONNREFUSED), wait and retry
+        return cy.wait(2000).then(() => checkServerIterative(attempts + 1));
       });
   };
 
