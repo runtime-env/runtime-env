@@ -1,5 +1,5 @@
 import type { Compiler as WebpackCompiler, Compilation } from "webpack";
-import { loadEnvValues } from "../generators";
+import { loadEnvValues, loadEnvKeys } from "../generators";
 import type { RuntimeEnvOptions } from "../types";
 import { getSchemaFile, getGlobalVariableName } from "../utils";
 import { DEFAULT_PUBLIC_DIR, DEFAULT_JS_OUTPUT_FILE, PLUGIN_NAME } from "../constants";
@@ -76,17 +76,25 @@ function setupHtmlInterpolation(
           const schemaFile = getSchemaFile(context.options);
           const globalVariableName = getGlobalVariableName(context.options);
 
-          const envValues = context.isDev
-            ? await loadEnvValues(
-                schemaFile,
-                globalVariableName,
-                context.options.interpolate!.envFile,
-              )
-            : null;
+          let envValues: Record<string, unknown> | null = null;
+          let envKeys: string[] | null = null;
+
+          if (context.isDev) {
+            // Dev mode: load actual env values
+            envValues = await loadEnvValues(
+              schemaFile,
+              globalVariableName,
+              context.options.interpolate!.envFile,
+            );
+          } else {
+            // Production mode: load env keys from schema
+            envKeys = await loadEnvKeys(schemaFile);
+          }
 
           const updatedTemplateParameters = createTemplateParameters(
             globalVariableName,
             envValues,
+            envKeys,
             data.plugin.options.templateParameters,
           );
 

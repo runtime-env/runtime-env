@@ -217,3 +217,28 @@ function extractEnvValuesFromJs(
 
   return {};
 }
+
+/**
+ * Loads environment variable keys from the schema file.
+ * This is useful for production builds where we need to know which variables exist
+ * without loading their actual values.
+ *
+ * @param schemaFile - Path to schema file
+ * @returns Promise resolving to array of environment variable keys
+ */
+export async function loadEnvKeys(schemaFile: string): Promise<string[]> {
+  try {
+    const schemaContent = fs.readFileSync(schemaFile, "utf-8");
+    const schema = JSON.parse(schemaContent);
+
+    // Extract keys from the schema properties
+    if (schema && typeof schema === "object" && schema.properties) {
+      return Object.keys(schema.properties);
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Failed to load schema file:", error);
+    return [];
+  }
+}

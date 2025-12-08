@@ -56,11 +56,12 @@ export function findHtmlPlugin(
 /**
  * Creates template parameters for HTML plugin.
  * In dev mode, returns actual env values.
- * In production, returns a Proxy that outputs template syntax.
+ * In production, creates an object mapping each key to template syntax.
  */
 export function createTemplateParameters(
   globalVariableName: string,
   envValues: Record<string, unknown> | null,
+  envKeys: string[] | null,
   existingParams?: Record<string, unknown>,
 ): Record<string, unknown> {
   if (envValues) {
@@ -69,19 +70,21 @@ export function createTemplateParameters(
       ...existingParams,
       [globalVariableName]: envValues,
     };
-  } else {
-    // Production mode: use Proxy to preserve template syntax
-    const escapeProxy = new Proxy(
-      {},
-      {
-        get(_, prop) {
-          return `<%= ${globalVariableName}.${String(prop)} %>`;
-        },
-      },
-    );
+  } else if (envKeys) {
+    // Production mode: create object mapping keys to template syntax
+    const templateMapping: Record<string, string> = {};
+    for (const key of envKeys) {
+      templateMapping[key] = `<%= ${globalVariableName}.${key} %>`;
+    }
     return {
       ...existingParams,
-      [globalVariableName]: escapeProxy,
+      [globalVariableName]: templateMapping,
+    };
+  } else {
+    // Fallback: empty object
+    return {
+      ...existingParams,
+      [globalVariableName]: {},
     };
   }
 }
