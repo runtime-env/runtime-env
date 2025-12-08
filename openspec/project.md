@@ -191,6 +191,7 @@ The project follows "build once, deploy anywhere" principle with distinct comman
 - **Node LTS compatibility**: Target Node.js LTS versions
 - **Single executable**: CLI bundles to single file with esbuild
 - **Example isolation**: Each example is self-contained with its own dependencies
+- **Spec immutability during implementation**: Once a change proposal is approved and implementation begins, NO changes to specs are allowed. If implementation reveals issues, stop and create a new proposal to modify the specs.
 
 ## External Dependencies
 

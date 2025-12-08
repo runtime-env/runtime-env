@@ -1,8 +1,11 @@
 # webpack-example Specification
 
 ## Purpose
+
 TBD - created by archiving change add-webpack-example-2025-12-07. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Comprehensive webpack example SHALL demonstrate all runtime-env workflows
 
 `examples/comprehensive-webpack` SHALL provide a complete, runnable example that demonstrates all primary `@runtime-env/cli` workflows using webpack as the build tool, achieving feature parity with `examples/comprehensive-vite`.
@@ -99,4 +102,3 @@ TBD - created by archiving change add-webpack-example-2025-12-07. Update Purpose
 - And: Highlights key differences from the Vite approach.
 - And: Provides troubleshooting guidance for common webpack issues.
 - And: Includes project structure overview and script reference.
-
