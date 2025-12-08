@@ -16,18 +16,26 @@ Cypress.Commands.add("waitForServer", (url, maxAttempts = 120) => {
     }
 
     return cy
-      .request({ url, failOnStatusCode: false, timeout: 2000 })
-      .then((response) => {
-        if (response.status === 200) {
-          return cy.wrap(response);
-        } else {
-          return cy.wait(2000).then(() => checkServerIterative(attempts + 1));
-        }
+      .request({
+        url,
+        failOnStatusCode: false,
+        timeout: 2000,
+        retryOnStatusCodeFailure: false,
       })
-      .catch(() => {
-        // On error (e.g., ECONNREFUSED), wait and retry
-        return cy.wait(2000).then(() => checkServerIterative(attempts + 1));
-      });
+      .then(
+        (response) => {
+          // Success: check if server is ready
+          if (response.status === 200) {
+            return cy.wrap(response);
+          } else {
+            return cy.wait(2000).then(() => checkServerIterative(attempts + 1));
+          }
+        },
+        () => {
+          // Failure (e.g., ECONNREFUSED): wait and retry
+          return cy.wait(2000).then(() => checkServerIterative(attempts + 1));
+        },
+      );
   };
 
   return checkServerIterative();
