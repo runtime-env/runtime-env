@@ -140,10 +140,10 @@ The comprehensive example E2E tests SHALL run in CI using the packed tarball ins
 **And** docker copies the tarball into the build context for installation in the Dockerfile
 **And** dev mode: creates .env then runs inline `start-server-and-test dev http://localhost:{5173|8080} 'cypress run --spec cypress/e2e/dev.cy.js'`
 **And** test mode: creates .env then runs `npm run test` directly (no Cypress wrapper)
-**And** preview (vite) initial: runs `npm run build`, creates .env, then inline `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview.cy.js'`
-**And** preview (vite) SW update: updates .env then inline `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview-sw.cy.js'`
-**And** docker initial: builds image with `docker build --build-arg FOO=value`, then inline `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker.cy.js'`
-**And** docker SW update: rebuilds image with new FOO value, then inline `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker-sw.cy.js'`
+**And** preview (vite): single CI step runs `npm run build`, creates .env, runs initial test, updates .env, runs SW update test
+**And** preview test runs: `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview.cy.js'` then `echo "FOO=preview-updated" > .env` then `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview-sw.cy.js'`
+**And** docker: single CI step builds image once, runs initial test with one env value, runs SW update test with different env value
+**And** docker test runs: `docker build -t comprehensive-{vite|webpack} .` then `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f` then `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f`
 **And** fails the workflow if any step fails
 
 #### Scenario: E2E tests use tarball not workspace
@@ -223,57 +223,45 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 **And** `start-server-and-test` terminates the server automatically after Cypress completes
 **And** completes successfully
 
-#### Scenario: Preview test runs independently in CI (Vite only)
+#### Scenario: Preview test runs both initial and SW update in single CI step (Vite only)
 
 **Given** a clean comprehensive-vite installation
-**And** `.env` file is created for initial test
-**When** the CI preview test step executes inline command
+**When** the CI preview test step executes
 **Then** CI builds the project with `npm run build`
-**And** `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview.cy.js'` is executed
+**And** `.env` file is created with `echo "FOO=preview-value" > .env`
+**And** `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview.cy.js'` is executed
 **And** `start-server-and-test` spawns preview server at localhost:4173
 **And** `start-server-and-test` waits for server to be ready
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/preview.cy.js`
 **And** Cypress tests verify interpolated values and service worker
-**And** if build or preview server fails, the command fails
-**And** `start-server-and-test` terminates the server automatically after Cypress completes
-**And** completes successfully
-
-#### Scenario: Preview SW update test runs independently in CI (Vite only)
-
-**Given** the initial preview test has completed
-**And** `.env` file is updated with new values
-**When** the CI preview SW update step executes inline command
-**Then** `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview-sw.cy.js'` is executed
-**And** `start-server-and-test` spawns preview server with updated env values
+**And** `start-server-and-test` terminates the server after Cypress completes
+**And** `.env` file is updated with `echo "FOO=preview-updated" > .env`
+**And** `start-server-and-test preview http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --spec cypress/e2e/preview-sw.cy.js'` is executed
+**And** `start-server-and-test` spawns preview server again with updated env values
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/preview-sw.cy.js`
 **And** Cypress tests reload page twice to verify service worker update
-**And** `start-server-and-test` terminates the server automatically after Cypress completes
-**And** completes successfully
+**And** `start-server-and-test` terminates the server after Cypress completes
+**And** both tests complete successfully in the same CI step without git clean between them
 
-#### Scenario: Docker test runs independently in CI
+#### Scenario: Docker test runs both initial and SW update in single CI step
 
 **Given** a clean comprehensive example installation
-**And** Docker image is built in CI step with `docker build --build-arg FOO=value -t comprehensive-{vite|webpack} .`
-**When** the CI docker test step executes inline command with start-server-and-test
-**Then** `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker.cy.js'`
-**And** docker command runs container in foreground (no -d flag): `docker run -p 3000:80 --rm comprehensive-{vite|webpack}`
-**And** `start-server-and-test` waits for http://localhost:3000 to be ready
+**When** the CI docker test step executes
+**Then** Docker image is built once with `docker build -t comprehensive-{vite|webpack} .`
+**And** `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f` is executed
+**And** docker command runs container in foreground (no -d flag) with runtime env `-e FOO=docker-value`
+**And** `start-server-and-test` waits for port 3000 to be ready
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/docker.cy.js`
 **And** Cypress tests verify runtime-env injection and service worker patching
-**And** `start-server-and-test` terminates the container automatically (sends SIGTERM, --rm flag cleans up)
-**And** completes successfully
-
-#### Scenario: Docker SW update test runs independently in CI
-
-**Given** the initial docker test has completed
-**And** Docker image is rebuilt with new FOO value
-**When** the CI docker SW update step executes inline command
-**Then** `start-server-and-test 'docker run -p 3000:80 --rm comprehensive-{vite|webpack}' http://localhost:3000 'cypress run --spec cypress/e2e/docker-sw.cy.js'`
-**And** docker command runs new container in foreground with updated image
+**And** `start-server-and-test` terminates the container automatically (sends SIGTERM)
+**And** cleanup command runs: `docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f`
+**And** `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-{vite|webpack}' 3000 'cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f` is executed
+**And** docker command runs new container with different runtime env `-e FOO=docker-updated`
 **And** `start-server-and-test` runs Cypress test from `cypress/e2e/docker-sw.cy.js`
 **And** Cypress tests reload page twice to verify service worker update
-**And** `start-server-and-test` terminates the container automatically (sends SIGTERM, --rm flag cleans up)
-**And** completes successfully
+**And** `start-server-and-test` terminates the container automatically (sends SIGTERM)
+**And** cleanup command runs again
+**And** both tests complete successfully in the same CI step using the same image but different runtime env values
 
 #### Scenario: Test mode runs directly without Cypress
 
@@ -305,7 +293,7 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 - **Test Runner**: Vitest
 - **PWA Plugin**: vite-plugin-pwa
 - **Service Worker**: `dist/sw.js`
-- **Test Modes**: 5 CI steps (dev, test, preview initial, preview SW update, docker initial, docker updated)
+- **Test Modes**: 3 CI steps (dev, test, preview combines initial + SW update, docker combines initial + SW update)
 - **Execution**: All server modes use start-server-and-test inline in CI with existing top-level scripts or inline docker commands
 - **npm scripts**: NO scripts added to package.json
 
@@ -315,7 +303,7 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 - **Test Runner**: Jest
 - **PWA Plugin**: workbox-webpack-plugin
 - **Service Worker**: `dist/service-worker.js`
-- **Test Modes**: 4 CI steps (dev, test, docker initial, docker updated)
+- **Test Modes**: 3 CI steps (dev, test, docker combines initial + SW update)
 - **Execution**: All server modes use start-server-and-test inline in CI with existing top-level scripts or inline docker commands
 - **npm scripts**: NO scripts added to package.json
 
