@@ -1,41 +1,16 @@
 /// <reference types="cypress" />
 
 describe("comprehensive-vite dev mode", () => {
-  let serverPid;
-
-  before(() => {
-    // Create initial .env file
-    cy.writeFile(".env", "FOO=dev-initial");
-
-    // Start dev server in background and capture PID
-    cy.exec("npm run dev > dev.log 2>&1 & echo $!", { timeout: 10000 }).then(
-      (result) => {
-        serverPid = result.stdout.trim();
-        cy.log(`Dev server PID: ${serverPid}`);
-      },
-    );
-
-    // Wait for server to be ready
-    cy.waitForServer("http://localhost:5173");
-  });
-
-  after(() => {
-    // Kill the dev server
-    if (serverPid) {
-      cy.exec(`kill ${serverPid}`, { failOnNonZeroExit: false });
-    }
-  });
-
-  it("displays initial runtime-env value", () => {
+  it("displays runtime-env value", () => {
     cy.visit("http://localhost:5173");
-    cy.get("#app").should("contain", "dev-initial");
-    cy.title().should("include", "dev-initial");
+    cy.get("#app").should("contain", "dev-test");
+    cy.title().should("include", "dev-test");
   });
 
   it("updates value via HMR when .env changes", () => {
     // Visit page first
     cy.visit("http://localhost:5173");
-    cy.get("#app").should("contain", "dev-initial");
+    cy.get("#app").should("contain", "dev-test");
 
     // Update .env file
     cy.writeFile(".env", "FOO=dev-updated");
