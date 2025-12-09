@@ -26,14 +26,16 @@ examples/comprehensive-{vite|webpack}/
 
 ### Test Execution Model
 
-**Cypress-wrapped modes (dev, preview, docker)**:
+**Server-managed modes (dev, preview, docker)**:
 
-- Cypress tests use `cy.exec()` to spawn background processes (e.g., `npm run dev &`)
-- Cypress tests use `cy.exec()` to run npm scripts (`npm run build`, `npm run preview`)
-- Cypress tests use `cy.exec()` to run docker commands (`docker build`, `docker run`, `docker stop`, `docker rm`)
-- Cypress tests terminate spawned processes using `cy.exec('kill <pid>')` or `cy.exec('pkill -f ...')`
-- If any `cy.exec()` command fails (non-zero exit code), the Cypress test fails
-- This makes it simpler to see what happens during test execution, entirely within cy.exec()
+- Use `start-server-and-test` npm package to manage server lifecycle OUTSIDE Cypress
+- `start-server-and-test` spawns the server (npm run dev/preview or docker run)
+- `start-server-and-test` polls the server URL until ready
+- `start-server-and-test` runs Cypress tests with server already available
+- `start-server-and-test` automatically terminates server after tests complete
+- Cypress tests use `cy.exec()` ONLY for file operations (updating .env files)
+- If server fails to start, command fails before Cypress runs
+- This follows Cypress best practices (server management outside of Cypress)
 
 **Direct execution (test mode)**:
 
@@ -80,17 +82,20 @@ All CI steps follow this pattern:
 
 **Purpose**: Verify development workflow with HMR
 
-**Pattern** (Cypress test):
+**Pattern** (using `start-server-and-test` OUTSIDE Cypress):
 
-- Use `cy.exec('npm run dev > dev.log 2>&1 & echo $!')` to spawn dev server and capture PID
-- Wait for server to be ready (poll localhost:{5173|8080})
-- Visit localhost:{5173|8080}
-- Verify page displays runtime-env value from .env
-- Use `cy.writeFile()` to update .env file
-- Wait for HMR (with timeout)
-- Verify page displays updated value
-- Use `cy.exec('kill <pid>')` to terminate dev server
-- If npm run dev fails, Cypress test fails
+- CI creates `.env` file with `echo "FOO=dev-initial" > .env`
+- CI runs `start-server-and-test dev http://localhost:{5173|8080} 'cypress run --spec cypress/e2e/dev.cy.js'`
+- `start-server-and-test` spawns dev server (`npm run dev`)
+- `start-server-and-test` polls localhost:{5173|8080} until ready
+- `start-server-and-test` runs Cypress test with server already available
+- Cypress test visits localhost:{5173|8080}
+- Cypress test verifies page displays runtime-env value from .env
+- Cypress test uses `cy.exec('echo "FOO=dev-updated" > .env')` to update .env file
+- Cypress test waits 2000ms for HMR/file change detection
+- Cypress test verifies page displays updated value (Vite: auto HMR, Webpack: auto-reload)
+- `start-server-and-test` terminates dev server automatically after Cypress completes
+- If dev server fails to start, command fails before Cypress runs
 
 ### 2. Test Mode
 
@@ -107,34 +112,43 @@ All CI steps follow this pattern:
 
 **Purpose**: Verify preview server with interpolated values
 
-**Pattern** (Cypress test):
+**Pattern** (using `start-server-and-test` OUTSIDE Cypress):
 
-- Use `cy.exec('npm run build')` WITHOUT .env
-- Use `cy.writeFile()` to create .env AFTER build
-- Use `cy.exec('npm run preview > preview.log 2>&1 & echo $!')` to spawn preview server and capture PID
-- Wait for server to be ready (poll localhost:4173)
-- Visit localhost:4173
-- Verify page displays interpolated values (not template)
-- Verify service worker loads and caches correctly
-- Use `cy.exec('kill <pid>')` to terminate preview server
-- If npm run build or npm run preview fails, Cypress test fails
+- CI runs `npm run build` WITHOUT .env (preserves template syntax)
+- CI creates `.env` file AFTER build with `echo "FOO=preview-value" > .env`
+- CI runs `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview.cy.js'`
+- `start-server-and-test` spawns preview server (`npm run preview`)
+- `start-server-and-test` polls localhost:4173 until ready
+- `start-server-and-test` runs Cypress test with server already available
+- Cypress test visits localhost:4173
+- Cypress test verifies page displays interpolated values (not template syntax)
+- Cypress test verifies service worker installs successfully
+- `start-server-and-test` terminates preview server automatically after Cypress completes
+- CI updates `.env` with `echo "FOO=preview-updated" > .env`
+- CI runs `start-server-and-test preview http://localhost:4173 'cypress run --spec cypress/e2e/preview-sw.cy.js'`
+- Cypress SW test reloads page twice to verify service worker update with new env values
+- Both tests run in same CI step without rebuilding (demonstrates "build once, deploy anywhere")
 
 ### 4. Docker Mode
 
 **Purpose**: Verify Docker deployment with runtime injection
 
-**Pattern** (Cypress test):
+**Pattern** (using `start-server-and-test` OUTSIDE Cypress):
 
-- Use `cy.exec('cp ...')` to copy tarball to example directory
-- Use `cy.exec('docker build ...')` to build Docker image WITHOUT .env
-- Use `cy.exec('docker run ...')` to run container with environment variables at runtime
-- Visit localhost:3000
-- Verify page displays injected runtime-env values
-- Verify service worker is patched
-- Use `cy.exec('docker stop ...')` and `cy.exec('docker run ...')` to restart with different env values
-- Verify new values displayed
-- Use `cy.exec('docker stop ...')` and `cy.exec('docker rm ...')` to clean up containers
-- If any docker command fails, Cypress test fails
+- CI copies tarball to example directory with `cp ../../packages/cli/runtime-env-cli-test.tgz .`
+- CI builds Docker image with `docker build -t comprehensive-{vite|webpack} .` (WITHOUT .env)
+- CI runs `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-value comprehensive-{vite|webpack}' 3000 'cypress run --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f`
+- `start-server-and-test` runs container in foreground with runtime env injection via `-e FOO=docker-value`
+- `start-server-and-test` polls port 3000 until ready
+- `start-server-and-test` runs Cypress test with container already available
+- Cypress test visits localhost:3000
+- Cypress test verifies page displays injected runtime-env values
+- Cypress test verifies service worker is patched correctly
+- `start-server-and-test` terminates container automatically (sends SIGTERM)
+- Cleanup command runs: `docker ps -f ancestor=IMAGE -q | xargs docker rm -f`
+- CI runs `start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-{vite|webpack}' 3000 'cypress run --spec cypress/e2e/docker-sw.cy.js' && docker ps -f ancestor=comprehensive-{vite|webpack} -q | xargs docker rm -f`
+- Cypress SW test reloads page twice to verify service worker update with new env values
+- Both tests run in same CI step using same image but different runtime env values (demonstrates runtime config flexibility)
 
 ## Trade-offs
 

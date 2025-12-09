@@ -187,16 +187,7 @@ comprehensive-webpack/
 ├── jest.config.js         # Jest configuration
 ├── package.json           # Dependencies and scripts
 ├── .runtimeenvschema.json # Runtime environment schema
-├── dist/                  # Build output directory
-│   ├── index.html         # Generated HTML (built)
-│   ├── index.bundle.js    # Generated bundle
-│   └── service-worker.js  # Generated service worker
 ├── index.html             # HTML template with <%= %> syntax
-├── webpack.config.js      # Webpack configuration
-├── tsconfig.json          # TypeScript configuration
-├── jest.config.js         # Jest configuration
-├── package.json           # Dependencies and scripts
-├── .runtimeenvschema.json # Runtime environment schema
 ├── Dockerfile             # Multi-stage Docker build
 ├── start.sh               # Docker startup script
 ├── nginx.conf             # Nginx configuration
