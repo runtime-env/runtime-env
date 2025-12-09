@@ -1,5 +1,4 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { GenerateSW } = require("workbox-webpack-plugin");
 const path = require("path");
 const fs = require("fs");
 
@@ -39,17 +38,6 @@ module.exports = (env, argv) => {
               inject: "body",
             },
       ),
-      isProduction &&
-        new GenerateSW({
-          additionalManifestEntries: [
-            {
-              url: "runtime-env.js",
-              revision: "placeholder",
-            },
-          ],
-          clientsClaim: true,
-          skipWaiting: true,
-        }),
     ],
     devServer: {
       static: [

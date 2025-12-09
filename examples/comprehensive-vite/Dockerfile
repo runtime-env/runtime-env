@@ -13,12 +13,6 @@ RUN echo '{ "main": "./node_modules/@runtime-env/cli/bin/runtime-env.js", "outpu
 RUN node --experimental-sea-config sea-config.json
 RUN cp $(command -v node) runtime-env
 RUN npx postject runtime-env NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
-
-COPY scripts/patch-runtime-env-revision.cjs patch-runtime-env-revision.cjs
-RUN echo '{ "main": "./patch-runtime-env-revision.cjs", "output": "sea-prep.blob" }' > sea-config.json
-RUN node --experimental-sea-config sea-config.json
-RUN cp $(command -v node) patch-runtime-env-revision
-RUN npx postject patch-runtime-env-revision NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
 ###
 
 COPY public ./public
@@ -32,7 +26,7 @@ FROM nginx:stable-alpine
 
 RUN apk add g++ make
 COPY --from=build dist ./dist
-COPY --from=build runtime-env patch-runtime-env-revision ./
+COPY --from=build runtime-env ./
 COPY .runtimeenvschema.json start.sh ./
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 

@@ -7,7 +7,6 @@ This example demonstrates all key workflows for using `@runtime-env/cli` with a 
 - **Production builds** with type-safe environment variables
 - **Preview mode** for testing production builds locally
 - **Docker deployment** using single executable applications (SEA)
-- **PWA support** with Workbox service worker and runtime-env.js cache busting
 
 ## Project Structure
 
@@ -23,14 +22,14 @@ comprehensive/
 ├── tests/
 │   └── runtime-env.test.ts # Unit tests for runtime environment
 ├── scripts/
-│   └── patch-runtime-env-revision.cjs # Service worker cache busting (optional)
+│
 ├── .env                    # Local environment variables (git-ignored)
 ├── .runtimeenvschema.json  # JSON schema defining environment variables
 ├── Dockerfile              # Multi-stage Docker build
 ├── nginx.conf              # Nginx configuration
 ├── start.sh                # Container startup script
 ├── tsconfig.json           # TypeScript configuration
-└── vite.config.ts          # Vite and Vitest configuration with PWA plugin
+└── vite.config.ts          # Vite and Vitest configuration
 
 ```
 
@@ -116,32 +115,17 @@ docker run -it --rm -p 80:80 -e FOO=production runtime-env-comprehensive
 The Dockerfile:
 
 1. Builds the application (`npm run build`)
-2. Creates single executable applications (SEA) for runtime-env CLI and patch-runtime-env-revision
+2. Creates single executable applications (SEA) for runtime-env CLI
 3. Copies build artifacts to nginx image
 4. Runs start.sh which:
    - Generates runtime-env.js from environment variables
    - Interpolates index.html with environment values
-   - Patches service worker revision hash for runtime-env.js (ensures fresh values on updates)
    - Starts nginx
 
 **Benefits:**
 
 - Single Docker image works across all environments
 - No rebuild required for different env values
-
-### 6. PWA and Service Worker
-
-The example uses `vite-plugin-pwa` with Workbox to generate a service worker that caches the application for offline use. The service worker includes `runtime-env.js` in its precache manifest with a placeholder revision.
-
-**Cache busting for runtime-env.js:**
-
-At container startup, the `patch-runtime-env-revision.cjs` script:
-
-1. Calculates the MD5 hash of the generated `runtime-env.js` file
-2. Replaces the `"placeholder"` revision in `sw.js` with the actual hash
-3. Ensures the service worker fetches fresh `runtime-env.js` when environment values change
-
-This approach allows the service worker to properly cache all assets while ensuring `runtime-env.js` is always up-to-date with the current environment variables.
 
 ## Environment Variables
 
@@ -185,9 +169,6 @@ Includes `src/**/*.d.ts` and `tests/**/*.ts` to automatically pick up generated 
 
 - Includes a Vite plugin that serves interpolated HTML from cache during development
 - Configures vitest with `setupFiles: ["./public/runtime-env.js"]` to load generated runtime environment in tests
-- Configures vite-plugin-pwa with Workbox to generate service worker
-- Adds `runtime-env.js` to service worker manifest with placeholder revision (patched at container startup)
-- Disables `publicDir` to prevent automatic copying of public assets
 
 ### .gitignore
 

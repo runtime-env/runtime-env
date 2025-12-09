@@ -8,6 +8,30 @@ Remove all Progressive Web App (PWA) functionality from comprehensive-vite and c
 
 ## Task List
 
+### Checklist Status
+
+- [x] 1.1 Remove vite-plugin-pwa dependency
+- [x] 1.2 Remove VitePWA plugin from vite.config.ts
+- [x] 1.3 Remove service worker registration from main.ts
+- [x] 1.4 Delete service worker patch script (vite)
+- [x] 1.5 Remove preview:runtime-env:pwa npm script
+- [x] 1.6 Delete service worker E2E tests (vite)
+- [x] 1.7 Update comprehensive-vite README
+- [x] 2.1 Remove workbox-webpack-plugin dependency
+- [x] 2.2 Remove Workbox plugin from webpack.config.js
+- [x] 2.3 Remove service worker registration from index.ts
+- [x] 2.4 Delete service worker source file (if existed)
+- [x] 2.5 Delete service worker patch script (webpack)
+- [x] 2.6 Delete service worker E2E tests (webpack)
+- [x] 2.7 Update comprehensive-webpack README
+- [x] 3.1 Update comprehensive-vite CI (dual-run preview/docker, remove -sw specs)
+- [x] 3.2 Update comprehensive-webpack CI (dual-run docker, remove -sw spec)
+- [x] 4.1 Verify comprehensive-vite builds and tests locally
+- [x] 4.2 Verify comprehensive-webpack builds and tests locally
+- [x] 4.3 Verify Docker deployments locally
+- [ ] 4.4 Run full CI pipeline on branch
+- [x] 5.1 Update comprehensive-examples-e2e spec (done earlier in proposal/apply)
+
 ### Phase 1: Remove comprehensive-vite PWA Components
 
 #### Task 1.1: Remove vite-plugin-pwa dependency

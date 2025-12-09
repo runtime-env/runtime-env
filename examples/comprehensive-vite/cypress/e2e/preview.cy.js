@@ -1,28 +1,16 @@
-describe("Preview Mode E2E - Initial Load", () => {
-  it("should serve interpolated content with service worker", () => {
+describe("Preview Mode E2E", () => {
+  it("serves interpolated content from a single build", () => {
     // Visit the preview server (already running via start-server-and-test)
     // .env file is created AFTER build in CI
     cy.visit("/");
 
+    // Get expected value from Cypress environment (passed via --env flag in CI)
+    const expectedValue = Cypress.env("EXPECTED_FOO");
+
     // Verify page displays the actual runtime-env value (not template syntax)
-    cy.get("#app").should("not.contain", "<%=");
-    cy.get("#app").should("not.contain", "undefined");
-    cy.get("#app").invoke("text").should("match", /\w+/);
+    cy.get("#app").should("contain", expectedValue);
 
     // Verify page title contains the actual runtime-env value
-    cy.title().should("not.include", "<%=");
-    cy.title().should("not.include", "undefined");
-
-    // Verify service worker installs successfully
-    cy.window().then((win) => {
-      if ("serviceWorker" in win.navigator) {
-        cy.wrap(win.navigator.serviceWorker.ready).should("exist");
-      }
-    });
-
-    // Verify no console errors
-    cy.window().then((win) => {
-      cy.spy(win.console, "error");
-    });
+    cy.title().should("include", expectedValue);
   });
 });

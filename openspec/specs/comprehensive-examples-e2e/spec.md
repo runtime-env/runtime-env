@@ -1,8 +1,11 @@
 # comprehensive-examples-e2e Specification
 
 ## Purpose
+
 TBD - created by archiving change add-comprehensive-examples-e2e-2025-12-08. Update Purpose after archive.
+
 ## Requirements
+
 ### Requirement: Development Mode E2E Verification
 
 The comprehensive examples (vite and webpack) SHALL provide E2E tests that verify the development server workflow, including runtime environment variable injection and hot module replacement (HMR). Development mode runs all three commands: gen-ts (types), gen-js (runtime values), and interpolate (HTML templates).
@@ -311,4 +314,3 @@ Each E2E test mode SHALL run independently in CI without requiring other tests t
 **And** each test mode starts from a completely pristine state
 
 ---
-
