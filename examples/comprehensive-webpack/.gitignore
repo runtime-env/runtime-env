@@ -19,6 +19,16 @@ dist-ssr
 *.bak
 .env
 
+# Cypress
+cypress/screenshots/
+cypress/videos/
+dev.log
+
+# PWA generated files
+/public/sw.js
+/public/workbox-*.js
+dev-dist/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

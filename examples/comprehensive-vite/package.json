@@ -12,10 +12,9 @@
     "build": "npm run build:runtime-env && npm run build:vite",
     "build:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts",
     "build:vite": "rm -f public/runtime-env.js && tsc && vite build",
-    "preview": "npm run preview:runtime-env:gen-js && npm run preview:runtime-env:interpolate && npm run preview:runtime-env:pwa && npm run preview:vite",
+    "preview": "npm run preview:runtime-env:gen-js && npm run preview:runtime-env:interpolate && npm run preview:vite",
     "preview:runtime-env:gen-js": "runtime-env gen-js --env-file .env --output-file dist/runtime-env.js",
     "preview:runtime-env:interpolate": "[ -f dist/index.html.bak ] || cp dist/index.html dist/index.html.bak && cp dist/index.html.bak dist/index.html && runtime-env interpolate --env-file .env --input-file dist/index.html --output-file dist/index.html",
-    "preview:runtime-env:pwa": "[ -f dist/sw.js ] && ([ -f dist/sw.js.bak ] || cp dist/sw.js dist/sw.js.bak) && cp dist/sw.js.bak dist/sw.js && node scripts/patch-runtime-env-revision.cjs dist || true",
     "preview:vite": "vite preview",
     "test": "npm run test:runtime-env && npm run test:vitest",
     "test:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts && runtime-env gen-js --env-file .env --output-file public/runtime-env.js",
@@ -24,9 +23,10 @@
   "devDependencies": {
     "@types/node": "22.19.2",
     "concurrently": "9.2.1",
+    "cypress": "15.7.1",
+    "start-server-and-test": "2.1.3",
     "typescript": "5.9.3",
     "vite": "7.2.7",
-    "vite-plugin-pwa": "1.2.0",
     "vitest": "4.0.15"
   }
 }

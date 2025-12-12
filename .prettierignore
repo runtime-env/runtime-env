@@ -8,3 +8,7 @@ examples/development/public/runtime-env.js
 examples/production/dist/runtime-env.js
 examples/test/jest-setup-file-runtime-env.js
 examples/workbox/dist/runtime-env.js
+examples/comprehensive-vite/public/runtime-env.js
+examples/comprehensive-vite/src/runtime-env.d.ts
+examples/comprehensive-webpack/public/runtime-env.js
+examples/comprehensive-webpack/src/runtime-env.d.ts

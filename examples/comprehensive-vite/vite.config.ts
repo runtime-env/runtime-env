@@ -1,6 +1,5 @@
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
-import { VitePWA } from "vite-plugin-pwa";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -28,23 +27,6 @@ export default defineConfig({
         },
       },
     },
-    VitePWA({
-      registerType: "autoUpdate",
-      strategies: "generateSW",
-      filename: "sw.js",
-      manifest: false,
-      workbox: {
-        clientsClaim: true,
-        skipWaiting: true,
-        globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
-        additionalManifestEntries: [
-          {
-            url: "runtime-env.js",
-            revision: "placeholder",
-          },
-        ],
-      },
-    }),
   ],
   test: {
     setupFiles: ["./public/runtime-env.js"],
