@@ -9,5 +9,5 @@
 
 ## 2. Validation
 
-- [ ] Run openspec validate add-preview-comprehensive-webpack --strict
+- [x] Run openspec validate add-preview-comprehensive-webpack --strict
 - [ ] Get proposal reviewed and approved
