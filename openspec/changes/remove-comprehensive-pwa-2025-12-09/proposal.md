@@ -17,6 +17,10 @@ The comprehensive examples (comprehensive-vite and comprehensive-webpack) curren
 
 While PWA support is valuable, it's not core to demonstrating the runtime-env CLI's primary value proposition: **"build once, deploy anywhere"** with runtime environment variable injection. The PWA functionality distracts from the core learning objectives and adds maintenance burden.
 
+## Why
+
+Removing the PWA/service-worker functionality reduces maintenance and CI complexity while keeping the examples focused on demonstrating runtime-env's core capabilities. The PWA features are orthogonal to the CLI's main learning goals and are already covered by the `examples/workbox` sample for users who need a PWA demonstration.
+
 ## Proposed Solution
 
 Remove all PWA/service worker functionality from both comprehensive examples while preserving their core purpose: demonstrating runtime environment variable injection across different deployment modes (dev, test, preview, docker).
@@ -56,6 +60,10 @@ Remove all PWA/service worker functionality from both comprehensive examples whi
 - Docker deployment with runtime injection
 - E2E tests for: `dev.cy.js`, `preview.cy.js` (vite), `docker.cy.js`
 - All core runtime-env CLI functionality demonstrations
+
+## What Changes
+
+This change removes PWA/service worker related code, dependencies, scripts, tests, and documentation from the comprehensive examples while preserving runtime-env demonstrations. See the "What Will Be Removed" and "What Will Be Preserved" sections for a detailed list of deltas.
 
 ## Impact Assessment
 
