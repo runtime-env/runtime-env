@@ -186,6 +186,19 @@ jobs:
           echo "FOO=test-value" > .env
           npm run test
 
+      - name: Test examples/comprehensive-webpack (preview)
+        run: |
+          cd examples/comprehensive-webpack
+          git clean -xdf
+          git restore .
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm run build
+          echo "FOO=preview-initial" > .env
+          npx start-server-and-test preview http://localhost:8080 'npx cypress run --config baseUrl=http://localhost:8080 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
+          echo "FOO=preview-updated" > .env
+          npx start-server-and-test preview http://localhost:8080 'npx cypress run --config baseUrl=http://localhost:8080 --env EXPECTED_FOO=preview-updated --spec cypress/e2e/preview.cy.js'
+
       - name: Test examples/comprehensive-webpack (docker)
         run: |
           cd examples/comprehensive-webpack

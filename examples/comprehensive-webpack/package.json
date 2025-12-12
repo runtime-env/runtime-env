@@ -11,6 +11,10 @@
     "build": "npm run build:runtime-env && npm run build:webpack",
     "build:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts",
     "build:webpack": "rm -f public/runtime-env.js && webpack --mode production",
+    "preview": "npm run preview:runtime-env:gen-js && npm run preview:runtime-env:interpolate && npm run preview:webpack",
+    "preview:runtime-env:gen-js": "runtime-env gen-js --env-file .env --output-file dist/runtime-env.js",
+    "preview:runtime-env:interpolate": "[ -f dist/index.html.bak ] || cp dist/index.html dist/index.html.bak && cp dist/index.html.bak dist/index.html && runtime-env interpolate --env-file .env --input-file dist/index.html --output-file dist/index.html",
+    "preview:webpack": "npx serve dist -l 8080",
     "test": "npm run test:runtime-env && npm run test:jest",
     "test:runtime-env": "runtime-env gen-ts --output-file src/runtime-env.d.ts && runtime-env gen-js --env-file .env --output-file public/runtime-env.js",
     "test:jest": "jest"
