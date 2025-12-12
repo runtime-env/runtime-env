@@ -7,7 +7,8 @@ The repository's CI runs examples' tests in a waterfall (queued) sequence which 
 ## What Changes
 
 - Modify CI workflow(s) to run each example's tests in separate jobs (one job per example, and multiple jobs per-example when that example requires multiple modes).
-- Prefer a `matrix.include` approach or reusable workflow (`workflow_call`) to represent examples and modes explicitly.
+- Do NOT use a single large `matrix`. Instead create explicit, separate jobs for each example/mode so each test run is independently observable and controllable.
+- Prefer small, explicit jobs target per example to keep logs and resource usage clear.
 - Add appropriate caching, concurrency limits, and test grouping so cost remains controlled.
 
 ## Impact
@@ -18,4 +19,5 @@ The repository's CI runs examples' tests in a waterfall (queued) sequence which 
 ## Rollout
 
 - Implement change behind a short-lived feature branch and monitor CI job concurrency and billing.
+- Start by adding explicit jobs for each example/mode in `.github/workflows/ci.yml`.
 - Optionally gate parallelism per branch (e.g., limit on PRs vs main)

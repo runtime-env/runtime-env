@@ -8,13 +8,13 @@
 
 ### Options Considered
 
-1. Matrix job in `.github/workflows/ci.yml`
-   - Pros: Simple single-file change; easy to enumerate examples and modes via `matrix.include`.
-   - Cons: Large matrix may produce many concurrent jobs; less reusable between workflows.
+1. Separate explicit jobs per example/mode
+   - Pros: Each example/mode is a distinct job with clear logs and independent failure visibility. Easier to set per-job concurrency, timeouts, caching, and resource constraints.
+   - Cons: More verbose workflow file, but clearer operationally.
 
 ### Recommendation
 
-Start with a `matrix.include` approach in `.github/workflows/ci.yml` listing `{example,mode}` pairs so we can quickly rollout and measure concurrency.
+Create explicit jobs for each example and mode (no single large matrix).
 
 ### Trade-offs and Mitigations
 

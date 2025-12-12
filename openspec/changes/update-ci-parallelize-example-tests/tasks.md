@@ -8,7 +8,7 @@
 
 - [ ] 2.1 Inspect existing workflow: `.github/workflows/ci.yml`
 - [ ] 2.2 Enumerate examples and per-example modes (e.g., `comprehensive-vite` has modes A/B)
-- [ ] 2.3 Add a matrix-based `examples` job to run tests per example/mode, or create a reusable workflow (`workflow_call`) that each example job invokes
+- [ ] 2.3 Create explicit separate jobs for each example/mode (do not use a single large matrix).
 - [ ] 2.4 Ensure individual jobs run `npm ci`/`npm test` in the example folder and use example-specific start scripts
 - [ ] 2.5 Add caching for node_modules where appropriate
 
