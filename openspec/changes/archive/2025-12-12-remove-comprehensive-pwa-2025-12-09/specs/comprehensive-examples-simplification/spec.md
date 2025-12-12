@@ -76,7 +76,7 @@ The comprehensive example E2E tests SHALL use Cypress environment variables to d
 
 ---
 
-*** End Patch
+\*\*\* End Patch
 
 ---
 

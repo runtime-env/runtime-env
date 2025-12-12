@@ -11,7 +11,9 @@ This change modifies requirements from `add-comprehensive-examples-e2e-2025-12-0
 ## Purpose
 
 Simplify the comprehensive examples by removing PWA/service-worker complexity so the examples focus on runtime-env core behaviors.
+
 ## Requirements
+
 ### Requirement: Preview Mode "Build Once, Deploy Anywhere" Verification (Vite only)
 
 The comprehensive-vite example SHALL verify that the production build can serve different environment variable values without rebuilding. This validates the core "build once, deploy anywhere" principle by reusing the same build artifacts with different .env files.
@@ -78,7 +80,7 @@ The comprehensive example E2E tests SHALL use Cypress environment variables to d
 
 ---
 
-*** End Patch
+\*\*\* End Patch
 
 ---
 
