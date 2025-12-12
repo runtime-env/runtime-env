@@ -29,7 +29,7 @@ Remove all Progressive Web App (PWA) functionality from comprehensive-vite and c
 - [x] 4.1 Verify comprehensive-vite builds and tests locally
 - [x] 4.2 Verify comprehensive-webpack builds and tests locally
 - [x] 4.3 Verify Docker deployments locally
-- [ ] 4.4 Run full CI pipeline on branch
+- [x] 4.4 Run full CI pipeline on branch
 - [x] 5.1 Update comprehensive-examples-e2e spec (done earlier in proposal/apply)
 
 ### Phase 1: Remove comprehensive-vite PWA Components
