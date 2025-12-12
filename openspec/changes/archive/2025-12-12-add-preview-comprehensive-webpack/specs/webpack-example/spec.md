@@ -1,4 +1,6 @@
-## MODIFIED Requirements
+# Spec delta: Webpack example
+
+## ADDED Requirements
 
 ### Requirement: Preview feature for comprehensive-webpack example
 
