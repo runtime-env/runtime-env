@@ -429,6 +429,18 @@ notifications/spec.md
 
 ## Best Practices
 
+### Monorepo Example Package Handling
+
+When working with example projects within this monorepo, especially when they depend on other internal packages:
+
+- **No Internal `package.json` Dependencies**: Example `package.json` files SHALL NOT list internal monorepo packages (e.g., `@runtime-env/cli`, `@runtime-env/vite-plugin`) in their `dependencies` or `devDependencies` directly.
+- **CI Installation**: Internal packages required by examples WILL be installed during CI by packing them into a tarball and then installing that tarball. Agents reviewing `ci.yml` will observe this pattern.
+- **Agent Testing**: When an agent needs to test an internal package within an example, it SHALL:
+  1.  Pack the internal package(s) into a tarball (e.g., `npm pack`).
+  2.  Install the tarball into the example project's `node_modules` (e.g., `npm install /path/to/package.tgz`).
+  3.  Perform the tests.
+  4.  Clean up the installed tarball and any generated files.
+
 ### Simplicity First
 
 - Default to <100 lines of new code
