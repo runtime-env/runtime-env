@@ -4,7 +4,6 @@
 - [ ] 1.2. Analyze the impact of removing `pretest` on `@runtime-env/vite-plugin`.
 - [ ] 1.3. If needed, modify `@runtime-env/vite-plugin` to ensure the testing workflow remains seamless without the `pretest` script.
 
-
 ## 2. Testing
 
 - [ ] 2.1. Run `npm install` in the root.
