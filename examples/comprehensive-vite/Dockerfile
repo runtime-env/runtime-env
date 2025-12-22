@@ -5,7 +5,9 @@ RUN npm ci
 
 ### This section is for testing only, you should install @runtime-env/cli from npm instead.
 COPY runtime-env-cli-test.tgz ./
+COPY runtime-env-vite-plugin-test.tgz ./
 RUN npm i ./runtime-env-cli-test.tgz
+RUN npm i ./runtime-env-vite-plugin-test.tgz
 ###
 
 ### Create a SEA(Single Executable Application) using Node, see https://nodejs.org/api/single-executable-applications.html for more details

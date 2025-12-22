@@ -129,6 +129,7 @@ jobs:
           git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
           echo "FOO=dev-initial" > .env
           npx start-server-and-test dev http://localhost:5173 'npx cypress run --config baseUrl=http://localhost:5173 --spec cypress/e2e/dev.cy.js'
 
@@ -139,6 +140,7 @@ jobs:
           git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
           echo "FOO=test-value" > .env
           npm run test
 
@@ -149,6 +151,7 @@ jobs:
           git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
           npm run build
           echo "FOO=preview-initial" > .env
           npx start-server-and-test preview http://localhost:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
@@ -162,6 +165,7 @@ jobs:
           git restore .
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
+          cp ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz .
           docker build -t comprehensive-vite .
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f

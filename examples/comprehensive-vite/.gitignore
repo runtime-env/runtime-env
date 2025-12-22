@@ -14,7 +14,6 @@ dist-ssr
 
 # Runtime-env generated files
 /public/runtime-env.js
-/src/runtime-env.d.ts
 /node_modules/.cache/runtime-env/
 *.bak
 .env

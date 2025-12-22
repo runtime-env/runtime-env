@@ -1,0 +1,46 @@
+{
+  "name": "@runtime-env/vite-plugin",
+  "version": "0.1.0",
+  "description": "Opinionated Vite plugin for runtime-env",
+  "license": "MIT",
+  "author": "Ernest",
+  "keywords": [
+    "vite",
+    "plugin",
+    "runtime-env"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "pack": "npm pack && node ../../scripts/rename-tgz.js",
+    "release": "semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/runtime-env/runtime-env.git",
+    "directory": "packages/vite-plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/runtime-env/runtime-env/issues"
+  },
+  "homepage": "https://github.com/runtime-env/runtime-env#readme",
+  "dependencies": {
+    "@runtime-env/cli": "^0.7.8",
+    "zod": "^4.2.1"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+  },
+  "type": "module"
+}
