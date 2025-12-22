@@ -37,10 +37,10 @@
   "homepage": "https://github.com/runtime-env/runtime-env#readme",
   "dependencies": {
     "@runtime-env/cli": "^0.7.8",
-    "zod": "^4.2.1"
+    "zod": "4.2.1"
   },
   "devDependencies": {
-    "vite": "^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0"
+    "vite": "7.3.0"
   },
   "type": "module"
 }
