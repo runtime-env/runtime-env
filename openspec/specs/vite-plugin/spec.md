@@ -89,6 +89,8 @@ The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official pl
 - **GIVEN** a developer inspects the `packages/vite-plugin/src` directory
 - **WHEN** they view the file structure
 - **THEN** they find a modular structure with logic separated by Vite mode (`dev`, `build`, `preview`, `vitest`).
+- **AND** there is no shared `utils.ts` or common runtime logic file; each mode file is self-contained.
+- **AND** `index.ts` delegates to these modes by returning an array of plugin objects.
 
 #### Scenario: Maintainability
 
