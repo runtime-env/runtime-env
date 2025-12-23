@@ -1,10 +1,60 @@
 import type { Plugin, UserConfig, ConfigEnv } from "vite";
 import { resolve } from "path";
 import { rmSync, mkdirSync } from "fs";
-import { Options } from "./types.js";
-import { runRuntimeEnvCommand } from "./utils.js";
+import { spawnSync } from "child_process";
+import { Options, optionSchema } from "./types.js";
 
-export function vitestPlugin(options: Options) {
+const schemaFile = ".runtimeenvschema.json";
+const globalVariableName = "runtimeEnv";
+
+function getRuntimeEnvCommandLineArgs(
+  command: string,
+  options: Options,
+  outputFile: string,
+  inputFile?: string,
+): string[] {
+  const { genTs, genJs, interpolateIndexHtml } = optionSchema.parse(options);
+  let args: string[] = [
+    "--schema-file",
+    schemaFile,
+    "--global-variable-name",
+    globalVariableName,
+    command,
+  ];
+
+  if (command === "gen-ts" && genTs) {
+    args.push("--output-file", outputFile);
+  } else if (command === "gen-js" && genJs) {
+    args.push(...genJs.envFile.map((file) => ["--env-file", file]).flat());
+    args.push("--output-file", outputFile);
+  } else if (command === "interpolate" && interpolateIndexHtml && inputFile) {
+    args.push(
+      ...interpolateIndexHtml.envFile
+        .map((file) => ["--env-file", file])
+        .flat(),
+    );
+    args.push("--input-file", inputFile, "--output-file", outputFile);
+  }
+
+  return args;
+}
+
+function runRuntimeEnvCommand(
+  command: string,
+  options: Options,
+  outputFile: string,
+  inputFile?: string,
+) {
+  const args = getRuntimeEnvCommandLineArgs(
+    command,
+    options,
+    outputFile,
+    inputFile,
+  );
+  spawnSync("node", [resolve("node_modules", ".bin", "runtime-env"), ...args]);
+}
+
+export function vitestPlugin(options: Options): Plugin {
   return {
     name: "runtime-env-vitest",
 
