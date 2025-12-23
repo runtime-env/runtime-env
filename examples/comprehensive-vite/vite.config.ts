@@ -4,7 +4,6 @@ import runtimeEnv from "@runtime-env/vite-plugin";
 export default defineConfig({
   plugins: [
     runtimeEnv({
-      genTs: {},
       genJs: {
         envFile: [".env"],
       },

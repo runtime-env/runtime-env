@@ -13,7 +13,7 @@ function getRuntimeEnvCommandLineArgs(
   outputFile: string,
   inputFile?: string,
 ): string[] {
-  const { genTs, genJs, interpolateIndexHtml } = optionSchema.parse(options);
+  const { genJs, interpolateIndexHtml } = optionSchema.parse(options);
   let args: string[] = [
     "--schema-file",
     schemaFile,
@@ -22,7 +22,7 @@ function getRuntimeEnvCommandLineArgs(
     command,
   ];
 
-  if (command === "gen-ts" && genTs) {
+  if (command === "gen-ts") {
     args.push("--output-file", outputFile);
   } else if (command === "gen-js" && genJs) {
     args.push(...genJs.envFile.map((file) => ["--env-file", file]).flat());

@@ -9,11 +9,6 @@ export const optionSchema = z.object({
         .default(() => []),
     })
     .optional(),
-  genTs: z
-    .object({
-      outputFile: z.string().optional().default("src/runtime-env.d.ts"),
-    })
-    .optional(),
   interpolateIndexHtml: z
     .object({
       envFile: z

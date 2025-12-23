@@ -3,6 +3,7 @@ import { resolve } from "path";
 import { rmSync, mkdirSync } from "fs";
 import { spawnSync } from "child_process";
 import { Options, optionSchema } from "./types.js";
+import { isTypeScriptProject } from "./utils.js";
 
 const schemaFile = ".runtimeenvschema.json";
 const globalVariableName = "runtimeEnv";
@@ -13,7 +14,7 @@ function getRuntimeEnvCommandLineArgs(
   outputFile: string,
   inputFile?: string,
 ): string[] {
-  const { genTs, genJs, interpolateIndexHtml } = optionSchema.parse(options);
+  const { genJs, interpolateIndexHtml } = optionSchema.parse(options);
   let args: string[] = [
     "--schema-file",
     schemaFile,
@@ -22,7 +23,7 @@ function getRuntimeEnvCommandLineArgs(
     command,
   ];
 
-  if (command === "gen-ts" && genTs) {
+  if (command === "gen-ts") {
     args.push("--output-file", outputFile);
   } else if (command === "gen-js" && genJs) {
     args.push(...genJs.envFile.map((file) => ["--env-file", file]).flat());
@@ -61,8 +62,8 @@ export function vitestPlugin(options: Options): Plugin {
     config(config: UserConfig, configEnv: ConfigEnv) {
       if (config.mode === "test") {
         // Generate runtime-env.d.ts for Vitest type checking
-        if (options.genTs && options.genTs.outputFile) {
-          runRuntimeEnvCommand("gen-ts", options, options.genTs.outputFile);
+        if (isTypeScriptProject(config.root || process.cwd())) {
+          runRuntimeEnvCommand("gen-ts", options, "src/runtime-env.d.ts");
         }
         // Generate runtime-env.js for Vitest runtime access
         if (options.genJs) {

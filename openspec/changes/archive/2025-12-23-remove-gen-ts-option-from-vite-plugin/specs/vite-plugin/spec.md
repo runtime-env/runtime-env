@@ -1,10 +1,4 @@
-# vite-plugin Specification
-
-## Purpose
-
-TBD - created by archiving change add-vite-plugin. Update Purpose after archive.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Simplified Vite Integration with a Native Plugin
 
@@ -61,38 +55,3 @@ The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boil
 - **WHEN** the user runs `vitest`.
 - **THEN** the plugin SHALL automatically run `gen-ts` for type checking in the test environment.
 - **AND** it SHALL NOT interfere with the test runner's execution.
-
-### Requirement: Refactor Comprehensive Vite Example
-
-The `comprehensive-vite` example SHALL be refactored to use the new `@runtime-env/vite-plugin` plugin, serving as a best-practice reference for users.
-
-#### Scenario: `comprehensive-vite` is refactored
-
-- **GIVEN** the `comprehensive-vite` example.
-- **WHEN** a developer inspects the source code.
-- **THEN** `vite.config.ts` contains the `@runtime-env/vite-plugin` plugin configuration.
-- **AND** `package.json` contains simplified scripts:
-  - `"dev": "vite"`
-  - `"build": "tsc && vite build"`
-  - `"preview": "vite preview"`
-  - `"test": "vitest"`
-- **AND** all E2E tests for dev, preview, test, and docker modes continue to pass.
-- **AND** the `comprehensive-webpack` example is explicitly NOT changed.
-
-### Requirement: Vite Plugin Implementation
-
-The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official plugin authoring guidelines to ensure a seamless and idiomatic developer experience.
-
-#### Scenario: Code Structure
-
-- **GIVEN** a developer inspects the `packages/vite-plugin/src` directory
-- **WHEN** they view the file structure
-- **THEN** they find a modular structure with logic separated by Vite mode (`dev`, `build`, `preview`, `vitest`).
-- **AND** there is no shared `utils.ts` or common runtime logic file; each mode file is self-contained.
-- **AND** `index.ts` delegates to these modes by returning an array of plugin objects.
-
-#### Scenario: Maintainability
-
-- **GIVEN** a developer needs to modify the plugin's behavior for a specific mode
-- **WHEN** they locate the corresponding mode-specific file (e.g., `build.ts`)
-- **THEN** they can easily understand and modify the relevant logic without affecting other modes.
