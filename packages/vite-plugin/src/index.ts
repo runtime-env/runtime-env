@@ -1,211 +1,62 @@
-import type { Plugin } from "vite";
-import { Options, optionSchema } from "./types.js";
-import {
-  readFileSync,
-  writeFileSync,
-  mkdtempSync,
-  copyFileSync,
-  existsSync,
-  rmSync,
-} from "fs";
-import { resolve } from "path";
-import { spawnSync } from "child_process";
+import type { Plugin, UserConfig } from "vite";
+import { devPlugin } from "./dev.js";
+import { buildPlugin } from "./build.js";
+import { previewPlugin } from "./preview.js";
+import { vitestPlugin } from "./vitest.js";
+import { transformHtml } from "./utils.js";
+import { Options } from "./types.js";
 
 export default function runtimeEnv(options: Options): Plugin {
-  const schemaFile = ".runtimeenvschema.json";
-  const globalVariableName = "runtimeEnv";
-  const { genTs, genJs, interpolateIndexHtml } = optionSchema.parse(options);
-
-  let isServe = false;
-  let isBuild = false;
-  let isTest = false;
-  let isPreview = false;
+  const dev = devPlugin(options);
+  const build = buildPlugin(options);
+  const preview = previewPlugin(options);
+  const vitest = vitestPlugin(options);
 
   return {
     name: "@runtime-env/vite-plugin",
 
-    config(config, configEnv) {
-      isServe = configEnv.command === "serve";
-      isBuild = configEnv.command === "build";
-      isTest = config.mode === "test";
-      isPreview = configEnv.isPreview ?? false;
-
-      if (configEnv.command === "build") {
-        if (genTs) {
-          const args = [
-            "--schema-file",
-            schemaFile,
-            "--global-variable-name",
-            globalVariableName,
-            "gen-ts",
-            "--output-file",
-            genTs.outputFile,
-          ];
-          spawnSync("node", [
-            resolve("node_modules", ".bin", "runtime-env"),
-            ...args,
-          ]);
-        }
+    config(config: UserConfig, configEnv) {
+      if (configEnv.command === "serve") {
+        // dev plugin doesn't have a config hook, but we check anyway or leave it out if we know.
+        // Based on dev.ts, it has configResolved.
+        // But types might infer it doesn't exist if not present in the returned object.
+        // Safest is to just call what we know exists or cast if needed, but devPlugin inference should show configResolved.
+        // Current logic in dev.ts has configResolved, not config.
+        // So dev.config is undefined.
+        return {};
+      } else if (configEnv.command === "build") {
+        return build.config?.(config, configEnv);
+      } else if (configEnv.isPreview) {
+        return preview.config?.(config, configEnv);
+      } else if (config.mode === "test") {
+        return vitest.config?.(config, configEnv);
       }
-
-      if (isPreview) {
-        if (genJs) {
-          const args = [
-            "--schema-file",
-            schemaFile,
-            "--global-variable-name",
-            globalVariableName,
-            "gen-js",
-            ...genJs.envFile.map((file) => ["--env-file", file]).flat(),
-            "--output-file",
-            resolve("dist", "runtime-env.js"),
-          ];
-          spawnSync("node", [
-            resolve("node_modules", ".bin", "runtime-env"),
-            ...args,
-          ]);
-        }
-        if (interpolateIndexHtml) {
-          if (existsSync("dist/index.html.backup") === false) {
-            copyFileSync("dist/index.html", "dist/index.html.backup");
-          }
-          const args = [
-            "--schema-file",
-            schemaFile,
-            "--global-variable-name",
-            globalVariableName,
-            "interpolate",
-            ...interpolateIndexHtml.envFile
-              .map((file) => ["--env-file", file])
-              .flat(),
-            "--input-file",
-            "dist/index.html.backup",
-            "--output-file",
-            "dist/index.html",
-          ];
-          spawnSync("node", [
-            resolve("node_modules", ".bin", "runtime-env"),
-            ...args,
-          ]);
-        }
-      }
+      return {};
     },
 
     configResolved(config) {
-      if (isServe && !isPreview) {
-        if (genJs) {
-          const args = [
-            "--schema-file",
-            schemaFile,
-            "--global-variable-name",
-            globalVariableName,
-            "gen-js",
-            ...genJs.envFile.map((file) => ["--env-file", file]).flat(),
-            "--output-file",
-            resolve(config.publicDir, "runtime-env.js"),
-          ];
-          spawnSync("node", [
-            resolve("node_modules", ".bin", "runtime-env"),
-            ...args,
-          ]);
-        }
+      if (config.command === "serve" && !(config as any).isPreview) {
+        return dev.configResolved?.(config);
+      } else if (config.command === "build") {
+        return build.configResolved?.(config);
       }
-
-      if (isBuild) {
-        if (genJs) {
-          rmSync(resolve(config.publicDir, "runtime-env.js"), { force: true });
-        }
-      }
-    },
-
-    transformIndexHtml(html) {
-      html = html.replace(
-        `</head>`,
-        `<script src="/runtime-env.js"></script></head>`,
-      );
-
-      if (isBuild) {
-        return html;
-      }
-      if (!interpolateIndexHtml) {
-        return html;
-      }
-
-      const tmpDir = mkdtempSync("runtime-env-vite-plugin", "utf8");
-      const htmlFile = resolve(tmpDir, "index.html");
-      writeFileSync(htmlFile, html, "utf8");
-      const args = [
-        "--schema-file",
-        schemaFile,
-        "--global-variable-name",
-        globalVariableName,
-        "interpolate",
-        ...interpolateIndexHtml.envFile
-          .map((file) => ["--env-file", file])
-          .flat(),
-        "--input-file",
-        htmlFile,
-        "--output-file",
-        htmlFile,
-      ];
-      spawnSync("node", [
-        resolve("node_modules", ".bin", "runtime-env"),
-        ...args,
-      ]);
-      html = readFileSync(htmlFile, "utf8");
-      rmSync(tmpDir, { recursive: true });
-      return html;
     },
 
     configureServer(server) {
-      if (isTest) return;
-
-      const watchFiles = [schemaFile];
-      if (genJs) {
-        watchFiles.push(...genJs.envFile);
+      if (server.config.command === "serve") {
+        return dev.configureServer?.(server);
       }
+    },
 
-      function run() {
-        if (genJs) {
-          const args = [
-            "--schema-file",
-            schemaFile,
-            "--global-variable-name",
-            globalVariableName,
-            "gen-js",
-            ...genJs.envFile.map((file) => ["--env-file", file]).flat(),
-            "--output-file",
-            resolve(server.config.publicDir, "runtime-env.js"),
-          ];
-          spawnSync("node", [
-            resolve("node_modules", ".bin", "runtime-env"),
-            ...args,
-          ]);
-        }
-        if (genTs) {
-          const args = [
-            "--schema-file",
-            schemaFile,
-            "--global-variable-name",
-            globalVariableName,
-            "gen-ts",
-            "--output-file",
-            genTs.outputFile,
-          ];
-          spawnSync("node", [
-            resolve("node_modules", ".bin", "runtime-env"),
-            ...args,
-          ]);
-        }
-      }
+    configurePreviewServer(server) {
+      return preview.configurePreviewServer?.(server);
+    },
 
-      run();
-      server.watcher.add(watchFiles);
-      server.watcher.on("change", (file) => {
-        if (watchFiles.includes(file)) {
-          run();
-        }
-      });
+    transformIndexHtml(html, ctx) {
+      const isBuild = !ctx.server;
+      const isPreview = false;
+
+      return transformHtml(html, options, isBuild, isPreview);
     },
   };
 }
