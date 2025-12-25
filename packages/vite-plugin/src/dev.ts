@@ -1,6 +1,6 @@
 import type { Plugin, ViteDevServer, ResolvedConfig } from "vite";
 import { resolve } from "path";
-import { writeFileSync, readFileSync, rmSync } from "fs";
+import { writeFileSync, readFileSync, rmSync, existsSync } from "fs";
 import { Options, optionSchema } from "./types.js";
 import {
   isTypeScriptProject,
@@ -14,20 +14,6 @@ export function devPlugin(options: Options): Plugin {
   return {
     name: "runtime-env-dev",
 
-    configResolved(config: ResolvedConfig) {
-      if (config.command === "serve" && !(config as any).isPreview) {
-        if (options.genJs) {
-          const publicDir =
-            typeof config.publicDir === "string" ? config.publicDir : "";
-          runRuntimeEnvCommand(
-            "gen-js",
-            options,
-            resolve(publicDir, "runtime-env.js"),
-          );
-        }
-      }
-    },
-
     configureServer(server: ViteDevServer) {
       if (server.config.mode === "test") return;
 
@@ -37,16 +23,10 @@ export function devPlugin(options: Options): Plugin {
       }
 
       function run() {
-        const publicDir =
-          typeof (server.config as ResolvedConfig).publicDir === "string"
-            ? (server.config as ResolvedConfig).publicDir
-            : "";
         if (options.genJs) {
-          runRuntimeEnvCommand(
-            "gen-js",
-            options,
-            resolve(publicDir, "runtime-env.js"),
-          );
+          const devOutputDir = getTempDir("dev");
+          const devOutputPath = resolve(devOutputDir, "runtime-env.js");
+          runRuntimeEnvCommand("gen-js", options, devOutputPath);
         }
         if (isTypeScriptProject(server.config.root)) {
           runRuntimeEnvCommand("gen-ts", options, "src/runtime-env.d.ts");
@@ -54,6 +34,20 @@ export function devPlugin(options: Options): Plugin {
       }
 
       run();
+
+      server.middlewares.use((req, res, next) => {
+        if (req.url?.startsWith("/runtime-env.js") && options.genJs) {
+          const devOutputDir = getTempDir("dev");
+          const devOutputPath = resolve(devOutputDir, "runtime-env.js");
+          if (existsSync(devOutputPath)) {
+            res.setHeader("Content-Type", "application/javascript");
+            res.end(readFileSync(devOutputPath, "utf8"));
+            return;
+          }
+        }
+        next();
+      });
+
       server.watcher.add(watchFiles);
       server.watcher.on("change", (file) => {
         if (watchFiles.includes(file)) {

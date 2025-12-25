@@ -12,7 +12,4 @@ export default defineConfig({
       },
     }),
   ],
-  test: {
-    setupFiles: ["./public/runtime-env.js"],
-  },
 });

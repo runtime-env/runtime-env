@@ -28,6 +28,21 @@ export function vitestPlugin(options: Options): Plugin {
           getTempDir("vitest"); // Re-create it clean
 
           runRuntimeEnvCommand("gen-js", options, vitestOutputPath);
+
+          // Automatically inject setupFiles for Vitest
+          const vitestConfig = (config as any).test || {};
+          const setupFiles = vitestConfig.setupFiles || [];
+
+          if (Array.isArray(setupFiles)) {
+            setupFiles.push(vitestOutputPath);
+          } else {
+            vitestConfig.setupFiles = [setupFiles, vitestOutputPath];
+          }
+
+          (config as any).test = {
+            ...vitestConfig,
+            setupFiles,
+          };
         }
       }
     },

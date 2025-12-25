@@ -1,27 +1,4 @@
-# vite-plugin Specification
-
-## Purpose
-
-TBD - created by archiving change add-vite-plugin. Update Purpose after archive.
-
-## Requirements
-
-### Requirement: Simplified Vite Integration with a Native Plugin
-
-A new Vite-native plugin, `@runtime-env/vite-plugin`, SHALL be provided to simplify the integration of `runtime-env` with Vite projects.
-
-#### Scenario: Plugin is configurable with nested options and is conditional
-
-- **GIVEN** a user has installed `@runtime-env/vite-plugin`.
-- **WHEN** they configure the plugin in their `vite.config.ts`, for example `runtimeEnv({ 'gen-js': {} })`.
-- **THEN** they can provide a nested configuration object for `gen-js` and `interpolateIndexHtml`.
-- **AND** they can provide a `schema` option at the top level to specify the schema file path.
-- **AND** the `gen-js` sub-command SHALL only be executed if a `gen-js` object is present.
-- **AND** the `interpolateIndexHtml` sub-command SHALL only be executed if an `interpolateIndexHtml` object is present.
-- **AND** the options within each object correspond to the CLI arguments for that sub-command (e.g., `outputFile`, `envFile`).
-- **AND** `envFile` is a valid option only for `gen-js` and `interpolateIndexHtml` objects, and it accepts an array of strings.
-- **AND** the `gen-ts` sub-command SHALL be automatically executed if a `tsconfig.json` file is found in the project root, with a fixed output file `src/runtime-env.d.ts`.
-- **AND** the `genTs` option SHALL NOT be available in the plugin configuration.
+## MODIFIED Requirements
 
 ### Requirement: Seamless Vite Workflow Integration
 
@@ -99,6 +76,8 @@ The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official pl
 - **GIVEN** a developer needs to modify the plugin's behavior for a specific mode
 - **WHEN** they locate the corresponding mode-specific file (e.g., `build.ts`)
 - **THEN** they can easily understand and modify the relevant logic without affecting other modes, while utilizing shared helpers from `utils.ts` for common tasks.
+
+## ADDED Requirements
 
 ### Requirement: Clean Project Root
 
