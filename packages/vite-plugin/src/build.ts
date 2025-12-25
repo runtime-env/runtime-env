@@ -76,16 +76,5 @@ export function buildPlugin(options: Options): Plugin {
         }
       }
     },
-
-    transformIndexHtml(html, ctx) {
-      if (!ctx.server) {
-        // isBuild
-        html = html.replace(
-          `</head>`,
-          `<script src="/runtime-env.js"></script></head>`,
-        );
-        return html;
-      }
-    },
   };
 }

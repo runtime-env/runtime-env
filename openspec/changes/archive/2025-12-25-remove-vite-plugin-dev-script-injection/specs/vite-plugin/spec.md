@@ -1,0 +1,40 @@
+## MODIFIED Requirements
+
+### Requirement: Seamless Vite Workflow Integration
+
+The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boilerplate experience for Vite projects across all development, testing, and production stages, running commands only when they are configured via a nested object or automatically detected.
+
+#### Scenario: Vite development mode
+
+- **GIVEN** the `@runtime-env/vite-plugin` plugin is configured in `vite.config.ts` with `{'gen-js': {...}, 'interpolateIndexHtml': {...}}`.
+- **AND** a `tsconfig.json` file exists in the project root.
+- **WHEN** the user runs `vite` (or `npm run dev`).
+- **THEN** the plugin automatically runs the configured commands (`gen-js`, `interpolateIndexHtml`) and the automatically detected `gen-ts` command in watch mode.
+- **AND** if the `interpolateIndexHtml` object is present, the Vite dev server serves the correctly interpolated `index.html` in memory.
+- **AND** changes to `.env` or the schema file trigger automatic regeneration and HMR.
+- **AND** the `package.json` `dev` script is simply `"dev": "vite"`.
+
+#### Scenario: Vite build mode
+
+- **GIVEN** the `@runtime-env/vite-plugin` plugin is configured in `vite.config.ts`.
+- **AND** a `tsconfig.json` file exists in the project root.
+- **WHEN** the user runs `vite build` (or `npm run build`).
+- **THEN** the plugin automatically runs `gen-ts`.
+- **AND** the plugin SHALL NOT run `gen-js` or `interpolateIndexHtml`, preserving the "build once, deploy anywhere" principle.
+- **AND** the `package.json` `build` script is `"build": "tsc && vite build"`.
+
+#### Scenario: Vite preview mode
+
+- **GIVEN** a Vite project has been built using `vite build`.
+- **AND** the `@runtime-env/vite-plugin` plugin is configured with `{'gen-js': {...}, 'interpolateIndexHtml': {...}}`.
+- **WHEN** the user runs `vite preview` (or `npm run preview`).
+- **THEN** the plugin hooks into the preview server to perform runtime generation for the configured commands.
+- **AND** the `package.json` `preview` script is simply `"preview": "vite preview"`.
+
+#### Scenario: Vite test mode (Vitest)
+
+- **GIVEN** a Vitest setup file is configured.
+- **AND** a `tsconfig.json` file exists in the project root.
+- **WHEN** the user runs `vitest`.
+- **THEN** the plugin SHALL automatically run `gen-ts` for type checking in the test environment.
+- **AND** it SHALL NOT interfere with the test runner's execution.

@@ -111,11 +111,6 @@ export function devPlugin(options: Options): Plugin {
       if (ctx.server && ctx.server.config.command === "serve") {
         const { interpolateIndexHtml } = optionSchema.parse(options);
 
-        html = html.replace(
-          `</head>`,
-          `<script src="/runtime-env.js"></script></head>`,
-        );
-
         if (!interpolateIndexHtml) {
           return html;
         }
