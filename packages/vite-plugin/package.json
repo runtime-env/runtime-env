@@ -1,6 +1,6 @@
 {
   "name": "@runtime-env/vite-plugin",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Opinionated Vite plugin for runtime-env",
   "license": "MIT",
   "author": "Ernest",
@@ -23,8 +23,7 @@
   ],
   "scripts": {
     "build": "rimraf dist && tsc",
-    "pack": "npm pack && node ../../scripts/rename-tgz.js",
-    "release": "semantic-release"
+    "pack": "npm pack && node ../../scripts/rename-tgz.js"
   },
   "repository": {
     "type": "git",
