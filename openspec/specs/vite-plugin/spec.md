@@ -35,7 +35,9 @@ The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boil
 - **AND** the `@runtime-env/vite-plugin` plugin is active.
 - **WHEN** the user runs `vite preview` (or `npm run preview`).
 - **THEN** the plugin hooks into the preview server to perform runtime generation for `gen-js` and `interpolateIndexHtml`.
+- **AND** the plugin SHALL serve `runtime-env.js` and the interpolated `index.html` via middleware, without modifying the `dist` directory.
 - **AND** it SHALL automatically detect env files suitable for the preview environment.
+- **AND** the `package.json` `preview` script is simply `"preview": "vite preview"`.
 
 #### Scenario: Vite test mode (Vitest)
 

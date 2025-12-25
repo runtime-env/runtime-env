@@ -1,4 +1,3 @@
-import serializeJavascript from "serialize-javascript";
 import Ajv from "ajv";
 import AjvFormats from "ajv-formats";
 import util from "util";
@@ -187,7 +186,7 @@ const parseEnv: ParseEnv = async ({
     };
     try {
       if (ajv.validate(propertySchema, { [property]: value })) {
-        parsedEnv[property] = serializeJavascript(value);
+        parsedEnv[property] = JSON.stringify(value);
       } else {
         errors.push("env is invalid: " + JSON.stringify(ajv.errors));
       }
@@ -226,7 +225,7 @@ const serializeLeafNodes: SerializeLeafNodes = (env) => {
     );
   } else {
     return typeof env === "string"
-      ? serializeJavascript(env).slice(1, -1)
-      : serializeJavascript(env);
+      ? env // Return string directly for interpolation
+      : JSON.stringify(env);
   }
 };
