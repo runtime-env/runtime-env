@@ -1,84 +1,81 @@
 import type { Plugin, PreviewServer } from "vite";
 import { resolve } from "path";
-import { copyFileSync, existsSync } from "fs";
-import { spawnSync } from "child_process";
-import { Options, optionSchema } from "./types.js";
+import { readFileSync, writeFileSync, existsSync, rmSync } from "fs";
+import { runRuntimeEnvCommand, getTempDir, getViteEnvFiles } from "./utils.js";
 
-const schemaFile = ".runtimeenvschema.json";
-const globalVariableName = "runtimeEnv";
-
-function getRuntimeEnvCommandLineArgs(
-  command: string,
-  options: Options,
-  outputFile: string,
-  inputFile?: string,
-): string[] {
-  const { genJs, interpolateIndexHtml } = optionSchema.parse(options);
-  let args: string[] = [
-    "--schema-file",
-    schemaFile,
-    "--global-variable-name",
-    globalVariableName,
-    command,
-  ];
-
-  if (command === "gen-ts") {
-    args.push("--output-file", outputFile);
-  } else if (command === "gen-js" && genJs) {
-    args.push(...genJs.envFile.map((file) => ["--env-file", file]).flat());
-    args.push("--output-file", outputFile);
-  } else if (command === "interpolate" && interpolateIndexHtml && inputFile) {
-    args.push(
-      ...interpolateIndexHtml.envFile
-        .map((file) => ["--env-file", file])
-        .flat(),
-    );
-    args.push("--input-file", inputFile, "--output-file", outputFile);
-  }
-
-  return args;
-}
-
-function runRuntimeEnvCommand(
-  command: string,
-  options: Options,
-  outputFile: string,
-  inputFile?: string,
-) {
-  const args = getRuntimeEnvCommandLineArgs(
-    command,
-    options,
-    outputFile,
-    inputFile,
-  );
-  spawnSync("node", [resolve("node_modules", ".bin", "runtime-env"), ...args]);
-}
-
-export function previewPlugin(options: Options): Plugin {
+export function previewPlugin(): Plugin {
   return {
     name: "runtime-env-preview",
 
     configurePreviewServer(server: PreviewServer) {
-      const { genJs, interpolateIndexHtml } = optionSchema.parse(options);
+      server.middlewares.use((req, res, next) => {
+        const base = server.config.base || "/";
+        const url = req.url?.split("?")[0] || "";
 
-      if (genJs) {
-        runRuntimeEnvCommand(
-          "gen-js",
-          options,
-          resolve("dist", "runtime-env.js"),
-        );
-      }
-      if (interpolateIndexHtml) {
-        if (existsSync("dist/index.html.backup") === false) {
-          copyFileSync("dist/index.html", "dist/index.html.backup");
+        // Normalize path to be relative to base
+        let path = url;
+        if (url.startsWith(base)) {
+          path = url.slice(base.length);
         }
-        runRuntimeEnvCommand(
-          "interpolate",
-          options,
-          resolve("dist", "index.html"),
-          resolve("dist", "index.html.backup"),
-        );
-      }
+        if (!path.startsWith("/")) {
+          path = "/" + path;
+        }
+        path = path.replace(/\/+/g, "/");
+
+        const envDir = server.config.envDir || server.config.root;
+        const envFiles = getViteEnvFiles(server.config.mode, envDir);
+
+        // Serve runtime-env.js
+        if (path === "/runtime-env.js") {
+          const tmpDir = getTempDir("preview-gen-js");
+          const tmpPath = resolve(tmpDir, "runtime-env.js");
+          try {
+            runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
+            if (existsSync(tmpPath)) {
+              const content = readFileSync(tmpPath, "utf8");
+              res.setHeader("Content-Type", "application/javascript");
+              res.end(content);
+              return;
+            }
+          } finally {
+            rmSync(tmpDir, { recursive: true, force: true });
+          }
+        }
+
+        // Intercept index.html
+        if (path === "/" || path === "/index.html") {
+          const outDir = server.config.build.outDir || "dist";
+          const distIndexHtml = resolve(
+            server.config.root,
+            outDir,
+            "index.html",
+          );
+          if (existsSync(distIndexHtml)) {
+            const tmpDir = getTempDir("preview-interpolate");
+            try {
+              const tmpHtmlPath = resolve(tmpDir, "index.html");
+              const originalHtml = readFileSync(distIndexHtml, "utf8");
+              writeFileSync(tmpHtmlPath, originalHtml, "utf8");
+
+              runRuntimeEnvCommand(
+                "interpolate",
+                tmpHtmlPath,
+                envFiles,
+                tmpHtmlPath,
+              );
+
+              const interpolatedHtml = readFileSync(tmpHtmlPath, "utf8");
+              res.setHeader("Content-Type", "text/html");
+              res.end(interpolatedHtml);
+              return;
+            } finally {
+              rmSync(tmpDir, { recursive: true, force: true });
+            }
+          }
+        }
+
+        next();
+      });
     },
   };
 }

@@ -1,87 +1,52 @@
 import type { Plugin, UserConfig, ConfigEnv } from "vite";
 import { resolve } from "path";
-import { rmSync, mkdirSync } from "fs";
-import { spawnSync } from "child_process";
-import { Options, optionSchema } from "./types.js";
-import { isTypeScriptProject } from "./utils.js";
+import { rmSync } from "fs";
+import {
+  isTypeScriptProject,
+  runRuntimeEnvCommand,
+  getTempDir,
+  getViteEnvFiles,
+} from "./utils.js";
 
-const schemaFile = ".runtimeenvschema.json";
-const globalVariableName = "runtimeEnv";
-
-function getRuntimeEnvCommandLineArgs(
-  command: string,
-  options: Options,
-  outputFile: string,
-  inputFile?: string,
-): string[] {
-  const { genJs, interpolateIndexHtml } = optionSchema.parse(options);
-  let args: string[] = [
-    "--schema-file",
-    schemaFile,
-    "--global-variable-name",
-    globalVariableName,
-    command,
-  ];
-
-  if (command === "gen-ts") {
-    args.push("--output-file", outputFile);
-  } else if (command === "gen-js" && genJs) {
-    args.push(...genJs.envFile.map((file) => ["--env-file", file]).flat());
-    args.push("--output-file", outputFile);
-  } else if (command === "interpolate" && interpolateIndexHtml && inputFile) {
-    args.push(
-      ...interpolateIndexHtml.envFile
-        .map((file) => ["--env-file", file])
-        .flat(),
-    );
-    args.push("--input-file", inputFile, "--output-file", outputFile);
-  }
-
-  return args;
-}
-
-function runRuntimeEnvCommand(
-  command: string,
-  options: Options,
-  outputFile: string,
-  inputFile?: string,
-) {
-  const args = getRuntimeEnvCommandLineArgs(
-    command,
-    options,
-    outputFile,
-    inputFile,
-  );
-  spawnSync("node", [resolve("node_modules", ".bin", "runtime-env"), ...args]);
-}
-
-export function vitestPlugin(options: Options): Plugin {
+export function vitestPlugin(): Plugin {
   return {
     name: "runtime-env-vitest",
 
     config(config: UserConfig, configEnv: ConfigEnv) {
       if (config.mode === "test") {
+        const root = config.root || process.cwd();
         // Generate runtime-env.d.ts for Vitest type checking
-        if (isTypeScriptProject(config.root || process.cwd())) {
-          runRuntimeEnvCommand("gen-ts", options, "src/runtime-env.d.ts");
+        if (isTypeScriptProject(root)) {
+          runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
         }
-        // Generate runtime-env.js for Vitest runtime access
-        if (options.genJs) {
-          const vitestOutputPath = resolve(
-            "node_modules",
-            ".vitest-runtime-env",
-            "runtime-env.js",
-          );
-          // Ensure directory exists and is clean
-          const vitestOutputDir = resolve(
-            "node_modules",
-            ".vitest-runtime-env",
-          );
-          rmSync(vitestOutputDir, { recursive: true, force: true });
-          mkdirSync(vitestOutputDir, { recursive: true });
 
-          runRuntimeEnvCommand("gen-js", options, vitestOutputPath);
+        const envDir = config.envDir || root;
+        const envFiles = getViteEnvFiles(config.mode, envDir);
+
+        // Generate runtime-env.js for Vitest runtime access
+        const vitestOutputDir = getTempDir("vitest");
+        const vitestOutputPath = resolve(vitestOutputDir, "runtime-env.js");
+
+        // Ensure directory is clean
+        rmSync(vitestOutputDir, { recursive: true, force: true });
+        getTempDir("vitest"); // Re-create it clean
+
+        runRuntimeEnvCommand("gen-js", vitestOutputPath, envFiles);
+
+        // Automatically inject setupFiles for Vitest
+        const vitestConfig = (config as any).test || {};
+        const setupFiles = vitestConfig.setupFiles || [];
+
+        if (Array.isArray(setupFiles)) {
+          setupFiles.push(vitestOutputPath);
+        } else {
+          vitestConfig.setupFiles = [setupFiles, vitestOutputPath];
         }
+
+        (config as any).test = {
+          ...vitestConfig,
+          setupFiles,
+        };
       }
     },
   };
