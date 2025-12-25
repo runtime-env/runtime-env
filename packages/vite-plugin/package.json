@@ -34,10 +34,13 @@
     "url": "https://github.com/runtime-env/runtime-env/issues"
   },
   "homepage": "https://github.com/runtime-env/runtime-env#readme",
-  "dependencies": {
-    "@runtime-env/cli": "^0.7.8"
+  "dependencies": {},
+  "peerDependencies": {
+    "@runtime-env/cli": "*",
+    "vite": "*"
   },
   "devDependencies": {
+    "@runtime-env/cli": "^0.7.8",
     "vite": "7.3.0"
   },
   "type": "module"
