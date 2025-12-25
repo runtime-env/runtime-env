@@ -4,6 +4,10 @@
 
 [![CI](https://github.com/runtime-env/runtime-env/actions/workflows/ci.yml/badge.svg)](https://github.com/runtime-env/runtime-env/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/@runtime-env/cli?color=blue)](https://www.npmjs.com/package/@runtime-env/cli)
+[![npm](https://img.shields.io/npm/v/@runtime-env/vite-plugin?color=blue)](https://www.npmjs.com/package/@runtime-env/vite-plugin)
+
+> [!TIP]
+> Using Vite? Check out our [zero-config Vite plugin](./packages/vite-plugin/README.md) for a seamless integration.
 
 ## Table of Content
 
