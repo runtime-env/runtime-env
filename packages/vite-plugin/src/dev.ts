@@ -1,35 +1,33 @@
-import type { Plugin, ViteDevServer, ResolvedConfig } from "vite";
+import type { Plugin, ViteDevServer } from "vite";
 import { resolve } from "path";
 import { writeFileSync, readFileSync, rmSync, existsSync } from "fs";
-import { Options, optionSchema } from "./types.js";
 import {
   isTypeScriptProject,
   runRuntimeEnvCommand,
   getTempDir,
+  getViteEnvFiles,
 } from "./utils.js";
 
 const schemaFile = ".runtimeenvschema.json";
 
-export function devPlugin(options: Options): Plugin {
+export function devPlugin(): Plugin {
   return {
     name: "runtime-env-dev",
 
     configureServer(server: ViteDevServer) {
       if (server.config.mode === "test") return;
 
-      const watchFiles = [schemaFile];
-      if (options.genJs && options.genJs.envFile) {
-        watchFiles.push(...options.genJs.envFile);
-      }
+      const envDir = server.config.envDir || server.config.root;
+      const envFiles = getViteEnvFiles(server.config.mode, envDir);
+      const watchFiles = [schemaFile, ...envFiles];
 
       function run() {
-        if (options.genJs) {
-          const devOutputDir = getTempDir("dev");
-          const devOutputPath = resolve(devOutputDir, "runtime-env.js");
-          runRuntimeEnvCommand("gen-js", options, devOutputPath);
-        }
+        const devOutputDir = getTempDir("dev");
+        const devOutputPath = resolve(devOutputDir, "runtime-env.js");
+        runRuntimeEnvCommand("gen-js", devOutputPath, envFiles);
+
         if (isTypeScriptProject(server.config.root)) {
-          runRuntimeEnvCommand("gen-ts", options, "src/runtime-env.d.ts");
+          runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
         }
       }
 
@@ -40,7 +38,7 @@ export function devPlugin(options: Options): Plugin {
         const path = req.url?.split("?")[0];
         const targetPath = (base + "/runtime-env.js").replace(/\/+/g, "/");
 
-        if (path === targetPath && options.genJs) {
+        if (path === targetPath) {
           const devOutputDir = getTempDir("dev");
           const devOutputPath = resolve(devOutputDir, "runtime-env.js");
           if (existsSync(devOutputPath)) {
@@ -62,17 +60,14 @@ export function devPlugin(options: Options): Plugin {
 
     transformIndexHtml(html, ctx) {
       if (ctx.server && ctx.server.config.command === "serve") {
-        const { interpolateIndexHtml } = optionSchema.parse(options);
-
-        if (!interpolateIndexHtml) {
-          return html;
-        }
+        const envDir = ctx.server.config.envDir || ctx.server.config.root;
+        const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
 
         const tmpDir = getTempDir("dev-interpolate");
         try {
           const htmlFile = resolve(tmpDir, "index.html");
           writeFileSync(htmlFile, html, "utf8");
-          runRuntimeEnvCommand("interpolate", options, htmlFile, htmlFile);
+          runRuntimeEnvCommand("interpolate", htmlFile, envFiles, htmlFile);
           html = readFileSync(htmlFile, "utf8");
           return html;
         } finally {

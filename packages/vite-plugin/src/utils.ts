@@ -2,7 +2,6 @@ import { existsSync, mkdirSync } from "fs";
 import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { createRequire } from "module";
-import { Options, optionSchema } from "./types.js";
 
 const require = createRequire(import.meta.url);
 
@@ -13,13 +12,20 @@ export function isTypeScriptProject(root: string): boolean {
   return existsSync(resolve(root, "tsconfig.json"));
 }
 
+export function getViteEnvFiles(mode: string, envDir: string): string[] {
+  const envFiles = [".env", ".env.local", `.env.${mode}`, `.env.${mode}.local`];
+
+  return envFiles
+    .map((file) => resolve(envDir, file))
+    .filter((file) => existsSync(file));
+}
+
 export function getRuntimeEnvCommandLineArgs(
   command: string,
-  options: Options,
   outputFile: string,
+  envFiles: string[] = [],
   inputFile?: string,
 ): string[] {
-  const { genJs, interpolateIndexHtml } = optionSchema.parse(options);
   let args: string[] = [
     "--schema-file",
     schemaFile,
@@ -30,15 +36,11 @@ export function getRuntimeEnvCommandLineArgs(
 
   if (command === "gen-ts") {
     args.push("--output-file", outputFile);
-  } else if (command === "gen-js" && genJs) {
-    args.push(...genJs.envFile.map((file) => ["--env-file", file]).flat());
+  } else if (command === "gen-js") {
+    args.push(...envFiles.map((file) => ["--env-file", file]).flat());
     args.push("--output-file", outputFile);
-  } else if (command === "interpolate" && interpolateIndexHtml && inputFile) {
-    args.push(
-      ...interpolateIndexHtml.envFile
-        .map((file) => ["--env-file", file])
-        .flat(),
-    );
+  } else if (command === "interpolate" && inputFile) {
+    args.push(...envFiles.map((file) => ["--env-file", file]).flat());
     args.push("--input-file", inputFile, "--output-file", outputFile);
   }
 
@@ -47,14 +49,14 @@ export function getRuntimeEnvCommandLineArgs(
 
 export function runRuntimeEnvCommand(
   command: string,
-  options: Options,
   outputFile: string,
+  envFiles: string[] = [],
   inputFile?: string,
 ) {
   const args = getRuntimeEnvCommandLineArgs(
     command,
-    options,
     outputFile,
+    envFiles,
     inputFile,
   );
 
