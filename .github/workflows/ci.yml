@@ -230,6 +230,7 @@ jobs:
       matrix:
         package:
           - cli
+          - vite-plugin
 
     steps:
       - name: Checkout
