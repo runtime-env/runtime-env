@@ -33,7 +33,8 @@ The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boil
 - **AND** a `tsconfig.json` file exists in the project root.
 - **WHEN** the user runs `vite` (or `npm run dev`).
 - **THEN** the plugin automatically runs the configured commands (`gen-js`, `interpolateIndexHtml`) and the automatically detected `gen-ts` command in watch mode.
-- **AND** if the `gen-js` object is present, the Vite dev server serves `/runtime-env.js` via middleware, without writing it to the `public/` directory.
+- **AND** if the `gen-js` object is present, the Vite dev server serves `/runtime-env.js` (or `${base}/runtime-env.js` if `base` is configured) via middleware, without writing it to the `public/` directory.
+- **AND** the `runtime-env.js` file SHALL remain available even if `interpolateIndexHtml` is also configured.
 - **AND** if the `interpolateIndexHtml` object is present, the Vite dev server serves the correctly interpolated `index.html` in memory.
 - **AND** changes to `.env` or the schema file trigger automatic regeneration and HMR.
 - **AND** the `package.json` `dev` script is simply `"dev": "vite"`.

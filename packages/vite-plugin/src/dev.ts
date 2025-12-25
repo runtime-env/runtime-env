@@ -36,7 +36,11 @@ export function devPlugin(options: Options): Plugin {
       run();
 
       server.middlewares.use((req, res, next) => {
-        if (req.url?.startsWith("/runtime-env.js") && options.genJs) {
+        const base = server.config.base || "/";
+        const path = req.url?.split("?")[0];
+        const targetPath = (base + "/runtime-env.js").replace(/\/+/g, "/");
+
+        if (path === targetPath && options.genJs) {
           const devOutputDir = getTempDir("dev");
           const devOutputPath = resolve(devOutputDir, "runtime-env.js");
           if (existsSync(devOutputPath)) {
@@ -64,7 +68,7 @@ export function devPlugin(options: Options): Plugin {
           return html;
         }
 
-        const tmpDir = getTempDir("dev");
+        const tmpDir = getTempDir("dev-interpolate");
         try {
           const htmlFile = resolve(tmpDir, "index.html");
           writeFileSync(htmlFile, html, "utf8");
