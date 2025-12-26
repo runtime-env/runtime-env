@@ -17,5 +17,11 @@
       "pull-request-title-pattern": "chore(release): @runtime-env/vite-plugin@${version}",
       "tag-separator": ""
     }
-  }
+  },
+  "plugins": [
+    {
+      "type": "node-workspace",
+      "updatePeerDependencies": false
+    }
+  ]
 }

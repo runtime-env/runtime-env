@@ -86,11 +86,34 @@ jobs:
       - name: Build packages
         run: npm run build
 
-      - name: Build packages
-        run: npm run pack
-
       - name: Test packages
         run: npm run test
+
+  test-example-development:
+    name: Test Example (Development)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Test examples/development
         run: |
@@ -98,6 +121,32 @@ jobs:
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm run test
+
+  test-example-production:
+    name: Test Example (Production)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Test examples/production
         run: |
@@ -107,12 +156,64 @@ jobs:
           docker build . -t runtime-env-example
           npm run test
 
+  test-example-test:
+    name: Test Example (Test)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Test examples/test
         run: |
           cd examples/test
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm run test
+
+  test-example-workbox:
+    name: Test Example (Workbox)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Test examples/workbox
         run: |
@@ -122,11 +223,35 @@ jobs:
           docker build . -t runtime-env-example
           npm run test
 
+  test-example-vite:
+    name: Test Example (Vite)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Test examples/comprehensive-vite (dev)
         run: |
           cd examples/comprehensive-vite
-          git clean -xdf
-          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm i ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
@@ -170,11 +295,35 @@ jobs:
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
 
+  test-example-webpack:
+    name: Test Example (Webpack)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+
       - name: Test examples/comprehensive-webpack (dev)
         run: |
           cd examples/comprehensive-webpack
-          git clean -xdf
-          git restore .
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           echo "FOO=dev-initial" > .env
@@ -223,6 +372,12 @@ jobs:
       - build
       - lint
       - test
+      - test-example-development
+      - test-example-production
+      - test-example-test
+      - test-example-workbox
+      - test-example-vite
+      - test-example-webpack
 
     runs-on: ubuntu-latest
 
