@@ -9,6 +9,13 @@
       "include-v-in-tag": false,
       "pull-request-title-pattern": "chore(release): @runtime-env/cli@${version}",
       "tag-separator": ""
+    },
+    "packages/vite-plugin": {
+      "component": "vite-plugin",
+      "include-component-in-tag": true,
+      "include-v-in-tag": false,
+      "pull-request-title-pattern": "chore(release): @runtime-env/vite-plugin@${version}",
+      "tag-separator": ""
     }
   }
 }
