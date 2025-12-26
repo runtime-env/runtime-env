@@ -1,4 +1,4 @@
 {
-  "packages/cli": "0.7.8",
-  "packages/vite-plugin": "0.0.0"
+  "packages/cli": "1.0.0",
+  "packages/vite-plugin": "0.0.1"
 }
