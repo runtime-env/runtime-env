@@ -37,7 +37,7 @@
   "dependencies": {},
   "peerDependencies": {
     "@runtime-env/cli": "*",
-    "vite": "7.3.0"
+    "vite": "*"
   },
   "devDependencies": {
     "@runtime-env/cli": "^0.7.8",
