@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0](https://github.com/runtime-env/runtime-env/compare/cli0.7.8...cli1.0.0) (2025-12-26)
+
+
+### ⚠ BREAKING CHANGES
+
+* **cli:** remove redundant environment variable escaping ([#552](https://github.com/runtime-env/runtime-env/issues/552))
+
+### Bug Fixes
+
+* **cli:** remove redundant environment variable escaping ([#552](https://github.com/runtime-env/runtime-env/issues/552)) ([e261a3a](https://github.com/runtime-env/runtime-env/commit/e261a3a39f54d7fb420166ffef4eade83b3820e7))
+
 ## [0.7.8](https://github.com/runtime-env/runtime-env/compare/cli0.7.7...cli0.7.8) (2025-12-07)
 
 
