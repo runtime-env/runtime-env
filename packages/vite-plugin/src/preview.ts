@@ -12,6 +12,13 @@ export function previewPlugin(): Plugin {
   return {
     name: "runtime-env-preview",
 
+    apply(config, { command }) {
+      // preview command also uses 'serve' but it's often better to just let it be
+      // and rely on the hook itself if we don't have a specific command.
+      // However, to be consistent with others:
+      return command === "serve";
+    },
+
     configurePreviewServer(server: PreviewServer) {
       server.middlewares.use((req, res, next) => {
         const base = server.config.base || "/";
