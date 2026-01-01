@@ -1,7 +1,12 @@
 import type { Plugin, PreviewServer } from "vite";
 import { resolve } from "path";
 import { readFileSync, writeFileSync, existsSync, rmSync } from "fs";
-import { runRuntimeEnvCommand, getTempDir, getViteEnvFiles } from "./utils.js";
+import {
+  runRuntimeEnvCommand,
+  getTempDir,
+  getViteEnvFiles,
+  logError,
+} from "./utils.js";
 
 export function previewPlugin(): Plugin {
   return {
@@ -30,7 +35,17 @@ export function previewPlugin(): Plugin {
           const tmpDir = getTempDir("preview-gen-js");
           const tmpPath = resolve(tmpDir, "runtime-env.js");
           try {
-            runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
+            const result = runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
+            if (!result.success) {
+              logError(
+                server.config.logger,
+                "Failed to generate runtime-env.js",
+                result.stderr || result.stdout,
+              );
+              next();
+              return;
+            }
+
             if (existsSync(tmpPath)) {
               const content = readFileSync(tmpPath, "utf8");
               res.setHeader("Content-Type", "application/javascript");
@@ -57,12 +72,23 @@ export function previewPlugin(): Plugin {
               const originalHtml = readFileSync(distIndexHtml, "utf8");
               writeFileSync(tmpHtmlPath, originalHtml, "utf8");
 
-              runRuntimeEnvCommand(
+              const result = runRuntimeEnvCommand(
                 "interpolate",
                 tmpHtmlPath,
                 envFiles,
                 tmpHtmlPath,
               );
+
+              if (!result.success) {
+                logError(
+                  server.config.logger,
+                  "Failed to interpolate index.html",
+                  result.stderr || result.stdout,
+                );
+                res.setHeader("Content-Type", "text/html");
+                res.end(originalHtml);
+                return;
+              }
 
               const interpolatedHtml = readFileSync(tmpHtmlPath, "utf8");
               res.setHeader("Content-Type", "text/html");
