@@ -17,9 +17,11 @@ export function devPlugin(): Plugin {
   return {
     name: "runtime-env-dev",
 
-    configureServer(server: ViteDevServer) {
-      if (server.config.mode === "test") return;
+    apply(config, { command, mode }) {
+      return command === "serve" && mode !== "test";
+    },
 
+    configureServer(server: ViteDevServer) {
       const envDir = server.config.envDir || server.config.root;
       const envFiles = getViteEnvFiles(server.config.mode, envDir);
       const watchFiles = [resolve(server.config.root, schemaFile), ...envFiles];
@@ -97,7 +99,7 @@ export function devPlugin(): Plugin {
     },
 
     transformIndexHtml(html, ctx) {
-      if (ctx.server && ctx.server.config.command === "serve") {
+      if (ctx.server) {
         const envDir = ctx.server.config.envDir || ctx.server.config.root;
         const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
 
