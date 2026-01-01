@@ -1,14 +1,43 @@
-import type { Plugin, UserConfig, ConfigEnv } from "vite";
-import { isTypeScriptProject, runRuntimeEnvCommand } from "./utils.js";
+import type { Plugin, ResolvedConfig, Logger } from "vite";
+import {
+  isTypeScriptProject,
+  runRuntimeEnvCommand,
+  logError,
+  hasRuntimeEnvScript,
+} from "./utils.js";
 
 export function buildPlugin(): Plugin {
+  let config: ResolvedConfig | undefined;
+
   return {
     name: "runtime-env-build",
 
-    config(config: UserConfig, configEnv: ConfigEnv) {
-      if (configEnv.command === "build") {
-        if (isTypeScriptProject(config.root || process.cwd())) {
-          runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
+    configResolved(resolvedConfig: ResolvedConfig) {
+      config = resolvedConfig;
+      if (config.command === "build") {
+        if (isTypeScriptProject(config.root)) {
+          const result = runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
+          if (!result.success) {
+            logError(
+              config.logger,
+              "Failed to generate runtime-env.d.ts",
+              result.stderr || result.stdout,
+            );
+            process.exit(1);
+          }
+        }
+      }
+    },
+
+    transformIndexHtml(html) {
+      if (config && config.command === "build") {
+        if (!hasRuntimeEnvScript(html, config.base)) {
+          logError(
+            config.logger,
+            `index.html is missing <script src="${config.base === "/" ? "" : config.base}/runtime-env.js"></script>. ` +
+              "This script tag is mandatory for @runtime-env/vite-plugin to function correctly in production.",
+          );
+          process.exit(1);
         }
       }
     },

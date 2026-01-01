@@ -6,6 +6,9 @@ import {
   runRuntimeEnvCommand,
   getTempDir,
   getViteEnvFiles,
+  logError,
+  clearLastError,
+  hasRuntimeEnvScript,
 } from "./utils.js";
 
 const schemaFile = ".runtimeenvschema.json";
@@ -19,15 +22,50 @@ export function devPlugin(): Plugin {
 
       const envDir = server.config.envDir || server.config.root;
       const envFiles = getViteEnvFiles(server.config.mode, envDir);
-      const watchFiles = [schemaFile, ...envFiles];
+      const watchFiles = [resolve(server.config.root, schemaFile), ...envFiles];
+      let hadError = false;
 
       function run() {
         const devOutputDir = getTempDir("dev");
         const devOutputPath = resolve(devOutputDir, "runtime-env.js");
-        runRuntimeEnvCommand("gen-js", devOutputPath, envFiles);
+        const jsResult = runRuntimeEnvCommand(
+          "gen-js",
+          devOutputPath,
+          envFiles,
+        );
+
+        if (!jsResult.success) {
+          logError(
+            server.config.logger,
+            "Failed to generate runtime-env.js",
+            jsResult.stderr || jsResult.stdout,
+            server,
+          );
+          hadError = true;
+          return;
+        }
 
         if (isTypeScriptProject(server.config.root)) {
-          runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
+          const tsResult = runRuntimeEnvCommand(
+            "gen-ts",
+            "src/runtime-env.d.ts",
+          );
+          if (!tsResult.success) {
+            logError(
+              server.config.logger,
+              "Failed to generate runtime-env.d.ts",
+              tsResult.stderr || tsResult.stdout,
+              server,
+            );
+            hadError = true;
+            return;
+          }
+        }
+
+        if (hadError) {
+          clearLastError();
+          server.ws.send({ type: "full-reload" });
+          hadError = false;
         }
       }
 
@@ -63,11 +101,37 @@ export function devPlugin(): Plugin {
         const envDir = ctx.server.config.envDir || ctx.server.config.root;
         const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
 
+        if (!hasRuntimeEnvScript(html, ctx.server.config.base)) {
+          logError(
+            ctx.server.config.logger,
+            `index.html is missing <script src="${ctx.server.config.base === "/" ? "" : ctx.server.config.base}/runtime-env.js"></script>. ` +
+              "Runtime values will not be available. Please add the script tag.",
+            undefined,
+            ctx.server,
+          );
+        }
+
         const tmpDir = getTempDir("dev-interpolate");
         try {
           const htmlFile = resolve(tmpDir, "index.html");
           writeFileSync(htmlFile, html, "utf8");
-          runRuntimeEnvCommand("interpolate", htmlFile, envFiles, htmlFile);
+          const result = runRuntimeEnvCommand(
+            "interpolate",
+            htmlFile,
+            envFiles,
+            htmlFile,
+          );
+
+          if (!result.success) {
+            logError(
+              ctx.server.config.logger,
+              "Failed to interpolate index.html",
+              result.stderr || result.stdout,
+              ctx.server,
+            );
+            return html;
+          }
+
           html = readFileSync(htmlFile, "utf8");
           return html;
         } finally {
