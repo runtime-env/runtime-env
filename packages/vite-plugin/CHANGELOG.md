@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.0](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.0.1...vite-plugin0.1.0) (2026-01-01)
+
+
+### Features
+
+* **vite-plugin:** improve dx ([#564](https://github.com/runtime-env/runtime-env/issues/564)) ([c016337](https://github.com/runtime-env/runtime-env/commit/c016337069895e842e5af827bb48752d2e9fa594))
+
 ## [0.0.1](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.0.0...vite-plugin0.0.1) (2025-12-26)
 
 
