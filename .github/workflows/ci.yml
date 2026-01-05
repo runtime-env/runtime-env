@@ -401,7 +401,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Publish
-        uses: JS-DevTools/npm-publish@v4.1.1
+        uses: JS-DevTools/npm-publish@v4.1.2
         id: publish
         with:
           token: ${{ secrets.NPM_TOKEN }}
