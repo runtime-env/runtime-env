@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@types/jest": "30.0.0",
-    "@types/node": "24.10.6",
+    "@types/node": "24.10.7",
     "concurrently": "9.2.1",
     "cypress": "15.8.2",
     "html-webpack-plugin": "5.6.5",
