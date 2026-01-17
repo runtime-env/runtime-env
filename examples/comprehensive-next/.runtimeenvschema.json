@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "NEXT_PUBLIC_FOO": {
+      "type": "string"
+    }
+  },
+  "required": ["NEXT_PUBLIC_FOO"]
+}
