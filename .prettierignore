@@ -12,3 +12,4 @@ examples/comprehensive-vite/public/runtime-env.js
 examples/comprehensive-vite/src/runtime-env.d.ts
 examples/comprehensive-webpack/public/runtime-env.js
 examples/comprehensive-webpack/src/runtime-env.d.ts
+examples/comprehensive-next/.next
