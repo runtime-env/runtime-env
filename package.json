@@ -8,7 +8,8 @@
   },
   "workspaces": [
     "packages/cli",
-    "packages/vite-plugin"
+    "packages/vite-plugin",
+    "packages/next-plugin"
   ],
   "devDependencies": {
     "prettier": "3.8.0"
