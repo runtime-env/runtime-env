@@ -363,6 +363,67 @@ jobs:
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
 
+  test-example-next:
+    name: Test Example (Next.js)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test examples/comprehensive-next (dev)
+        run: |
+          cd examples/comprehensive-next
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../packages/next-plugin/runtime-env-next-plugin-test.tgz
+          echo "NEXT_PUBLIC_FOO=dev-initial" > .env
+          npx start-server-and-test dev http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --spec cypress/e2e/dev.cy.js'
+
+      - name: Test examples/comprehensive-next (preview)
+        run: |
+          cd examples/comprehensive-next
+          git clean -xdf
+          git restore .
+          npm ci
+          npm i ../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../packages/next-plugin/runtime-env-next-plugin-test.tgz
+          npm run build
+          echo "NEXT_PUBLIC_FOO=preview-initial" > .env
+          npx start-server-and-test start http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
+          echo "NEXT_PUBLIC_FOO=preview-updated" > .env
+          npx start-server-and-test start http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=preview-updated --spec cypress/e2e/preview.cy.js'
+
+      - name: Test examples/comprehensive-next (docker)
+        run: |
+          cd examples/comprehensive-next
+          git clean -xdf
+          git restore .
+          npm ci
+          cp ../../packages/cli/runtime-env-cli-test.tgz .
+          cp ../../packages/next-plugin/runtime-env-next-plugin-test.tgz .
+          docker build -t comprehensive-next .
+          npx start-server-and-test 'docker run -p 3000:3000 -e NEXT_PUBLIC_FOO=docker-initial comprehensive-next' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-next -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:3000 -e NEXT_PUBLIC_FOO=docker-updated comprehensive-next' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-next -q | xargs docker rm -f
+
   release:
     if: github.ref_name == 'main'
 
@@ -378,6 +439,7 @@ jobs:
       - test-example-workbox
       - test-example-vite
       - test-example-webpack
+      - test-example-next
 
     runs-on: ubuntu-latest
 
@@ -386,6 +448,7 @@ jobs:
         package:
           - cli
           - vite-plugin
+          - next-plugin
 
     steps:
       - name: Checkout

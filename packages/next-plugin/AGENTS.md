@@ -1,0 +1,11 @@
+# Instructions
+
+Instructions for AI coding assistants using OpenSpec for spec-driven development.
+
+## Validation
+
+When you receive a request that will result in code changes in this directory, you must run the following job(s) locally to validate your changes before submitting:
+
+- Test examples/comprehensive-next (dev)
+- Test examples/comprehensive-next (preview)
+- Test examples/comprehensive-next (docker)
