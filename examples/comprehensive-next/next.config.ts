@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   output: "standalone",
   reactCompiler: true,
+  outputFileTracingRoot: __dirname,
 };
 
 export default withRuntimeEnv(nextConfig);
