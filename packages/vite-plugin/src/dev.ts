@@ -6,6 +6,7 @@ import {
   runRuntimeEnvCommand,
   getTempDir,
   getViteEnvFiles,
+  validateSchema,
   logError,
   clearLastError,
   hasRuntimeEnvScript,
@@ -28,6 +29,21 @@ export function devPlugin(): Plugin {
       let hadError = false;
 
       function run() {
+        const validation = validateSchema(
+          server.config.root,
+          server.config.envPrefix,
+        );
+        if (!validation.success) {
+          logError(
+            server.config.logger,
+            "Schema validation failed",
+            validation.message,
+            server,
+          );
+          hadError = true;
+          return;
+        }
+
         const devOutputDir = getTempDir("dev");
         const devOutputPath = resolve(devOutputDir, "runtime-env.js");
         const jsResult = runRuntimeEnvCommand(

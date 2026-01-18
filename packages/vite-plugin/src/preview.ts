@@ -5,6 +5,7 @@ import {
   runRuntimeEnvCommand,
   getTempDir,
   getViteEnvFiles,
+  validateSchema,
   logError,
 } from "./utils.js";
 
@@ -39,6 +40,20 @@ export function previewPlugin(): Plugin {
 
         // Serve runtime-env.js
         if (path === "/runtime-env.js") {
+          const validation = validateSchema(
+            server.config.root,
+            server.config.envPrefix,
+          );
+          if (!validation.success) {
+            logError(
+              server.config.logger,
+              "Schema validation failed",
+              validation.message,
+            );
+            next();
+            return;
+          }
+
           const tmpDir = getTempDir("preview-gen-js");
           const tmpPath = resolve(tmpDir, "runtime-env.js");
           try {
@@ -66,6 +81,18 @@ export function previewPlugin(): Plugin {
 
         // Intercept index.html
         if (path === "/" || path === "/index.html") {
+          const validation = validateSchema(
+            server.config.root,
+            server.config.envPrefix,
+          );
+          if (!validation.success) {
+            logError(
+              server.config.logger,
+              "Schema validation failed",
+              validation.message,
+            );
+          }
+
           const outDir = server.config.build.outDir || "dist";
           const distIndexHtml = resolve(
             server.config.root,

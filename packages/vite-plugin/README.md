@@ -18,15 +18,15 @@ Before using the plugin, ensure you have the following prerequisites in your pro
     {
       "type": "object",
       "properties": {
-        "API_URL": { "type": "string" }
+        "VITE_API_URL": { "type": "string" }
       },
-      "required": ["API_URL"]
+      "required": ["VITE_API_URL"]
     }
     ```
 2.  **Provide local environment variables**
     Create a `.env` (or `.env.local`, `.env.development`, etc.) file to provide values for development:
     ```env
-    API_URL=http://localhost:3000
+    VITE_API_URL=http://localhost:3000
     ```
 3.  **Load the runtime environment**
     Add a `<script>` tag to your `index.html` **before** your main entry point to load the generated environment variables:
@@ -55,14 +55,14 @@ export default defineConfig({
 
 ```ts
 // Variables are available globally
-const apiUrl = runtimeEnv.API_URL;
+const apiUrl = runtimeEnv.VITE_API_URL;
 ```
 
 **In `index.html` (Template Interpolation):**
 
 ```html
 <!-- Use lodash-style templates -->
-<script src="https://maps.googleapis.com/maps/api/js?key=<%= runtimeEnv.GOOGLE_MAPS_API_KEY %>"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=<%= runtimeEnv.VITE_GOOGLE_MAPS_API_KEY %>"></script>
 ```
 
 That's it! The plugin automatically handles the following:

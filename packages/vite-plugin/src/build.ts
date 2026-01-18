@@ -2,6 +2,7 @@ import type { Plugin, ResolvedConfig } from "vite";
 import {
   isTypeScriptProject,
   runRuntimeEnvCommand,
+  validateSchema,
   logError,
   hasRuntimeEnvScript,
 } from "./utils.js";
@@ -16,6 +17,13 @@ export function buildPlugin(): Plugin {
 
     configResolved(resolvedConfig: ResolvedConfig) {
       config = resolvedConfig;
+
+      const validation = validateSchema(config.root, config.envPrefix);
+      if (!validation.success) {
+        logError(config.logger, "Schema validation failed", validation.message);
+        process.exit(1);
+      }
+
       if (isTypeScriptProject(config.root)) {
         const result = runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
         if (!result.success) {
