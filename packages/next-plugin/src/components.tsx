@@ -1,12 +1,12 @@
 import Script from "next/script.js";
-import { globalVariableName, getFilteredEnv } from "./utils.js";
-
-declare global {
-  var __RUNTIME_ENV_ERROR__: string | null | undefined;
-}
+import {
+  globalVariableName,
+  getFilteredEnv,
+  getRuntimeEnvError,
+} from "./utils.js";
 
 export function RuntimeEnvScript() {
-  const error = globalThis.__RUNTIME_ENV_ERROR__;
+  const error = getRuntimeEnvError();
   if (error && process.env.NODE_ENV === "development") {
     throw new Error(`[@runtime-env/next-plugin] ${error}`);
   }

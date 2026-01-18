@@ -8,8 +8,14 @@ const require = createRequire(import.meta.url);
 export const schemaFile = ".runtimeenvschema.json";
 export const globalVariableName = "runtimeEnv";
 
-declare global {
-  var runtimeEnv: Record<string, unknown>;
+let runtimeEnvError: string | null = null;
+
+export function getRuntimeEnvError(): string | null {
+  return runtimeEnvError;
+}
+
+export function setRuntimeEnvError(error: string | null) {
+  runtimeEnvError = error;
 }
 
 export function isTypeScriptProject(root: string): boolean {
@@ -69,7 +75,7 @@ export function populateRuntimeEnv() {
   const filteredEnv = getFilteredEnv(rootDir);
 
   if (Object.keys(filteredEnv).length > 0) {
-    globalThis.runtimeEnv = filteredEnv;
+    (globalThis as any).runtimeEnv = filteredEnv;
   }
 }
 

@@ -1,3 +1,4 @@
+import { PHASE_DEVELOPMENT_SERVER } from "next/constants.js";
 import { resolve } from "path";
 import { watch, type FSWatcher } from "chokidar";
 import {
@@ -5,15 +6,13 @@ import {
   getNextEnvFiles,
   schemaFile,
   isTypeScriptProject,
+  populateRuntimeEnv,
+  setRuntimeEnvError,
 } from "./utils.js";
 
 let watcher: FSWatcher | null = null;
 
-declare global {
-  var __RUNTIME_ENV_ERROR__: string | null | undefined;
-}
-
-export function startDevWatcher(rootDir: string) {
+function startDevWatcher(rootDir: string) {
   if (watcher) return;
 
   const runGenTs = () => {
@@ -26,9 +25,9 @@ export function startDevWatcher(rootDir: string) {
         console.error(
           `[@runtime-env/next-plugin] gen-ts failed:\n${result.stderr}`,
         );
-        globalThis.__RUNTIME_ENV_ERROR__ = result.stderr;
+        setRuntimeEnvError(result.stderr);
       } else {
-        globalThis.__RUNTIME_ENV_ERROR__ = null;
+        setRuntimeEnvError(null);
       }
     }
   };
@@ -61,4 +60,14 @@ export function startDevWatcher(rootDir: string) {
     watcher?.close();
     process.exit(0);
   });
+}
+
+export function withRuntimeEnvPhaseDevelopmentServer(phase: string): void {
+  if (phase !== PHASE_DEVELOPMENT_SERVER) {
+    return;
+  }
+
+  const rootDir = process.cwd();
+  startDevWatcher(rootDir);
+  populateRuntimeEnv();
 }

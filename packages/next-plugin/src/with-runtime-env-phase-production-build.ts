@@ -1,14 +1,18 @@
+import { PHASE_PRODUCTION_BUILD } from "next/constants.js";
 import { resolve } from "path";
 import {
   runRuntimeEnvCommand,
   isTypeScriptProject,
-  populateRuntimeEnv,
   validateSchema,
 } from "./utils.js";
 
-export function runBuildLogic(rootDir: string) {
+export function withRuntimeEnvPhaseProductionBuild(phase: string): void {
+  if (phase !== PHASE_PRODUCTION_BUILD) {
+    return;
+  }
+
+  const rootDir = process.cwd();
   validateSchema(rootDir);
-  populateRuntimeEnv();
 
   if (isTypeScriptProject(rootDir)) {
     const result = runRuntimeEnvCommand(
