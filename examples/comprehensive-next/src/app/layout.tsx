@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { RuntimeEnvScript } from "@runtime-env/next-plugin";
 
 export const metadata: Metadata = {
-  title: `Runtime Env - ${runtimeEnv.NEXT_PUBLIC_FOO}`,
+  title: runtimeEnv.NEXT_PUBLIC_HEADERS.TITLE,
 };
 
 export default function RootLayout({

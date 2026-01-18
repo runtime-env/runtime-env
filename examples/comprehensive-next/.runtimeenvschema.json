@@ -3,7 +3,16 @@
   "properties": {
     "NEXT_PUBLIC_FOO": {
       "type": "string"
+    },
+    "NEXT_PUBLIC_HEADERS": {
+      "type": "object",
+      "properties": {
+        "TITLE": {
+          "type": "string"
+        }
+      },
+      "required": ["TITLE"]
     }
   },
-  "required": ["NEXT_PUBLIC_FOO"]
+  "required": ["NEXT_PUBLIC_FOO", "NEXT_PUBLIC_HEADERS"]
 }
