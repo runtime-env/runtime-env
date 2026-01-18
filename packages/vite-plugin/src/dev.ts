@@ -44,6 +44,23 @@ export function devPlugin(): Plugin {
           return;
         }
 
+        if (isTypeScriptProject(server.config.root)) {
+          const tsResult = runRuntimeEnvCommand(
+            "gen-ts",
+            "src/runtime-env.d.ts",
+          );
+          if (!tsResult.success) {
+            logError(
+              server.config.logger,
+              "Failed to generate runtime-env.d.ts",
+              tsResult.stderr || tsResult.stdout,
+              server,
+            );
+            hadError = true;
+            return;
+          }
+        }
+
         const devOutputDir = getTempDir("dev");
         const devOutputPath = resolve(devOutputDir, "runtime-env.js");
         const jsResult = runRuntimeEnvCommand(
@@ -61,23 +78,6 @@ export function devPlugin(): Plugin {
           );
           hadError = true;
           return;
-        }
-
-        if (isTypeScriptProject(server.config.root)) {
-          const tsResult = runRuntimeEnvCommand(
-            "gen-ts",
-            "src/runtime-env.d.ts",
-          );
-          if (!tsResult.success) {
-            logError(
-              server.config.logger,
-              "Failed to generate runtime-env.d.ts",
-              tsResult.stderr || tsResult.stdout,
-              server,
-            );
-            hadError = true;
-            return;
-          }
         }
 
         if (hadError) {
