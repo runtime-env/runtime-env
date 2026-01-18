@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.1.1](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.0...vite-plugin0.1.1) (2026-01-18)
+
+
+### Bug Fixes
+
+* decouple type generation from js generation in dev mode ([#586](https://github.com/runtime-env/runtime-env/issues/586)) ([8e4af94](https://github.com/runtime-env/runtime-env/commit/8e4af94aa185c285c2c7d6e72dcea55cf4082d42))
+* respect vite's envPrefix config ([#584](https://github.com/runtime-env/runtime-env/issues/584)) ([78e1866](https://github.com/runtime-env/runtime-env/commit/78e186657d110849254b780ebd11f68ae943fbd2))
+
 ## [0.1.0](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.0.1...vite-plugin0.1.0) (2026-01-01)
 
 
