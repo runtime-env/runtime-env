@@ -11,8 +11,7 @@ export function RuntimeEnvScript() {
     throw new Error(`[@runtime-env/next-plugin] ${error}`);
   }
 
-  const rootDir = process.cwd();
-  const env = getFilteredEnv(rootDir);
+  const env = (globalThis as any)[globalVariableName];
   const scriptContent = `globalThis.${globalVariableName} = ${JSON.stringify(env)};`;
 
   return (

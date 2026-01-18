@@ -12,6 +12,7 @@ export const robustAccessPattern =
   "((typeof globalThis !== 'undefined' && globalThis.runtimeEnv) || (typeof window !== 'undefined' ? window.runtimeEnv : (typeof process !== 'undefined' && typeof process.env.runtimeEnv === 'string' ? JSON.parse(process.env.runtimeEnv) : (typeof global !== 'undefined' ? global.runtimeEnv : undefined))))";
 
 let runtimeEnvError: string | null = null;
+let cachedSchema: any = null;
 
 export function getRuntimeEnvError(): string | null {
   return runtimeEnvError;
@@ -19,6 +20,10 @@ export function getRuntimeEnvError(): string | null {
 
 export function setRuntimeEnvError(error: string | null) {
   runtimeEnvError = error;
+}
+
+export function clearSchemaCache() {
+  cachedSchema = null;
 }
 
 export function isTypeScriptProject(root: string): boolean {
@@ -53,8 +58,10 @@ export function getFilteredEnv(rootDir: string, isPlaceholder = false) {
   if (!existsSync(schemaPath)) return {};
 
   try {
-    const schema = JSON.parse(readFileSync(schemaPath, "utf8"));
-    const properties = schema.properties || {};
+    if (!cachedSchema) {
+      cachedSchema = JSON.parse(readFileSync(schemaPath, "utf8"));
+    }
+    const properties = cachedSchema.properties || {};
     const filteredEnv: Record<string, string | undefined> = {};
 
     for (const key of Object.keys(properties)) {
@@ -75,12 +82,29 @@ export function getFilteredEnv(rootDir: string, isPlaceholder = false) {
 
 export function populateRuntimeEnv() {
   const rootDir = process.cwd();
-  const filteredEnv = getFilteredEnv(rootDir);
 
-  if (Object.keys(filteredEnv).length > 0) {
-    (globalThis as any).runtimeEnv = filteredEnv;
-    // Next.js workers might only see process.env as strings, but we keep it for fallback
-    (process.env as any).runtimeEnv = JSON.stringify(filteredEnv);
+  if (process.env.NODE_ENV === "development") {
+    // Only define getter on globalThis. process.env doesn't support accessors.
+    Object.defineProperty(globalThis, globalVariableName, {
+      get() {
+        return getFilteredEnv(rootDir);
+      },
+      configurable: true,
+      enumerable: true,
+    });
+
+    // For process.env, we set it as a string for fallbacks,
+    // though the getter on globalThis will be preferred by the robustAccessPattern.
+    (process.env as any)[globalVariableName] = JSON.stringify(
+      getFilteredEnv(rootDir),
+    );
+  } else {
+    const filteredEnv = getFilteredEnv(rootDir);
+    if (Object.keys(filteredEnv).length > 0) {
+      (globalThis as any).runtimeEnv = filteredEnv;
+      // Next.js workers might only see process.env as strings, but we keep it for fallback
+      (process.env as any).runtimeEnv = JSON.stringify(filteredEnv);
+    }
   }
 }
 

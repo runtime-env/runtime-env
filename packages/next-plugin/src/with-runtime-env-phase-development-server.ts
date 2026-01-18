@@ -8,6 +8,7 @@ import {
   isTypeScriptProject,
   populateRuntimeEnv,
   setRuntimeEnvError,
+  clearSchemaCache,
 } from "./utils.js";
 
 let watcher: FSWatcher | null = null;
@@ -44,7 +45,9 @@ function startDevWatcher(rootDir: string) {
   });
 
   watcher.on("all", () => {
+    clearSchemaCache();
     runGenTs();
+    populateRuntimeEnv();
   });
 
   process.on("exit", () => {

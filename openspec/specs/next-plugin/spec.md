@@ -23,8 +23,9 @@ The plugin SHALL ensure `runtimeEnv` is available across all environments by aut
 #### Scenario: Server-side consistency
 
 - **WHEN** accessing `runtimeEnv` on the server
-- **THEN** it SHALL resolve to `process.env.runtimeEnv`
-- **AND** it SHALL have been populated by the plugin as an object during initialization (dev or production server).
+- **THEN** it SHALL resolve to `process.env.runtimeEnv`.
+- **AND** it SHALL have been populated by the plugin during initialization (dev or production server).
+- **AND** in development mode, it SHALL dynamically reflect changes to environment variables without requiring a full process restart where possible (e.g., via getters).
 
 #### Scenario: Client-side consistency
 
@@ -160,6 +161,14 @@ The plugin SHALL support automatic updates or reloads when environment variables
 - **WHEN** an environment variable is updated in `.env`
 - **AND** the user navigates or reloads the page
 - **THEN** the client-side `globalThis.runtimeEnv` SHALL reflect the updated values provided by the newly rendered inline script
+
+#### Scenario: Hydration consistency after .env change
+
+- **GIVEN** `next dev` is running
+- **WHEN** a `.env` file is modified
+- **AND** a page is rendered (SSR)
+- **THEN** the server-side values used during SSR SHALL match the values injected into the client-side `globalThis.runtimeEnv`
+- **AND** NO hydration mismatch SHALL occur.
 
 ### Requirement: Clean Project Root (Next.js)
 
