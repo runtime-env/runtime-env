@@ -73,6 +73,22 @@ export function populateRuntimeEnv() {
   }
 }
 
+export function validateRuntimeEnv(rootDir: string) {
+  const schemaPath = resolve(rootDir, schemaFile);
+  if (!existsSync(schemaPath)) return;
+
+  const tempDir = getTempDir("validate");
+  const tempFile = resolve(tempDir, "runtime-env.js");
+
+  const result = runRuntimeEnvCommand("gen-js", tempFile);
+
+  if (!result.success) {
+    console.error(`[@runtime-env/next-plugin] Runtime Validation Failed:`);
+    console.error(result.stderr);
+    process.exit(1);
+  }
+}
+
 export function getNextEnvFiles(
   mode: "development" | "production" | "test",
   rootDir: string,

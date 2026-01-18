@@ -10,8 +10,8 @@ To improve reliability, `@runtime-env/next-plugin` should validate environment v
 
 - **ADDED** `validateRuntimeEnv` in `utils.ts` to perform environment validation using the existing `gen-js` CLI command with a temporary output.
 - **MODIFIED** `withRuntimeEnv` in `index.ts` to:
-    - Return a synchronous function that returns a `Promise<NextConfig>`, matching the most compatible Next.js plugin pattern.
-    - Call `validateRuntimeEnv` only during the `PHASE_PRODUCTION_SERVER` phase.
+  - Return a synchronous function that returns a `Promise<NextConfig>`, matching the most compatible Next.js plugin pattern.
+  - Call `validateRuntimeEnv` only during the `PHASE_PRODUCTION_SERVER` phase.
 - **MODIFIED** `Informative and Resilient Integration (Next.js)` requirement to include process exit in production startup.
 
 ## Impact

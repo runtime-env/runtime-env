@@ -184,7 +184,7 @@ The `@runtime-env/next-plugin` SHALL be implemented with a modular structure to 
 
 ### Requirement: Informative and Resilient Integration (Next.js)
 
-The plugin SHALL provide descriptive feedback for integration issues and remain resilient in development mode, while enforcing mandatory configurations during the build process.
+The plugin SHALL provide descriptive feedback for integration issues and remain resilient in development mode, while enforcing mandatory configurations during the build process and production startup.
 
 #### Scenario: CLI execution failure in dev
 
@@ -207,3 +207,10 @@ The plugin SHALL provide descriptive feedback for integration issues and remain 
 - **WHEN** a `runtime-env` CLI command fails or configuration is invalid (e.g., prefix enforcement failure).
 - **THEN** the plugin SHALL report the error politely.
 - **AND** the build process SHALL fail.
+
+#### Scenario: CLI execution failure in production start
+
+- **GIVEN** the plugin is running in production mode (`next start` or `node server.js`).
+- **WHEN** the environment variables are insufficient or incorrect according to the schema.
+- **THEN** the plugin SHALL report a descriptive error message to the console.
+- **AND** the process SHALL exit with code 1 immediately.

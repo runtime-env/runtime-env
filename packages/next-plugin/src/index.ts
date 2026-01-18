@@ -2,11 +2,13 @@ import type { NextConfig } from "next";
 import {
   PHASE_DEVELOPMENT_SERVER,
   PHASE_PRODUCTION_BUILD,
+  PHASE_PRODUCTION_SERVER,
 } from "next/constants.js";
 import {
   getFilteredEnv,
   populateRuntimeEnv,
   validateSchema,
+  validateRuntimeEnv,
   globalVariableName,
 } from "./utils.js";
 
@@ -30,6 +32,10 @@ export function withRuntimeEnv(
 
     // Early validation of schema to ensure NEXT_PUBLIC_ prefix enforcement
     validateSchema(rootDir);
+
+    if (phase === PHASE_PRODUCTION_SERVER) {
+      validateRuntimeEnv(rootDir);
+    }
 
     let resolvedConfig: NextConfig;
     if (typeof nextConfig === "function") {
