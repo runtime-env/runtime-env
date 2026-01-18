@@ -73,6 +73,9 @@ Variables are available globally via `runtimeEnv`:
 const apiUrl = runtimeEnv.NEXT_PUBLIC_API_URL;
 ```
 
+> [!TIP]
+> The plugin automatically handles mapping `runtimeEnv` to the most robust access pattern for both client and server (`(typeof window !== 'undefined' ? window : process.env).runtimeEnv`), ensuring stability during Next.js prerendering and static generation.
+
 ## Why runtime-env?
 
 Next.js's native `NEXT_PUBLIC_` variables are **build-time**. They are "baked into" your bundles during `next build`, requiring a full rebuild for every environment.

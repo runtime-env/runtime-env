@@ -4,6 +4,7 @@ import {
   runRuntimeEnvCommand,
   isTypeScriptProject,
   validateSchema,
+  populateRuntimeEnvWithPlaceholders,
 } from "./utils.js";
 
 export function withRuntimeEnvPhaseProductionBuild(phase: string): void {
@@ -25,4 +26,6 @@ export function withRuntimeEnvPhaseProductionBuild(phase: string): void {
       );
     }
   }
+
+  populateRuntimeEnvWithPlaceholders();
 }

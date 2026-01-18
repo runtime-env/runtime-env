@@ -45,7 +45,7 @@ export function validateSchema(rootDir: string) {
   }
 }
 
-export function getFilteredEnv(rootDir: string) {
+export function getFilteredEnv(rootDir: string, isPlaceholder = false) {
   const schemaPath = resolve(rootDir, schemaFile);
   if (!existsSync(schemaPath)) return {};
 
@@ -56,7 +56,7 @@ export function getFilteredEnv(rootDir: string) {
 
     for (const key of Object.keys(properties)) {
       if (key.startsWith("NEXT_PUBLIC_")) {
-        filteredEnv[key] = process.env[key];
+        filteredEnv[key] = isPlaceholder ? `\${${key}}` : process.env[key];
       } else if (process.env.NODE_ENV === "development") {
         console.warn(
           `[@runtime-env/next-plugin] Warning: Key '${key}' was found in schema but does not start with 'NEXT_PUBLIC_'. It will be ignored for security reasons.`,
@@ -76,6 +76,19 @@ export function populateRuntimeEnv() {
 
   if (Object.keys(filteredEnv).length > 0) {
     (globalThis as any).runtimeEnv = filteredEnv;
+    // Next.js workers might only see process.env as strings
+    (process.env as any).runtimeEnv = JSON.stringify(filteredEnv);
+  }
+}
+
+export function populateRuntimeEnvWithPlaceholders() {
+  const rootDir = process.cwd();
+  const filteredEnv = getFilteredEnv(rootDir, true);
+
+  if (Object.keys(filteredEnv).length > 0) {
+    (globalThis as any).runtimeEnv = filteredEnv;
+    // Next.js workers might only see process.env as strings
+    (process.env as any).runtimeEnv = JSON.stringify(filteredEnv);
   }
 }
 

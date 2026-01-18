@@ -57,7 +57,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "chokidar": "5.0.0"
+    "chokidar": "5.0.0",
+    "string-replace-loader": "^3.3.0"
   },
   "type": "module"
 }

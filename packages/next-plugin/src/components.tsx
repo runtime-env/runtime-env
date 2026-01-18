@@ -13,7 +13,7 @@ export function RuntimeEnvScript() {
 
   const rootDir = process.cwd();
   const env = getFilteredEnv(rootDir);
-  const scriptContent = `globalThis.${globalVariableName} = ${JSON.stringify(env)};`;
+  const scriptContent = `window.${globalVariableName} = ${JSON.stringify(env)};`;
 
   return (
     <Script
