@@ -76,7 +76,7 @@ export function populateRuntimeEnv() {
 
   if (Object.keys(filteredEnv).length > 0) {
     (globalThis as any).runtimeEnv = filteredEnv;
-    // Next.js workers might only see process.env as strings
+    // Next.js workers might only see process.env as strings, but we keep it for fallback
     (process.env as any).runtimeEnv = JSON.stringify(filteredEnv);
   }
 }
@@ -87,7 +87,7 @@ export function populateRuntimeEnvWithPlaceholders() {
 
   if (Object.keys(filteredEnv).length > 0) {
     (globalThis as any).runtimeEnv = filteredEnv;
-    // Next.js workers might only see process.env as strings
+    // Next.js workers might only see process.env as strings, but we keep it for fallback
     (process.env as any).runtimeEnv = JSON.stringify(filteredEnv);
   }
 }

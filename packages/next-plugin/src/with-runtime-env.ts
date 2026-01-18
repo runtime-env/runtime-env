@@ -28,7 +28,7 @@ export function withRuntimeEnv(
     const finalConfig = { ...resolvedConfig };
 
     const robustAccessPattern =
-      "(typeof window !== 'undefined' ? window.runtimeEnv : (globalThis.runtimeEnv || (globalThis.runtimeEnv = (typeof process !== 'undefined' && typeof process.env.runtimeEnv === 'string' ? JSON.parse(process.env.runtimeEnv) : (typeof process !== 'undefined' ? process.env.runtimeEnv : undefined)))))";
+      "((typeof globalThis !== 'undefined' && globalThis.runtimeEnv) || (typeof window !== 'undefined' ? window.runtimeEnv : (typeof process !== 'undefined' && typeof process.env.runtimeEnv === 'string' ? JSON.parse(process.env.runtimeEnv) : (typeof global !== 'undefined' ? global.runtimeEnv : undefined))))";
 
     // Webpack configuration
     const originalWebpack = finalConfig.webpack;
@@ -86,13 +86,42 @@ export function withRuntimeEnv(
           {
             loader: "string-replace-loader",
             options: {
-              search: "\\bruntimeEnv\\b",
+              search: "(?<!['\"`\\.])\\bruntimeEnv\\b(?!['\"`\\s*:])",
               replace: robustAccessPattern,
               flags: "g",
             },
           },
         ];
       }
+    }
+
+    // Turbopack configuration (Next.js 16+ root level)
+    if (!(finalConfig as any).turbopack) {
+      (finalConfig as any).turbopack = {};
+    } else {
+      (finalConfig as any).turbopack = { ...(finalConfig as any).turbopack };
+    }
+
+    const rootTurboObj = (finalConfig as any).turbopack;
+    if (!rootTurboObj.rules) {
+      rootTurboObj.rules = {};
+    } else {
+      rootTurboObj.rules = { ...rootTurboObj.rules };
+    }
+
+    const extensions = ["*.js", "*.jsx", "*.ts", "*.tsx"];
+    for (const ext of extensions) {
+      rootTurboObj.rules[ext] = [
+        ...(rootTurboObj.rules[ext] || []),
+        {
+          loader: "string-replace-loader",
+          options: {
+            search: "(?<!['\"`\\.])\\bruntimeEnv\\b(?!['\"`\\s*:])",
+            replace: robustAccessPattern,
+            flags: "g",
+          },
+        },
+      ];
     }
 
     return finalConfig;
