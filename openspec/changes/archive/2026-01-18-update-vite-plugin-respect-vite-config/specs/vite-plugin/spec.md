@@ -1,10 +1,4 @@
-# vite-plugin Specification
-
-## Purpose
-
-The `@runtime-env/vite-plugin` provides a zero-config, opinionated integration of `runtime-env` for Vite projects, enabling seamless environment variable management across development, build, preview, and testing stages while adhering to the "build once, deploy anywhere" philosophy.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Seamless Vite Workflow Integration
 
@@ -49,61 +43,6 @@ The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boil
 - **AND** it SHALL automatically detect environment files from `envDir` suitable for the preview environment.
 - **AND** the `package.json` `preview` script is simply `"preview": "vite preview"`.
 
-### Requirement: Refactor Comprehensive Vite Example
-
-The `comprehensive-vite` example SHALL be refactored to use the new `@runtime-env/vite-plugin` plugin, serving as a best-practice reference for users.
-
-#### Scenario: `comprehensive-vite` is refactored
-
-- **GIVEN** the `comprehensive-vite` example.
-- **WHEN** a developer inspects the source code.
-- **THEN** `vite.config.ts` contains the `@runtime-env/vite-plugin` plugin configuration.
-- **AND** `vite.config.ts` SHALL NOT contain manual `test.setupFiles` configuration for `runtime-env.js`.
-- **AND** `package.json` contains simplified scripts:
-  - `"dev": "vite"`
-  - `"build": "tsc && vite build"`
-  - `"preview": "vite preview"`
-  - `"test": "vitest"`
-- **AND** all E2E tests for dev, preview, test, and docker modes continue to pass.
-- **AND** the `comprehensive-webpack` example is explicitly NOT changed.
-
-### Requirement: Vite Plugin Implementation
-
-The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official plugin authoring guidelines to ensure a seamless and idiomatic developer experience, utilizing the `apply` property for mode-specific logic and providing robust TypeScript types.
-
-#### Scenario: Code Structure
-
-- **GIVEN** a developer inspects the `packages/vite-plugin/src` directory
-- **WHEN** they view the file structure
-- **THEN** they find a modular structure with logic separated by Vite mode (`dev`, `build`, `preview`, `vitest`).
-- **AND** shared logic for CLI invocation and file system utilities SHALL be centralized in `utils.ts` to ensure consistency and maintainability.
-- **AND** `index.ts` delegates to these modes by returning an array of plugin objects.
-
-#### Scenario: Mode-Specific Logic with `apply`
-
-- **GIVEN** the `@runtime-env/vite-plugin` is loaded by Vite.
-- **WHEN** Vite is in `dev`, `build`, `preview`, or `test` mode.
-- **THEN** only the plugins relevant to that mode SHALL be active, controlled via the `apply` property or conditional logic in the plugin array.
-- **AND** the `test` mode plugin SHALL leverage official Vitest types to ensure type safety without `any` casts.
-
-#### Scenario: Maintainability
-
-- **GIVEN** a developer needs to modify the plugin's behavior for a specific mode
-- **WHEN** they locate the corresponding mode-specific file (e.g., `build.ts`)
-- **THEN** they can easily understand and modify the relevant logic without affecting other modes, while utilizing shared helpers from `utils.ts` for common tasks.
-
-### Requirement: Clean Project Root
-
-The `@runtime-env/vite-plugin` SHALL maintain a clean project root by using temporary directories for all internal artifacts.
-
-#### Scenario: No visible artifacts in project root
-
-- **GIVEN** the `@runtime-env/vite-plugin` is active in any mode.
-- **WHEN** the plugin needs to generate temporary files (e.g., for HTML interpolation, backups, or serving via middleware).
-- **THEN** it SHALL NOT create any visible files or directories in the project root, except for the intentional output file `src/runtime-env.d.ts` if a `tsconfig.json` is present.
-- **AND** `dist/runtime-env.js` and `dist/index.html.backup` are ALLOWED in the `dist` directory as they are used for preview mode.
-- **AND** all other temporary artifacts SHALL be stored within `node_modules/.runtime-env` to keep the project root clean.
-
 ### Requirement: Simplified and Documented Vite Integration
 
 A new Vite-native plugin, `@runtime-env/vite-plugin`, SHALL be provided to simplify the integration of `runtime-env` with Vite projects, adhering to Vite's security model for environment variables.
@@ -129,17 +68,6 @@ A new Vite-native plugin, `@runtime-env/vite-plugin`, SHALL be provided to simpl
 - **AND** it SHALL guide them to create `.env` files.
 - **AND** it SHALL guide them to add a `<script>` tag to `index.html` for loading `/runtime-env.js`.
 - **AND** it SHALL provide a link to the root `README.md` for `@runtime-env/cli` documentation.
-
-### Requirement: Peer Dependency Requirements
-
-The `@runtime-env/vite-plugin` SHALL define `vite` (version `*`) and `@runtime-env/cli` (version `*`) as peer dependencies to ensure compatibility and avoid duplicate installations in consumer projects.
-
-#### Scenario: Consumer project installation
-
-- **GIVEN** a consumer project using Vite.
-- **WHEN** the user installs `@runtime-env/vite-plugin`.
-- **THEN** the package manager SHALL verify that `@runtime-env/cli` and `vite` are present in the project.
-- **AND** `@runtime-env/vite-plugin` SHALL NOT install its own private copy of `@runtime-env/cli` if it's already present in the project.
 
 ### Requirement: Informative and Resilient Integration
 

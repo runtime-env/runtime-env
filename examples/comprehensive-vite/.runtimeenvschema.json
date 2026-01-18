@@ -1,9 +1,9 @@
 {
   "type": "object",
   "properties": {
-    "FOO": {
+    "VITE_FOO": {
       "type": "string"
     }
   },
-  "required": ["FOO"]
+  "required": ["VITE_FOO"]
 }

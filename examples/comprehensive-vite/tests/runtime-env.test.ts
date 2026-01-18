@@ -5,16 +5,16 @@ describe("Runtime Environment", () => {
     expect(globalThis.runtimeEnv).toBeDefined();
   });
 
-  it("should have FOO property in runtimeEnv", () => {
-    expect(globalThis.runtimeEnv.FOO).toBeDefined();
+  it("should have VITE_FOO property in runtimeEnv", () => {
+    expect(globalThis.runtimeEnv.VITE_FOO).toBeDefined();
   });
 
   it("should be accessible as a string", () => {
-    expect(typeof globalThis.runtimeEnv.FOO).toBe("string");
+    expect(typeof globalThis.runtimeEnv.VITE_FOO).toBe("string");
   });
 
-  it("should have type-safe access to FOO", () => {
-    expectTypeOf(globalThis.runtimeEnv.FOO).toBeString();
+  it("should have type-safe access to VITE_FOO", () => {
+    expectTypeOf(globalThis.runtimeEnv.VITE_FOO).toBeString();
   });
 
   it("should not allow access to non-existent properties", () => {

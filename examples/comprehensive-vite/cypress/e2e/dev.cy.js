@@ -10,7 +10,7 @@ describe("Development Mode E2E", () => {
     cy.title().should("include", "dev-initial");
 
     // Update .env file using cy.exec
-    cy.exec('echo "FOO=dev-updated" > .env');
+    cy.exec('echo "VITE_FOO=dev-updated" > .env');
 
     // Wait for HMR to process change (give it time to detect and reload)
     cy.wait(2000);

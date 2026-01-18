@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from "fs";
+import { existsSync, mkdirSync, readFileSync } from "fs";
 import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { createRequire } from "module";
@@ -62,6 +62,48 @@ export function logError(
       },
     });
   }
+}
+
+export function validateSchema(
+  root: string,
+  envPrefix: string | string[] = "VITE_",
+): { success: boolean; message?: string } {
+  const schemaPath = resolve(root, schemaFile);
+  if (!existsSync(schemaPath)) {
+    return { success: true };
+  }
+
+  try {
+    const schemaContent = readFileSync(schemaPath, "utf-8");
+    const schema = JSON.parse(schemaContent);
+
+    if (schema.type !== "object" || !schema.properties) {
+      return { success: true }; // Let the CLI handle invalid schema format
+    }
+
+    const keys = Object.keys(schema.properties);
+    const prefixes = Array.isArray(envPrefix) ? envPrefix : [envPrefix];
+
+    const invalidKeys = keys.filter(
+      (key) => !prefixes.some((prefix) => key.startsWith(prefix)),
+    );
+
+    if (invalidKeys.length > 0) {
+      return {
+        success: false,
+        message: `The following keys in ${schemaFile} do not match any of the allowed env prefixes (${prefixes.join(
+          ", ",
+        )}): ${invalidKeys.join(", ")}`,
+      };
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: `Failed to parse ${schemaFile}: ${error instanceof Error ? error.message : String(error)}`,
+    };
+  }
+
+  return { success: true };
 }
 
 export function isTypeScriptProject(root: string): boolean {

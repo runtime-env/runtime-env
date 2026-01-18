@@ -7,6 +7,7 @@ import {
   runRuntimeEnvCommand,
   getTempDir,
   getViteEnvFiles,
+  validateSchema,
   logError,
 } from "./utils.js";
 
@@ -43,6 +44,13 @@ export function vitestPlugin(): Plugin {
 
     configResolved(config: ResolvedConfig) {
       const root = config.root || process.cwd();
+
+      const validation = validateSchema(root, config.envPrefix);
+      if (!validation.success) {
+        logError(config.logger, "Schema validation failed", validation.message);
+        process.exit(1);
+      }
+
       // Generate runtime-env.d.ts for Vitest type checking
       if (isTypeScriptProject(root)) {
         const result = runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
