@@ -8,6 +8,9 @@ const require = createRequire(import.meta.url);
 export const schemaFile = ".runtimeenvschema.json";
 export const globalVariableName = "runtimeEnv";
 
+export const robustAccessPattern =
+  "((typeof globalThis !== 'undefined' && globalThis.runtimeEnv) || (typeof window !== 'undefined' ? window.runtimeEnv : (typeof process !== 'undefined' && typeof process.env.runtimeEnv === 'string' ? JSON.parse(process.env.runtimeEnv) : (typeof global !== 'undefined' ? global.runtimeEnv : undefined))))";
+
 let runtimeEnvError: string | null = null;
 
 export function getRuntimeEnvError(): string | null {
@@ -199,4 +202,14 @@ export function getTempDir(subDir: string): string {
   const tempDir = resolve(root, "node_modules", ".runtime-env", subDir);
   mkdirSync(tempDir, { recursive: true });
   return tempDir;
+}
+
+export function getNextVersion(): string | null {
+  try {
+    const nextPkg = require("next/package.json");
+    return nextPkg.version;
+  } catch (e) {
+    // If next is not installed or package.json not found
+    return null;
+  }
 }
