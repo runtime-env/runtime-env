@@ -27,18 +27,10 @@ export function withRuntimeEnv(
         ? await nextConfig(phase, context)
         : nextConfig;
 
-    // Clone the config to avoid read-only property errors
     const finalConfig = { ...resolvedConfig };
-
-    // Webpack configuration
     withRuntimeEnvWebpack(finalConfig);
-
-    // Turbopack configuration (Next.js < 15.3.0)
     withRuntimeEnvExperimentalTurbo(finalConfig);
-
-    // Turbopack configuration (Next.js 15.3.0+)
     withRuntimeEnvTurbopack(finalConfig);
-
     return finalConfig;
   };
 }

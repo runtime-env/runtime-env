@@ -9,7 +9,7 @@ export function withRuntimeEnvExperimentalTurbo(nextConfig: any) {
   }
 
   // Next.js < 15.3.0 (or unknown version) uses experimental.turbo or experimental.turbopack
-  
+
   if (!nextConfig.experimental) {
     nextConfig.experimental = {};
   }
@@ -55,7 +55,7 @@ function isAtLeast15_3_0(version: string): boolean {
   if (!match) return false;
   const major = parseInt(match[1]);
   const minor = parseInt(match[2]);
-  
+
   if (major > 15) return true;
   if (major === 15 && minor >= 3) return true;
   return false;

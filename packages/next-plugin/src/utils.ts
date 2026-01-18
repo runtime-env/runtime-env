@@ -206,10 +206,13 @@ export function getTempDir(subDir: string): string {
 
 export function getNextVersion(): string | null {
   try {
-    const nextPkg = require("next/package.json");
-    return nextPkg.version;
+    const result = spawnSync("npx", ["next", "-v"], { encoding: "utf8" });
+    if (result.status === 0) {
+      const match = result.stdout.match(/v(\d+\.\d+\.\d+)/);
+      return match ? match[1] : null;
+    }
   } catch (e) {
-    // If next is not installed or package.json not found
-    return null;
+    // If npx next -v fails, fallback or return null
   }
+  return null;
 }

@@ -7,7 +7,7 @@ export function withRuntimeEnvTurbopack(nextConfig: any) {
   if (version && !isAtLeast15_3_0(version)) {
     return;
   }
-  
+
   // Next.js 15.3.0+ uses root turbopack config
 
   if (!nextConfig.turbopack) {
@@ -40,7 +40,7 @@ function isAtLeast15_3_0(version: string): boolean {
   if (!match) return false;
   const major = parseInt(match[1]);
   const minor = parseInt(match[2]);
-  
+
   if (major > 15) return true;
   if (major === 15 && minor >= 3) return true;
   return false;

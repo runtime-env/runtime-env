@@ -115,7 +115,7 @@ The plugin SHALL support Next.js versions 13, 14, 15, and 16 by automatically de
 
 - **GIVEN** a supported version of Next.js
 - **WHEN** the plugin initializes
-- **THEN** it SHALL detect the Next.js version dynamically at runtime
+- **THEN** it SHALL detect the Next.js version dynamically at runtime using the `next` CLI
 - **AND** it SHALL adapt its internal configuration (e.g., merging strategies) based on the detected version
 
 ### Requirement: Public Prefix Enforcement
@@ -204,9 +204,22 @@ The `@runtime-env/next-plugin` SHALL be implemented with a modular structure to 
   - `with-runtime-env-phase-development-server.ts`
   - `with-runtime-env-phase-production-build.ts`
   - `with-runtime-env-phase-production-server.ts`
-- **AND** the `withRuntimeEnv` wrapper in `with-runtime-env.ts` SHALL compose these three plugins.
+- **AND** configuration handling for bundlers is separated into:
+  - `with-runtime-env-webpack.ts`
+  - `with-runtime-env-experimental-turbo.ts` (for `experimental.turbo`)
+  - `with-runtime-env-turbopack.ts` (for root `turbopack`)
+- **AND** the `withRuntimeEnv` wrapper in `with-runtime-env.ts` SHALL compose these modules.
 - **AND** `index.ts` SHALL serve as the clean public entry point.
 - **AND** shared logic for CLI invocation, environment injection, and file system utilities SHALL be centralized in `utils.ts`.
+
+#### Scenario: Version Targeting
+
+- **GIVEN** a Next.js application using `@runtime-env/next-plugin`.
+- **WHEN** the plugin initializes configuration.
+- **THEN** `with-runtime-env.ts` SHALL attempt to apply all configuration handlers.
+- **AND** `with-runtime-env-experimental-turbo.ts` SHALL internally check if the Next.js version is < 15.3.0 and abort if not.
+- **AND** `with-runtime-env-turbopack.ts` SHALL internally check if the Next.js version is >= 15.3.0 and abort if not.
+- **AND** `with-runtime-env-webpack.ts` SHALL apply to all versions.
 
 #### Scenario: Runtime Environment Variable Population
 
