@@ -5,5 +5,16 @@
   "automergeStrategy": "squash",
   "rangeStrategy": "pin",
   "ignorePaths": ["**/node_modules/**"],
-  "extends": ["config:recommended"]
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    },
+    {
+      "matchPaths": ["packages/vite-plugin/package.json"],
+      "matchDepTypes": ["devDependencies"],
+      "rangeStrategy": "bump"
+    }
+  ]
 }
