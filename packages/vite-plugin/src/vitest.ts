@@ -1,5 +1,4 @@
-import type { Plugin, UserConfig, ConfigEnv, ResolvedConfig } from "vite";
-import "vitest/config";
+import type { Plugin, UserConfig, ResolvedConfig } from "vite";
 import { resolve } from "path";
 import { rmSync } from "fs";
 import {
@@ -10,6 +9,10 @@ import {
   validateSchema,
   logError,
 } from "./utils.js";
+
+interface VitestConfig {
+  setupFiles?: string | string[];
+}
 
 export function vitestPlugin(): Plugin {
   return {
@@ -25,7 +28,7 @@ export function vitestPlugin(): Plugin {
       const vitestOutputPath = resolve(vitestOutputDir, "runtime-env.js");
 
       // Automatically inject setupFiles for Vitest
-      const vitestConfig = config.test || {};
+      const vitestConfig = (config as { test?: VitestConfig }).test || {};
       const setupFiles = vitestConfig.setupFiles || [];
 
       if (Array.isArray(setupFiles)) {
@@ -36,7 +39,7 @@ export function vitestPlugin(): Plugin {
         vitestConfig.setupFiles = [setupFiles, vitestOutputPath];
       }
 
-      config.test = {
+      (config as { test?: VitestConfig }).test = {
         ...vitestConfig,
         setupFiles,
       };

@@ -70,7 +70,7 @@ The `comprehensive-vite` example SHALL be refactored to use the new `@runtime-en
 
 ### Requirement: Vite Plugin Implementation
 
-The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official plugin authoring guidelines to ensure a seamless and idiomatic developer experience, utilizing the `apply` property for mode-specific logic and providing robust TypeScript types.
+The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official plugin authoring guidelines to ensure a seamless and idiomatic developer experience, utilizing the `apply` property for mode-specific logic and providing robust TypeScript types. It MUST ensure that optional peer dependencies like `vitest` do not cause runtime errors when they are not installed.
 
 #### Scenario: Code Structure
 
@@ -85,7 +85,8 @@ The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official pl
 - **GIVEN** the `@runtime-env/vite-plugin` is loaded by Vite.
 - **WHEN** Vite is in `dev`, `build`, `preview`, or `test` mode.
 - **THEN** only the plugins relevant to that mode SHALL be active, controlled via the `apply` property or conditional logic in the plugin array.
-- **AND** the `test` mode plugin SHALL leverage official Vitest types to ensure type safety without `any` casts.
+- **AND** the `test` mode plugin SHALL be resilient to the absence of the `vitest` package, ensuring no top-level side-effect imports of `vitest` exist that would cause runtime failures for non-Vitest users.
+- **AND** it SHALL use safe type access for Vitest-specific configuration properties (like `config.test`).
 
 #### Scenario: Maintainability
 
@@ -133,7 +134,7 @@ A new Vite-native plugin, `@runtime-env/vite-plugin`, SHALL be provided to simpl
 
 ### Requirement: Peer Dependency Requirements
 
-The `@runtime-env/vite-plugin` SHALL define `vite` (version `*`) and `@runtime-env/cli` (version `*`) as peer dependencies to ensure compatibility and avoid duplicate installations in consumer projects.
+The `@runtime-env/vite-plugin` SHALL define `vite` (version `*`) and `@runtime-env/cli` (version `*`) as peer dependencies to ensure compatibility and avoid duplicate installations in consumer projects. It SHALL also define `vitest` as an optional peer dependency for users who wish to use the plugin with Vitest.
 
 #### Scenario: Consumer project installation
 
@@ -141,6 +142,7 @@ The `@runtime-env/vite-plugin` SHALL define `vite` (version `*`) and `@runtime-e
 - **WHEN** the user installs `@runtime-env/vite-plugin`.
 - **THEN** the package manager SHALL verify that `@runtime-env/cli` and `vite` are present in the project.
 - **AND** `@runtime-env/vite-plugin` SHALL NOT install its own private copy of `@runtime-env/cli` if it's already present in the project.
+- **AND** `vitest` SHALL be treated as an optional peer dependency, and its absence SHALL NOT cause errors during installation or runtime if the Vitest-specific features are not actively used.
 
 ### Requirement: Informative and Resilient Integration
 
