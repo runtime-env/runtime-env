@@ -47,7 +47,7 @@
   "devDependencies": {
     "@runtime-env/cli": "^1.0.0",
     "vite": "^7.0.0",
-    "vitest": "^4.0.0"
+    "vitest": "^4.0.18"
   },
   "type": "module"
 }
