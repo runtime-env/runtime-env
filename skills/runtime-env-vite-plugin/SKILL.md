@@ -1,35 +1,48 @@
 ---
 name: runtime-env-vite-plugin
 description: Guidance on using runtime-env with Vite to distinguish between runtime and build-time environment variables.
-rules:
-  - ./rules/setup-runtime-env-plugin.md
-  - ./rules/use-runtime-public-env-in-js-ts.md
-  - ./rules/use-runtime-public-env-in-index-html.md
-  - ./rules/add-new-environment-variables.md
+metadata:
+  workflows:
+    - ./references/01-setup.md
+    - ./references/02-discovery.md
+    - ./references/03-migration.md
+  guides:
+    - ./references/the-string-trap.md
 ---
 
 # runtime-env-vite-plugin
 
-This skill ensures that environment variables are handled correctly in Vite projects by distinguishing between build-time (static) variables and runtime (dynamic) variables.
+This skill ensures that environment variables are handled correctly in Vite projects by distinguishing between build-time (static) variables and runtime (dynamic) variables. It enforces a sequential workflow to ensure proper analysis and clean implementation.
 
 ## When to apply
 
-Reference these guidelines when:
+You **MUST** apply this skill when:
 
-- Setting up a Vite project that requires environment variables.
-- Writing code that accesses environment variables in a Vite project.
-- Configuring `index.html` that uses environment variables.
-- Refactoring existing Vite projects to properly use runtime environment variables.
-- Reviewing code for proper environment variable usage in Vite projects.
-- Optimizing CI/CD pipelines
+- Setting up a new Vite project that requires environment variables.
+- Refactoring an existing Vite project to use runtime environment variables.
+- Adding new environment variables to a project already using `@runtime-env/vite-plugin`.
 
-## Overview
+## Execution Sequence
 
-Use this skill when working on a Vite-based project that uses `@runtime-env/vite-plugin`. It provides guidance on configuration, usage in code, and usage in `index.html`.
+This skill **MUST** be executed in the following order. Do not skip steps:
 
-## Rules
+1.  **[01 - Setup](./references/01-setup.md)**: Infrastructure, installation, and initial configuration.
+2.  **[02 - Discovery](./references/02-discovery.md)**: Analyzing the codebase to identify variables and their true types (The "Think" phase).
+3.  **[03 - Migration](./references/03-migration.md)**: Applying the schema and updating the source code (The "Act" phase).
 
-- **[Setup runtime-env plugin](./rules/setup-runtime-env-plugin.md)**: How to configure Vite, `index.html`, and the schema.
-- **[Use runtime public env in JS/TS](./rules/use-runtime-public-env-in-js-ts.md)**: How to access dynamic variables in your code.
-- **[Use runtime public env in index.html](./rules/use-runtime-public-env-in-index-html.md)**: How to use interpolation in your HTML.
-- **[Add new environment variables](./rules/add-new-environment-variables.md)**: How to add new variables with proper types and validation.
+## Pattern Guides
+
+- **[The String Trap](./references/the-string-trap.md)**: How to avoid manual parsing and leverage `runtimeEnv` for type safety.
+
+## Core Mandates
+
+- **Never** assume a variable is a string just because it was one in a legacy file. Always perform discovery.
+- **Always** remove manual parsing logic (`parseInt`, `JSON.parse`) during migration.
+- **Always** run `npx runtime-env gen-ts` after updating the schema.
+- **Always** place the script tag in `index.html` before the app entry point.
+
+### Strict Prohibitions
+
+- **NEVER** modify or delete existing `.env` files. They are read-only sources of truth.
+- **NEVER** add `import { runtimeEnv } from ...` or similar. `runtimeEnv` is a global.
+- **NEVER** add redundant `gen-ts` or `gen-js` scripts to `package.json`.
