@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.2](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.1...vite-plugin0.1.2) (2026-01-31)
+
+
+### Bug Fixes
+
+* **vite-plugin:** relax peerDependencies for vite and vitest ([8199e28](https://github.com/runtime-env/runtime-env/commit/8199e28004625a672eab804b3d10622793b8ba82))
+* **vite-plugin:** remove top-level vitest import to fix optional peer dep error ([459b4f1](https://github.com/runtime-env/runtime-env/commit/459b4f10693352d2e8b1db6f2691d0c9f570ead7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @runtime-env/cli bumped from ^1.0.0 to ^1.0.1
+  * peerDependencies
+    * @runtime-env/cli bumped from * to 1.0.1
+
 ## [0.1.1](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.0...vite-plugin0.1.1) (2026-01-18)
 
 
