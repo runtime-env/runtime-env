@@ -55,7 +55,9 @@ Add the script tag for `runtime-env.js`. It **MUST** be placed before the main a
 
 Create a `.runtimeenvschema.json` file at the project root.
 
-- **Action**: Create the file with an empty schema:
+- **Action**: Create the file with an empty schema.
+- **CRITICAL**: Do **NOT** use the `default` keyword in the schema.
+
   ```json
   {
     "type": "object",

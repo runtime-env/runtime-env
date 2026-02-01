@@ -14,6 +14,7 @@ The "Act" phase. Now that you have a plan from the Discovery phase, apply the ch
 Update `.runtimeenvschema.json` with all identified variables and their correct types.
 
 - **Action**: Fill in the `properties` and `required` fields.
+- **CRITICAL**: Do **NOT** use the `default` keyword in the schema. All environment values must originate from the environment.
 - **Note**: Ensure variables with manual parsing (the "String Trap") use the correct target type (`number`, `boolean`, `object`).
 
 ### 2. Generate Types

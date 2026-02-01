@@ -450,6 +450,46 @@ SECRET='****'
     );
   });
 
+  it("should throw if 'default' keyword is present in schema", async () => {
+    const globalVariableName = "runtimeEnv";
+    const envFile = tmpNameSync();
+    writeFileSync(envFile, "", "utf8");
+    const schemaFile = tmpNameSync();
+    writeFileSync(
+      schemaFile,
+      JSON.stringify({
+        type: "object",
+        properties: {
+          FOO: {
+            type: "string",
+            default: "bar",
+          },
+        },
+      }),
+      "utf8",
+    );
+    const userEnvironment = false;
+
+    const schema = await createGeneratorForJSONSchema({
+      envFiles: [envFile],
+      schemaFile,
+      globalVariableName,
+      userEnvironment,
+    });
+
+    await expect(() =>
+      schema.generateJs(),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"schema is invalid: data/properties/FOO/default is prohibited"`,
+    );
+
+    await expect(() =>
+      schema.generateTs(),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"schema is invalid: data/properties/FOO/default is prohibited"`,
+    );
+  });
+
   it("should escape", async () => {
     const globalVariableName = "runtimeEnv";
     const envFile = tmpNameSync();
