@@ -180,4 +180,42 @@ describe("integration - gen-ts", () => {
      "
     `);
   });
+
+  test("prohibited default keyword", () => {
+    const prohibitedSchemaFile = path.resolve(
+      tmpdir,
+      "prohibited-default-ts.json",
+    );
+    fs.writeFileSync(
+      prohibitedSchemaFile,
+      JSON.stringify({
+        type: "object",
+        properties: {
+          FOO: {
+            type: "string",
+            default: "bar",
+          },
+        },
+      }),
+    );
+    const result = spawnSync(
+      "node",
+      [
+        "../bin/runtime-env.js",
+        "gen-ts",
+        "--schema-file",
+        prohibitedSchemaFile,
+      ],
+      {
+        encoding: "utf8",
+        stdio: "pipe",
+        cwd: __dirname,
+      },
+    );
+    expect(result.status).toBe(1);
+    expect(result.output[2]).toContain(
+      "schema is invalid: data/properties/FOO/default is prohibited",
+    );
+    fs.unlinkSync(prohibitedSchemaFile);
+  });
 });

@@ -49,6 +49,7 @@ The system SHALL provide a skill to guide agents on `runtime-env` usage with Vit
 - **AND** the `<script src="/runtime-env.js"></script>` tag MUST be included in `index.html`, before the main application script entry point
 - **AND** agents MUST ignore warnings like "can't be bundled without type='module' attribute" for the `runtime-env.js` script tag
 - **AND** a `.runtimeenvschema.json` file MUST be created at the project root, listing all public environment variables with appropriate types in JSON-schema format
+- **AND** agents MUST NOT use the `default` keyword in `.runtimeenvschema.json`.
 - **AND** any existing Vite-specific environment variable type definitions (typically found in `src/vite-env.d.ts` as `interface ImportMetaEnv` or `interface ImportMeta`) MUST be removed to prevent conflicts and ensure a single source of truth via `runtimeEnv`
 - **AND** agents MUST NOT manually add types for environment variables in any other files
 - **AND** the generated type file (e.g., `src/runtime-env.d.ts`) SHOULD be added to `.gitignore`
@@ -62,6 +63,7 @@ The system SHALL provide a skill to guide agents on `runtime-env` usage with Vit
 
 - **WHEN** adding new environment variables or migrating existing ones
 - **THEN** agents MUST define them in `.runtimeenvschema.json`
+- **AND** agents MUST NOT use the `default` keyword in `.runtimeenvschema.json`.
 - **AND** agents MUST NOT manually add types for environment variables in any other files
 - **AND** agents MUST explicitly run `npx runtime-env gen-ts --output-file src/runtime-env.d.ts` to ensure types are updated in the IDE and for compilers
 - **AND** agents MUST NOT manually verify the generated file if it is gitignored; they MUST trust the CLI's success output.

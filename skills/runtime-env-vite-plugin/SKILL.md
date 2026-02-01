@@ -43,6 +43,7 @@ This skill **MUST** be executed in the following order. Do not skip steps:
 
 ### Strict Prohibitions
 
+- **NEVER** use the `default` keyword in `.runtimeenvschema.json`. All environment values must originate from the environment.
 - **NEVER** modify or delete existing `.env` files. They are read-only sources of truth.
 - **NEVER** add `import { runtimeEnv } from ...` or similar. `runtimeEnv` is a global.
 - **NEVER** add redundant `gen-ts` or `gen-js` scripts to `package.json`.
