@@ -6,7 +6,7 @@
     "test": "start-server-and-test 'docker run -p 3000:80 -e FOO=production runtime-env-example' 3000 'cypress run' && docker ps -f ancestor=runtime-env-example -q | xargs docker rm -f"
   },
   "devDependencies": {
-    "cypress": "15.9.0",
+    "cypress": "15.10.0",
     "html-webpack-plugin": "5.6.6",
     "start-server-and-test": "2.1.3",
     "webpack": "5.105.0",
