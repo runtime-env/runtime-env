@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/runtime-env/runtime-env/compare/cli1.0.1...cli1.1.0) (2026-02-07)
+
+
+### Features
+
+* **cli:** forbid 'default' keyword in JSON schema and update agent skills ([a15865c](https://github.com/runtime-env/runtime-env/commit/a15865c878add19aa2b479f027aa47cff36ad656))
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v14.0.3 ([#599](https://github.com/runtime-env/runtime-env/issues/599)) ([1672ede](https://github.com/runtime-env/runtime-env/commit/1672ede4fcd1291a59416f8492f517bdd96c5e61))
+
 ## [1.0.1](https://github.com/runtime-env/runtime-env/compare/cli1.0.0...cli1.0.1) (2026-01-31)
 
 
