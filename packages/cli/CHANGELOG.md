@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.1](https://github.com/runtime-env/runtime-env/compare/cli1.1.0...cli1.1.1) (2026-02-16)
+
+
+### Bug Fixes
+
+* **deps:** update dependency ajv to v8.18.0 ([#616](https://github.com/runtime-env/runtime-env/issues/616)) ([090d9d2](https://github.com/runtime-env/runtime-env/commit/090d9d214cf83bef8f5b2c8d45eb652114d77b84))
+
 ## [1.1.0](https://github.com/runtime-env/runtime-env/compare/cli1.0.1...cli1.1.0) (2026-02-07)
 
 
