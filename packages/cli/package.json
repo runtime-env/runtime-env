@@ -45,6 +45,7 @@
     "chokidar": "5.0.0",
     "commander": "14.0.3",
     "json-schema-to-typescript": "15.0.4",
-    "lodash": "4.17.23"
+    "lodash": "4.17.23",
+    "prettier": "3.8.1"
   }
 }
