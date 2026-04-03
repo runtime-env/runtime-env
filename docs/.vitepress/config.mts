@@ -3,42 +3,99 @@ import { defineConfig } from "vitepress";
 export default defineConfig({
   title: "runtime-env",
   description:
-    "Build once, deploy anywhere runtime configuration for web apps.",
+    "Build once, deploy anywhere with runtime configuration for frontend apps.",
   base: "/runtime-env/",
   lastUpdated: true,
   themeConfig: {
     nav: [
-      { text: "Learn", link: "/learn/" },
-      { text: "Guides", link: "/guides/vite/vitest" },
+      { text: "Start Here", link: "/start-here/what-is-runtime-env" },
+      { text: "Vite", link: "/vite/quickstart" },
+      { text: "CLI", link: "/cli/quickstart" },
+      { text: "Deployment", link: "/deployment/docker" },
       { text: "Reference", link: "/reference/vite-plugin" },
-      { text: "Troubleshooting", link: "/troubleshooting/" },
     ],
     sidebar: {
-      "/learn/": [
+      "/start-here/": [
         {
-          text: "Learn",
+          text: "Start Here",
           items: [
-            { text: "Overview", link: "/learn/" },
-            { text: "Why runtime-env", link: "/learn/why-runtime-env" },
-            { text: "Vite quick start", link: "/learn/vite-quick-start" },
-            { text: "CLI quick start", link: "/learn/cli-quick-start" },
-            { text: "Mental model", link: "/learn/mental-model" },
+            {
+              text: "What is runtime-env?",
+              link: "/start-here/what-is-runtime-env",
+            },
+            { text: "Choose your path", link: "/start-here/choose-your-path" },
+            { text: "How it works", link: "/start-here/how-it-works" },
           ],
         },
       ],
-      "/guides/": [
+      "/vite/": [
+        {
+          text: "Vite",
+          items: [
+            { text: "Quickstart", link: "/vite/quickstart" },
+            { text: "Production", link: "/vite/production" },
+            { text: "How it works", link: "/vite/how-it-works" },
+            { text: "index.html", link: "/vite/index-html" },
+            { text: "TypeScript", link: "/vite/typescript" },
+            { text: "Vitest", link: "/vite/vitest" },
+            { text: "Preview", link: "/vite/preview" },
+            { text: "Troubleshooting", link: "/vite/troubleshooting" },
+          ],
+        },
+      ],
+      "/cli/": [
+        {
+          text: "CLI",
+          items: [
+            { text: "Quickstart", link: "/cli/quickstart" },
+            { text: "Schema", link: "/cli/schema" },
+            { text: "gen-js", link: "/cli/gen-js" },
+            { text: "gen-ts", link: "/cli/gen-ts" },
+            { text: "interpolate", link: "/cli/interpolate" },
+            { text: "Watch mode", link: "/cli/watch-mode" },
+            {
+              text: "Custom global name",
+              link: "/cli/custom-global-name",
+            },
+            { text: "Troubleshooting", link: "/cli/troubleshooting" },
+          ],
+        },
+      ],
+      "/deployment/": [
         {
           text: "Deployment",
           items: [
+            { text: "Docker", link: "/deployment/docker" },
             {
-              text: "Docker startup generation",
-              link: "/guides/deployment/docker-startup-generation",
+              text: "Startup generation",
+              link: "/deployment/startup-generation",
+            },
+            { text: "Caching", link: "/deployment/caching" },
+            {
+              text: "PWA + Service Worker",
+              link: "/deployment/pwa-service-worker",
             },
           ],
         },
+      ],
+      "/recipes/": [
         {
-          text: "Vite",
-          items: [{ text: "Vitest", link: "/guides/vite/vitest" }],
+          text: "Recipes",
+          items: [
+            {
+              text: "Nested JSON config",
+              link: "/recipes/nested-json-config",
+            },
+            {
+              text: "Third-party script URLs",
+              link: "/recipes/third-party-script-urls",
+            },
+            { text: "Static site", link: "/recipes/static-site" },
+            {
+              text: "Testing runtime values",
+              link: "/recipes/testing-runtime-values",
+            },
+          ],
         },
       ],
       "/reference/": [
@@ -47,13 +104,9 @@ export default defineConfig({
           items: [
             { text: "Vite plugin", link: "/reference/vite-plugin" },
             { text: "CLI", link: "/reference/cli" },
+            { text: "Schema rules", link: "/reference/schema-rules" },
+            { text: "Error messages", link: "/reference/error-messages" },
           ],
-        },
-      ],
-      "/troubleshooting/": [
-        {
-          text: "Troubleshooting",
-          items: [{ text: "Common issues", link: "/troubleshooting/" }],
         },
       ],
     },

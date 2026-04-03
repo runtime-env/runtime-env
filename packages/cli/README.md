@@ -1,3 +1,5 @@
 # @runtime-env/cli
 
-Documentation: https://runtime-env.github.io/runtime-env/reference/cli
+Framework-agnostic runtime configuration CLI for generating JavaScript runtime payloads, TypeScript declarations, and interpolated templates.
+
+Docs: https://runtime-env.github.io/runtime-env/cli/quickstart
