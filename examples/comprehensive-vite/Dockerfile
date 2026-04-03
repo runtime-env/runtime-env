@@ -30,6 +30,7 @@ RUN apk add g++ make
 COPY --from=build dist ./dist
 COPY --from=build runtime-env ./
 COPY .runtimeenvschema.json start.sh ./
+RUN chmod +x ./start.sh
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-CMD ["sh", "./start.sh"]
+CMD ["./start.sh"]
