@@ -7,7 +7,7 @@
     "serve": "concurrently --kill-others \"npm run serve:env\" \"npm run serve:webpack\"",
     "serve:env": "runtime-env --watch gen-js --env-file .env --output-file public/runtime-env.js",
     "serve:webpack": "webpack serve --mode development",
-    "test": "start-server-and-test 'serve' 8080 'cypress run'"
+    "test": "start-server-and-test 'serve' http://localhost:8080 'cypress run'"
   },
   "devDependencies": {
     "concurrently": "9.2.1",
