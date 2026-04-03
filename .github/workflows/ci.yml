@@ -256,7 +256,7 @@ jobs:
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm i ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
           echo "VITE_FOO=dev-initial" > .env
-          npx start-server-and-test dev http://localhost:5173 'npx cypress run --config baseUrl=http://localhost:5173 --spec cypress/e2e/dev.cy.js'
+          npx start-server-and-test dev http-get://127.0.0.1:5173 'npx cypress run --config baseUrl=http://localhost:5173 --spec cypress/e2e/dev.cy.js'
 
       - name: Test examples/comprehensive-vite (test)
         run: |
@@ -279,9 +279,9 @@ jobs:
           npm i ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
           npm run build
           echo "VITE_FOO=preview-initial" > .env
-          npx start-server-and-test preview http://localhost:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
+          npx start-server-and-test preview http-get://127.0.0.1:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
           echo "VITE_FOO=preview-updated" > .env
-          npx start-server-and-test preview http://localhost:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_FOO=preview-updated --spec cypress/e2e/preview.cy.js'
+          npx start-server-and-test preview http-get://127.0.0.1:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_FOO=preview-updated --spec cypress/e2e/preview.cy.js'
 
       - name: Test examples/comprehensive-vite (docker)
         run: |
@@ -292,8 +292,8 @@ jobs:
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           cp ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz .
           docker build -t comprehensive-vite .
-          npx start-server-and-test 'docker run -p 3000:80 -e VITE_FOO=docker-initial comprehensive-vite' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
-          npx start-server-and-test 'docker run -p 3000:80 -e VITE_FOO=docker-updated comprehensive-vite' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:80 -e VITE_FOO=docker-initial comprehensive-vite' http-get://127.0.0.1:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:80 -e VITE_FOO=docker-updated comprehensive-vite' http-get://127.0.0.1:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
 
   test-example-webpack:
     name: Test Example (Webpack)
@@ -327,7 +327,7 @@ jobs:
           npm ci
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           echo "FOO=dev-initial" > .env
-          npx start-server-and-test dev http://localhost:8080 'npx cypress run --config baseUrl=http://localhost:8080 --spec cypress/e2e/dev.cy.js'
+          npx start-server-and-test dev http-get://127.0.0.1:8080 'npx cypress run --config baseUrl=http://localhost:8080 --spec cypress/e2e/dev.cy.js'
 
       - name: Test examples/comprehensive-webpack (test)
         run: |
@@ -348,9 +348,9 @@ jobs:
           npm i ../../packages/cli/runtime-env-cli-test.tgz
           npm run build
           echo "FOO=preview-initial" > .env
-          npx start-server-and-test preview http://localhost:8080 'npx cypress run --config baseUrl=http://localhost:8080 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
+          npx start-server-and-test preview http-get://127.0.0.1:8080 'npx cypress run --config baseUrl=http://localhost:8080 --env EXPECTED_FOO=preview-initial --spec cypress/e2e/preview.cy.js'
           echo "FOO=preview-updated" > .env
-          npx start-server-and-test preview http://localhost:8080 'npx cypress run --config baseUrl=http://localhost:8080 --env EXPECTED_FOO=preview-updated --spec cypress/e2e/preview.cy.js'
+          npx start-server-and-test preview http-get://127.0.0.1:8080 'npx cypress run --config baseUrl=http://localhost:8080 --env EXPECTED_FOO=preview-updated --spec cypress/e2e/preview.cy.js'
 
       - name: Test examples/comprehensive-webpack (docker)
         run: |
@@ -360,8 +360,8 @@ jobs:
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           docker build -t comprehensive-webpack .
-          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-webpack' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
-          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-webpack' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-webpack' http-get://127.0.0.1:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
+          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-webpack' http-get://127.0.0.1:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
 
   release:
     if: github.ref_name == 'main'
