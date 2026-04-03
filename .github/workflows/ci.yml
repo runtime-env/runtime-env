@@ -292,8 +292,19 @@ jobs:
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           cp ../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz .
           docker build -t comprehensive-vite .
-          npx start-server-and-test 'docker run -p 3000:80 -e VITE_FOO=docker-initial comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
-          npx start-server-and-test 'docker run -p 3000:80 -e VITE_FOO=docker-updated comprehensive-vite' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-vite -q | xargs docker rm -f
+          run_docker_test() {
+            local container_name="$1"
+            local vite_foo="$2"
+            local expected_foo="$3"
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+            docker run -d --name "$container_name" -p 3000:80 -e VITE_FOO="$vite_foo" comprehensive-vite >/dev/null
+            npx wait-on http://localhost:3000
+            npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO="$expected_foo" --spec cypress/e2e/docker.cy.js
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+          }
+          trap 'docker rm -f comprehensive-vite-docker-initial comprehensive-vite-docker-updated >/dev/null 2>&1 || true' EXIT
+          run_docker_test comprehensive-vite-docker-initial docker-initial docker-initial
+          run_docker_test comprehensive-vite-docker-updated docker-updated docker-updated
 
   test-example-webpack:
     name: Test Example (Webpack)
@@ -360,8 +371,19 @@ jobs:
           npm ci
           cp ../../packages/cli/runtime-env-cli-test.tgz .
           docker build -t comprehensive-webpack .
-          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
-          npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-webpack' 3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js' && docker ps -f ancestor=comprehensive-webpack -q | xargs docker rm -f
+          run_docker_test() {
+            local container_name="$1"
+            local foo="$2"
+            local expected_foo="$3"
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+            docker run -d --name "$container_name" -p 3000:80 -e FOO="$foo" comprehensive-webpack >/dev/null
+            npx wait-on http://localhost:3000
+            npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO="$expected_foo" --spec cypress/e2e/docker.cy.js
+            docker rm -f "$container_name" >/dev/null 2>&1 || true
+          }
+          trap 'docker rm -f comprehensive-webpack-docker-initial comprehensive-webpack-docker-updated >/dev/null 2>&1 || true' EXIT
+          run_docker_test comprehensive-webpack-docker-initial docker-initial docker-initial
+          run_docker_test comprehensive-webpack-docker-updated docker-updated docker-updated
 
   release:
     if: github.ref_name == 'main'

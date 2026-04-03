@@ -3,12 +3,13 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "start-server-and-test 'docker run -p 3000:80 -e FOO=production runtime-env-example' 3000 'cypress run' && docker ps -f ancestor=runtime-env-example -q | xargs docker rm -f"
+    "test": "sh -c 'set -e; name=runtime-env-example-production; cleanup() { docker rm -f \"$name\" >/dev/null 2>&1 || true; }; trap cleanup EXIT; cleanup; docker run -d --name \"$name\" -p 3000:80 -e FOO=production runtime-env-example >/dev/null; npx wait-on http://localhost:3000; npx cypress run'"
   },
   "devDependencies": {
     "cypress": "15.13.0",
     "html-webpack-plugin": "5.6.6",
-    "start-server-and-test": "2.1.5",
+    "start-server-and-test": "3.0.0",
+    "wait-on": "9.0.4",
     "webpack": "5.105.4",
     "webpack-cli": "7.0.2"
   }
