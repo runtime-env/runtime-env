@@ -9,10 +9,6 @@
 > [!TIP]
 > Using Vite? Check out our [zero-config Vite plugin](./packages/vite-plugin/README.md) for a seamless integration.
 
-## Table of Content
-
-- [Installation](#installation)
-- [Get Started](#get-started)
 - [Setup](#setup)
 - [Commands](#commands)
 - [Syntax](#syntax)
@@ -85,16 +81,6 @@ npm install --save-dev @runtime-env/cli
    ```
 
 8. That's it! You don't need to rebuild your app to update the environment variables anymore.
-
-## Local CI Job Emulation
-
-Run the CI jobs locally (with timeouts and process cleanup) using:
-
-```sh
-./scripts/run-ci-locally.sh
-```
-
-The script runs the same core and example jobs from `.github/workflows/ci.yml` and skips Docker-only jobs when no Docker daemon is available.
 
 ## Setup
 
