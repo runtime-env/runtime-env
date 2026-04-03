@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <text x="80" y="280" fill="#e2e8f0" font-size="72" font-family="Arial, sans-serif">runtime-env</text>
+  <text x="80" y="370" fill="#93c5fd" font-size="44" font-family="Arial, sans-serif">Build once, deploy anywhere.</text>
+</svg>

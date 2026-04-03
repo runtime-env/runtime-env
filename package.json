@@ -4,13 +4,17 @@
     "build": "npm run build --workspaces --if-present",
     "pack": "npm run pack --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "format": "npx prettier --write ."
+    "format": "npx prettier --write .",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "workspaces": [
     "packages/cli",
     "packages/vite-plugin"
   ],
   "devDependencies": {
-    "prettier": "3.8.1"
+    "prettier": "3.8.1",
+    "vitepress": "^1.6.4"
   }
 }
