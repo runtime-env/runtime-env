@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "test": "start-server-and-test 'docker run -p 3000:80 -e FOO=production runtime-env-example' 3000 'cypress run' && docker ps -f ancestor=runtime-env-example -q | xargs docker rm -f"
+    "test": "start-server-and-test 'docker run -p 3000:80 -e FOO=production runtime-env-example' http://localhost:3000 'cypress run' && docker ps -f ancestor=runtime-env-example -q | xargs docker rm -f"
   },
   "devDependencies": {
     "cypress": "15.13.0",
