@@ -1,12 +1,12 @@
 # CLI quick start
 
-## What you'll build
+## What you will build
 
-A framework-agnostic page that loads runtime config from generated JavaScript.
+A simple page that loads runtime config from generated JS.
 
-## What you'll learn
+## What you will learn
 
-- How `gen-js`, `gen-ts`, and `interpolate` fit together.
+- How `gen-js`, `gen-ts`, and `interpolate` work together.
 
 ## Steps
 
@@ -28,7 +28,7 @@ npm i -D @runtime-env/cli
 }
 ```
 
-3. Export environment values and generate runtime file:
+3. Set env values and create runtime file:
 
 ```bash
 export TITLE="Hello"
@@ -42,7 +42,7 @@ npx runtime-env gen-js --output-file runtime-env.js
 <script src="./index.js"></script>
 ```
 
-5. Optional: generate TypeScript declarations:
+5. Optional: create TypeScript types:
 
 ```bash
 npx runtime-env gen-ts --output-file runtime-env.d.ts
@@ -56,8 +56,8 @@ npx runtime-env interpolate --input-file index.html --output-file index.html
 
 ## Recap
 
-The CLI gives full control for non-Vite or custom startup workflows.
+The CLI gives more control for non-Vite apps or custom startup flows.
 
 ## Next step
 
-Continue to [Mental model](/learn/mental-model).
+Go to [Mental model](/learn/mental-model).

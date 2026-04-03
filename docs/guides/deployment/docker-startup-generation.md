@@ -1,22 +1,22 @@
 # Docker startup generation
 
-Use startup scripts to generate `runtime-env.js` when the container starts.
+Use a startup script to create `runtime-env.js` when the container starts.
 
 ## Why
 
-This preserves the "build once, deploy anywhere" workflow: the image is static, runtime config is dynamic.
+This keeps the build static and the runtime config dynamic.
 
 ## Pattern
 
 1. Build your app once.
-2. In container startup, run:
+2. At container startup, run:
 
 ```bash
 runtime-env gen-js --output-file dist/runtime-env.js
 ```
 
-3. Serve `dist` and ensure `runtime-env.js` is not long-term cached.
+3. Serve `dist` and avoid long cache for `runtime-env.js`.
 
 ## Example
 
-See the repository production example startup script for a concrete implementation.
+See the production example startup script in this repo.

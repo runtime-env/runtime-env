@@ -1,26 +1,28 @@
 # Why runtime-env
 
-## What you'll build
+## What you will build
 
-A web app that reads configuration from a runtime-loaded script.
+A web app that reads config from a runtime script.
 
-## What you'll learn
+## What you will learn
 
-- Why build-time env injection causes rebuilds per environment.
-- How runtime injection supports "build once, deploy anywhere."
+- Why build-time env values cause many rebuilds.
+- How runtime values support "build once, deploy anywhere".
 
-## One concept
+## One idea
 
-Traditional build-time env systems (for example `import.meta.env`) compile values into bundles. That means changing a variable requires a rebuild.
+Some tools put env values in your JS bundle at build time.
+If a value changes, you must rebuild.
 
-`runtime-env` moves that config into a separate runtime file (`runtime-env.js`) so you can keep one build and swap configuration per deployment.
+`runtime-env` moves config to a runtime file (`runtime-env.js`).
+So you can keep one build and change values when you deploy.
 
 ## Recap
 
-- Build artifacts stay generic.
-- Runtime values are validated through schema.
-- Deploy-time startup can generate environment-specific config.
+- Build output stays generic.
+- Runtime values are checked by schema.
+- Startup scripts can create env-specific config.
 
 ## Next step
 
-Continue to [Vite quick start](/learn/vite-quick-start).
+Go to [Vite quick start](/learn/vite-quick-start).

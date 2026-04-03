@@ -1,13 +1,14 @@
 # Vitest guide
 
-When using `@runtime-env/vite-plugin`, Vitest mode injects generated `runtime-env.js` into setup so tests can access `runtimeEnv`.
+With `@runtime-env/vite-plugin`, Vitest mode injects a generated `runtime-env.js` setup file.
+So tests can use `runtimeEnv`.
 
-## What to verify
+## What to check
 
-- `runtimeEnv` is available in tests without manual setup.
-- Types are generated for editor support.
+- `runtimeEnv` exists in tests without manual setup.
+- TS types are generated for editor help.
 
 ## Tips
 
-- Keep schema keys prefixed correctly (`VITE_` by default).
-- Use per-test environment values with your normal env file strategy.
+- Keep schema keys with the right prefix (`VITE_` by default).
+- Use your normal env file plan for test values.

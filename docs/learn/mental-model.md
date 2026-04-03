@@ -1,20 +1,22 @@
 # Mental model
 
-## What you'll learn
+## What you will learn
 
-How runtime-env behavior differs across Vite modes and production startup.
+How runtime-env works in each Vite mode and in production.
 
 ## Mode behavior
 
-- **Dev:** generates JS and TS, serves `/runtime-env.js`, interpolates HTML, and watches schema/env changes.
-- **Build:** validates schema and generates TS only. It does not emit runtime JS into the build output.
-- **Preview:** serves runtime JS and interpolated HTML over the preview server without mutating `dist`.
-- **Test (Vitest):** injects generated runtime JS into test setup and generates TS types.
+- **Dev:** makes JS and TS, serves `/runtime-env.js`, updates HTML, and watches env/schema files.
+- **Build:** checks schema and makes TS only.
+- **Preview:** serves runtime JS and interpolated HTML without changing `dist`.
+- **Test (Vitest):** injects runtime JS in test setup and makes TS types.
 
 ## Production model
 
-In production, generate `runtime-env.js` at startup (container entrypoint or deployment init), then serve it with no/short cache.
+In production, create `runtime-env.js` at startup.
+For example, do this in a container entry script.
 
 ## Recap
 
-Build output remains reusable; runtime values are produced where deployment context is known.
+Your build stays reusable.
+Runtime values are created where deploy context is known.

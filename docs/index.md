@@ -5,11 +5,12 @@ Build once, deploy anywhere.
 ## Choose your path
 
 - **Using Vite?** Start with [Vite quick start](/learn/vite-quick-start).
-- **Need framework-agnostic runtime config?** Start with [CLI quick start](/learn/cli-quick-start).
+- **Need a framework-free setup?** Start with [CLI quick start](/learn/cli-quick-start).
 
 ## What is runtime-env?
 
-`runtime-env` separates runtime configuration from your app bundle. You can ship one build artifact and provide environment-specific values at deploy or startup time.
+`runtime-env` keeps runtime config out of your app bundle.
+You can build your app one time and change config at deploy time.
 
 ## Start learning
 

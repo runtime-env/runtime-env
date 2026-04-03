@@ -1,6 +1,6 @@
 # CLI reference
 
-## Package
+## Install
 
 ```bash
 npm i -D @runtime-env/cli
@@ -16,26 +16,28 @@ npm i -D @runtime-env/cli
 
 ### `gen-js`
 
-Generate runtime JavaScript to stdout or `--output-file`.
+Makes runtime JavaScript to stdout or `--output-file`.
 
 Options:
-- `--env-file <envFile...>` (uses Node `util.parseEnv`; requires Node 20.12+ when used)
+
+- `--env-file <envFile...>` (uses Node `util.parseEnv`; needs Node 20.12+)
 - `--output-file <path>`
 
 ### `gen-ts`
 
-Generate TypeScript declarations to stdout or `--output-file`.
+Makes TypeScript declarations to stdout or `--output-file`.
 
 ### `interpolate`
 
-Interpolate templates using lodash template syntax and the selected global variable name.
+Interpolates templates with lodash template syntax and your global variable name.
 
 Options:
+
 - `--env-file <envFile...>`
 - `--input-file <path>`
 - `--output-file <path>`
 
 ## Notes
 
-- Non-string schema values are parsed from env values as JSON.
-- Schema `default` is prohibited.
+- Non-string schema values are parsed from env text with JSON.
+- Schema `default` is not allowed.
