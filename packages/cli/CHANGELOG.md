@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.2](https://github.com/runtime-env/runtime-env/compare/cli1.1.1...cli1.1.2) (2026-04-03)
+
+
+### Bug Fixes
+
+* **deps:** update dependency lodash to v4.18.1 [security] ([#670](https://github.com/runtime-env/runtime-env/issues/670)) ([098b768](https://github.com/runtime-env/runtime-env/commit/098b76808060f20f569bf9486f8d4d511122c69a))
+
 ## [1.1.1](https://github.com/runtime-env/runtime-env/compare/cli1.1.0...cli1.1.1) (2026-04-01)
 
 
