@@ -1,32 +1,21 @@
 # Vite plugin reference
 
-## Install
-
-```bash
-npm i -D @runtime-env/vite-plugin @runtime-env/cli
-```
-
-## Fixed rules
-
-- Schema file: `.runtimeenvschema.json`
-- Global variable: `runtimeEnv`
-- TS types path: `src/runtime-env.d.ts`
-- Required HTML script: `<script src="/runtime-env.js"></script>` before app entry
-- Schema keys must match Vite env prefix rules (default `VITE_`)
-
 ## API
 
 ```ts
 import runtimeEnv from "@runtime-env/vite-plugin";
 
-runtimeEnv();
+runtimeEnv(); // no options
 ```
 
-The plugin takes no options.
+## Conventions
 
-## Mode matrix
+- schema file: `.runtimeenvschema.json`
+- runtime script path: `/runtime-env.js`
+- generated TS path (if TS project): `src/runtime-env.d.ts`
 
-- **dev:** makes JS + TS, serves/interpolates, watches and reloads
-- **build:** checks schema + makes TS only
-- **preview:** serves runtime JS + interpolated HTML, does not write to `dist`
-- **test:** makes TS and injects runtime JS for Vitest
+## Behavior summary
+
+- Returns plugin set for dev/build/preview/test.
+- Validates schema in each mode.
+- Enforces runtime script tag presence for app correctness.
