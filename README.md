@@ -86,6 +86,16 @@ npm install --save-dev @runtime-env/cli
 
 8. That's it! You don't need to rebuild your app to update the environment variables anymore.
 
+## Local CI Job Emulation
+
+Run the CI jobs locally (with timeouts and process cleanup) using:
+
+```sh
+./scripts/run-ci-locally.sh
+```
+
+The script runs the same core and example jobs from `.github/workflows/ci.yml` and skips Docker-only jobs when no Docker daemon is available.
+
 ## Setup
 
 1. Create a <a href='https://json-schema.org/' target='_blank'>JSON-schema</a> file:
