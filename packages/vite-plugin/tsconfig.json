@@ -19,6 +19,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node16",
 
+    "rootDir": "src",
     "outDir": "dist",
     "declaration": true
   }
