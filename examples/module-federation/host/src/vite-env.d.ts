@@ -5,11 +5,3 @@ declare module "remote/RemoteMessage" {
   const Component: ComponentType;
   export default Component;
 }
-
-declare global {
-  var runtimeEnv: {
-    VITE_MESSAGE: string;
-  };
-}
-
-export {};
