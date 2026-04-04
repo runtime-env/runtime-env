@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "./test-preview.sh && ./test-dev.sh"
+    "test": "./test-dev.sh && ./test-preview.sh"
   },
   "devDependencies": {
     "cypress": "15.13.0",
