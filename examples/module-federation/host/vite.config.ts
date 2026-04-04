@@ -17,5 +17,11 @@ export default defineConfig(({ command }) => {
         },
       }),
     ],
+    preview: {
+      "origin": "http://localhost:4173",
+    },
+    server: {
+      "origin": "http://localhost:5173",
+    },
   };
 });
