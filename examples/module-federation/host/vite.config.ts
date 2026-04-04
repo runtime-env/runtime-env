@@ -3,9 +3,8 @@ import react from "@vitejs/plugin-react";
 import { federation } from "@module-federation/vite";
 import runtimeEnv from "@runtime-env/vite-plugin";
 
-export default defineConfig(({ command }) => {
-  const isDev = command === "serve";
-  const remoteManifestPort = isDev ? 5174 : 4174;
+export default defineConfig(({ isPreview }) => {
+  const remoteManifestPort = isPreview ? 4174 : 5174;
 
   return {
     server: {
