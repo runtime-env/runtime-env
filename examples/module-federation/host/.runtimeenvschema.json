@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "VITE_MESSAGE": {
+      "type": "string"
+    }
+  },
+  "required": ["VITE_MESSAGE"]
+}
