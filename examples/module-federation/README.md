@@ -8,14 +8,8 @@ This example shows a **host** app and a **remote** app wired together with Modul
 
 - The host renders `HOST: ...` using `globalThis.runtimeEnv.VITE_MESSAGE`.
 - The remote renders `Remote: ...` using `globalThis.runtimeEnv.VITE_MESSAGE`.
-- Both apps use the same runtime key (`VITE_MESSAGE`) but resolve values from each app's own `.env` file.
+- Both apps use the same runtime key (`VITE_MESSAGE`) but resolve values from each app's own local `.env` file.
 - Changing `.env` values updates what users see without changing source code.
-
-## Tech stack used in this implementation
-
-This implementation uses **Vite + React + TypeScript** for both host and remote so the example is easy to run locally.
-
-Module Federation is not conceptually limited to this stack; this repo just demonstrates one concrete setup that integrates with `runtime-env`.
 
 ## How runtime-env is loaded in host and remote
 
@@ -41,6 +35,19 @@ Both apps use the same runtime-env integration pattern:
 
 - dev mode: `http://localhost:5174/mf-manifest.json`
 - preview/build mode: `http://localhost:4174/mf-manifest.json`
+
+## Create local env files
+
+`.env` files for this example are **local-only** and not committed to git.
+
+Before running either app, copy the example files:
+
+```bash
+cp host/.env.example host/.env
+cp remote/.env.example remote/.env
+```
+
+You can then edit `host/.env` and `remote/.env` to set your own runtime values.
 
 ## How to run the example
 
@@ -68,7 +75,12 @@ Open `http://localhost:5173`.
 
 ## Expected output
 
-With default `.env` files in this example, you should see:
+With local values like:
+
+- `host/.env`: `VITE_MESSAGE=host-example`
+- `remote/.env`: `VITE_MESSAGE=remote-example`
+
+you should see:
 
 - `HOST: host-example`
 - `Remote: remote-example`
