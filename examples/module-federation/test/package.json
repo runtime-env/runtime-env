@@ -1,0 +1,14 @@
+{
+  "name": "module-federation-test",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "./scripts/test.sh"
+  },
+  "devDependencies": {
+    "cypress": "15.13.0",
+    "start-server-and-test": "3.0.0",
+    "typescript": "6.0.2"
+  }
+}
