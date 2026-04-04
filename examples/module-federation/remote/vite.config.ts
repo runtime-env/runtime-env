@@ -3,19 +3,15 @@ import react from "@vitejs/plugin-react";
 import { federation } from "@module-federation/vite";
 import runtimeEnv from "@runtime-env/vite-plugin";
 
-export default defineConfig(({ isPreview }) => {
-  const remoteOrigin = isPreview
-    ? "http://localhost:4174"
-    : "http://localhost:5174";
-
+export default defineConfig(() => {
   return {
-    base: remoteOrigin,
+    base: "http://localhost:3000",
     server: {
-      port: 5174,
-      origin: "http://localhost:5174",
+      port: 3000,
+      origin: "http://localhost:3000",
     },
     preview: {
-      port: 4174,
+      port: 3000,
     },
     plugins: [
       runtimeEnv(),
