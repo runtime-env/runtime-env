@@ -2,14 +2,16 @@
 
 ## What this example is
 
-This example shows a **host** app and a **remote** app wired together with Module Federation, where both apps read runtime values through `runtime-env`.
+This example shows a **host** app and a **remote** app wired together with Module Federation, where both apps read runtime values from `globalThis.runtimeEnv`.
 
-## What it proves
+## Runtime model (important)
 
-- The host renders `HOST: ...` using `globalThis.runtimeEnv.VITE_MESSAGE`.
-- The remote renders `Remote: ...` using `globalThis.runtimeEnv.VITE_MESSAGE`.
-- Both apps use the same runtime key (`VITE_MESSAGE`) but resolve values from each app's own local `.env` file.
-- Changing `.env` values updates what users see without changing source code.
+- Both host and remote read the same runtime key name: `VITE_MESSAGE`.
+- Each app can have its own `.env` values when run standalone.
+- When the remote component is rendered inside the host page, it runs in the host page context and reads the host page global: `globalThis.runtimeEnv`.
+- That means the host page and the federated remote component display the same runtime value from the host page.
+
+> This example demonstrates page-scoped runtime configuration. When a remote component is rendered inside the host page, it reads the host page's runtime-env global.
 
 ## How runtime-env is loaded in host and remote
 
@@ -47,7 +49,7 @@ cp host/.env.example host/.env
 cp remote/.env.example remote/.env
 ```
 
-You can then edit `host/.env` and `remote/.env` to set your own runtime values.
+You can then edit `host/.env` and `remote/.env` to set your own runtime values for standalone runs.
 
 ## How to run the example
 
@@ -73,17 +75,19 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-## Expected output
+## Expected output in host page
 
 With local values like:
 
 - `host/.env`: `VITE_MESSAGE=host-example`
 - `remote/.env`: `VITE_MESSAGE=remote-example`
 
-you should see:
+you should see, in the host page:
 
 - `HOST: host-example`
-- `Remote: remote-example`
+- `Remote: host-example`
+
+(`remote/.env` is used when the remote runs on its own page; inside the host page the remote component reads host page runtime env.)
 
 ## For runtime-env contributors
 
