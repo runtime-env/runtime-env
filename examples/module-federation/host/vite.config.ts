@@ -3,9 +3,7 @@ import react from "@vitejs/plugin-react";
 import { federation } from "@module-federation/vite";
 import runtimeEnv from "@runtime-env/vite-plugin";
 
-export default defineConfig(({ isPreview }) => {
-  const remoteManifestPort = isPreview ? 4174 : 5174;
-
+export default defineConfig(() => {
   return {
     server: {
       origin: "http://localhost:5173",
@@ -19,7 +17,7 @@ export default defineConfig(({ isPreview }) => {
       federation({
         name: "host",
         remotes: {
-          remote: `remote@http://localhost:${remoteManifestPort}/mf-manifest.json`,
+          remote: `remote@http://localhost:3000/mf-manifest.json`,
         },
       }),
     ],
