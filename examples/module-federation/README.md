@@ -1,79 +1,57 @@
-# Module Federation + runtime-env (Vite, React, TypeScript)
+# Module Federation + runtime-env example
 
-This example demonstrates two separate Vite apps (a **host** and a **remote**) using Module Federation and `runtime-env`.
+## What this example is
 
-Both apps read the same key name, `VITE_MESSAGE`, via runtime env, but each app resolves its value from its own `.env` file.
+This example shows a **host** app and a **remote** app wired together with Module Federation, where both apps read runtime values through `runtime-env`.
 
-## What this proves
+## What it proves
 
-- Host reads `globalThis.runtimeEnv.VITE_MESSAGE` and renders `HOST: ...`.
-- Remote reads `globalThis.runtimeEnv.VITE_MESSAGE` and renders `Remote: ...`.
-- Host loads the remote with Module Federation, so both lines appear together.
-- Host and remote can show different values for the same key (`VITE_MESSAGE`).
+- The host renders `HOST: ...` using `globalThis.runtimeEnv.VITE_MESSAGE`.
+- The remote renders `Remote: ...` using `globalThis.runtimeEnv.VITE_MESSAGE`.
+- Both apps use the same runtime key (`VITE_MESSAGE`) but resolve values from each app's own `.env` file.
+- Changing `.env` values updates what users see without changing source code.
 
-## Runtime env integration used in both apps
+## Tech stack used in this implementation
 
-- `vite.config.ts`: `import runtimeEnv from "@runtime-env/vite-plugin"` and `runtimeEnv()` in `plugins`.
-- `index.html`: `<script src="/runtime-env.js"></script>`.
-- App code reads `globalThis.runtimeEnv.VITE_MESSAGE`.
+This implementation uses **Vite + React + TypeScript** for both host and remote so the example is easy to run locally.
 
-## App structure
+Module Federation is not conceptually limited to this stack; this repo just demonstrates one concrete setup that integrates with `runtime-env`.
 
-- `host/` — React + TypeScript host app
-- `remote/` — React + TypeScript remote app
-- `test/` — Cypress E2E coordinator package only
+## How runtime-env is loaded in host and remote
 
-## Ports
+Both apps use the same runtime-env integration pattern:
 
-### Dev
-- host: `5173`
+- `vite.config.ts` imports `runtimeEnv` from `@runtime-env/vite-plugin` and registers `runtimeEnv()`.
+- `index.html` includes `<script src="/runtime-env.js"></script>`.
+- visible UI reads `globalThis.runtimeEnv.VITE_MESSAGE`.
+
+## Ports and manifest URLs
+
+### Dev ports
+
+- host: `5173` (Vite default)
 - remote: `5174`
 
-### Preview
-- host: `4173`
+### Preview ports
+
+- host: `4173` (Vite default)
 - remote: `4174`
 
-## Module Federation manifest URLs
+### Remote manifest URL used by host
 
-- In dev, host loads remote from `http://localhost:5174/mf-manifest.json`.
-- In preview (built output), host loads remote from `http://localhost:4174/mf-manifest.json`.
+- dev mode: `http://localhost:5174/mf-manifest.json`
+- preview/build mode: `http://localhost:4174/mf-manifest.json`
 
-## Local setup with repo tarballs
+## How to run the example
 
-From repository root (`runtime-env/runtime-env`):
-
-```bash
-npm ci
-npm run build
-npm run pack
-```
-
-Install dependencies for each package:
-
-```bash
-cd examples/module-federation/host && npm ci
-cd ../remote && npm ci
-cd ../test && npm ci
-```
-
-Install local runtime-env tarballs into host and remote (not npm registry packages):
-
-```bash
-cd examples/module-federation/host
-npm i ../../../packages/cli/runtime-env-cli-test.tgz
-npm i ../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
-
-cd ../remote
-npm i ../../../packages/cli/runtime-env-cli-test.tgz
-npm i ../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
-```
-
-## Run manually (two terminals)
+Use two terminals.
 
 Terminal 1 (remote):
 
 ```bash
 cd examples/module-federation/remote
+npm ci
+npm install @runtime-env/cli @runtime-env/vite-plugin
 npm run dev
 ```
 
@@ -81,21 +59,32 @@ Terminal 2 (host):
 
 ```bash
 cd examples/module-federation/host
+npm ci
+npm install @runtime-env/cli @runtime-env/vite-plugin
 npm run dev
 ```
 
-Then open `http://localhost:5173`.
+Open `http://localhost:5173`.
 
-Expected initial output:
+## Expected output
+
+With default `.env` files in this example, you should see:
 
 - `HOST: host-example`
 - `Remote: remote-example`
 
-## Automated verification
+## For runtime-env contributors
+
+The `test/` package is a coordinator for automated verification (Cypress + start-server-and-test).
+
+For repo-local verification against current-commit tarballs, install package deps in `host`, `remote`, and `test`, then install:
+
+- `../../../packages/cli/runtime-env-cli-test.tgz`
+- `../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz`
+
+into both `host` and `remote`, and run:
 
 ```bash
 cd examples/module-federation/test
 npm test
 ```
-
-This runs integrated Cypress E2E for both dev and preview behavior.

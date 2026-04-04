@@ -9,8 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@runtime-env/cli": "file:../../../packages/cli/runtime-env-cli-test.tgz",
-    "@runtime-env/vite-plugin": "file:../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
