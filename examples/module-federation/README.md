@@ -1,46 +1,40 @@
-# Module Federation + runtime-env (Vite, React, TypeScript)
+# Module Federation example (for runtime-env maintainers)
 
-This example demonstrates two separate Vite apps (a **host** and a **remote**) using Module Federation and `runtime-env`.
+This example is a **repository integration fixture** for validating `runtime-env` with Vite Module Federation.
 
-Both apps read the same key name, `VITE_MESSAGE`, via runtime env, but each app resolves its value from its own `.env` file.
+It lives under `examples/module-federation` and is meant for contributors working on this repository (not as a standalone end-user quickstart).
 
-## What this proves
+## What this fixture verifies
 
-- Host reads `globalThis.runtimeEnv.VITE_MESSAGE` and renders `HOST: ...`.
-- Remote reads `globalThis.runtimeEnv.VITE_MESSAGE` and renders `Remote: ...`.
-- Host loads the remote with Module Federation, so both lines appear together.
-- Host and remote can show different values for the same key (`VITE_MESSAGE`).
+- Host and remote are separate React + TypeScript Vite apps.
+- Both apps read the same runtime key name: `VITE_MESSAGE`.
+- Each app resolves that key from its own runtime source (`host/.env` vs `remote/.env`).
+- Host renders `HOST: <value>`.
+- Remote renders `Remote: <value>`.
+- Host renders the remote through Module Federation.
+- No `shared` folder and no `shared` federation config are used.
 
-## Runtime env integration used in both apps
+## Required runtime-env integration pattern (both apps)
 
-- `vite.config.ts`: `import runtimeEnv from "@runtime-env/vite-plugin"` and `runtimeEnv()` in `plugins`.
-- `index.html`: `<script src="/runtime-env.js"></script>`.
-- App code reads `globalThis.runtimeEnv.VITE_MESSAGE`.
+- `vite.config.ts`: `runtimeEnv()` from `@runtime-env/vite-plugin`
+- `index.html`: `<script src="/runtime-env.js"></script>`
+- app code: `globalThis.runtimeEnv.VITE_MESSAGE`
 
-## App structure
-
-- `host/` — React + TypeScript host app
-- `remote/` — React + TypeScript remote app
-- `test/` — Cypress E2E coordinator package only
-
-## Ports
+## Ports and manifests
 
 ### Dev
-- host: `5173`
+- host: `5173` (default Vite dev port)
 - remote: `5174`
+- host loads remote manifest from `http://localhost:5174/mf-manifest.json`
 
 ### Preview
-- host: `4173`
+- host: `4173` (default Vite preview port)
 - remote: `4174`
+- built host loads remote manifest from `http://localhost:4174/mf-manifest.json`
 
-## Module Federation manifest URLs
+## Maintainer setup (use local packages from current commit)
 
-- In dev, host loads remote from `http://localhost:5174/mf-manifest.json`.
-- In preview (built output), host loads remote from `http://localhost:4174/mf-manifest.json`.
-
-## Local setup with repo tarballs
-
-From repository root (`runtime-env/runtime-env`):
+From repo root:
 
 ```bash
 npm ci
@@ -48,7 +42,7 @@ npm run build
 npm run pack
 ```
 
-Install dependencies for each package:
+Install example dependencies:
 
 ```bash
 cd examples/module-federation/host && npm ci
@@ -56,7 +50,7 @@ cd ../remote && npm ci
 cd ../test && npm ci
 ```
 
-Install local runtime-env tarballs into host and remote (not npm registry packages):
+Install locally packed runtime-env artifacts into both apps:
 
 ```bash
 cd examples/module-federation/host
@@ -68,34 +62,32 @@ npm i ../../../packages/cli/runtime-env-cli-test.tgz
 npm i ../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
 ```
 
-## Run manually (two terminals)
+## Manual run (two terminals)
 
-Terminal 1 (remote):
+Terminal 1:
 
 ```bash
 cd examples/module-federation/remote
 npm run dev
 ```
 
-Terminal 2 (host):
+Terminal 2:
 
 ```bash
 cd examples/module-federation/host
 npm run dev
 ```
 
-Then open `http://localhost:5173`.
-
-Expected initial output:
+Open `http://localhost:5173` and confirm:
 
 - `HOST: host-example`
 - `Remote: remote-example`
 
-## Automated verification
+## Automated verification used by CI
 
 ```bash
 cd examples/module-federation/test
 npm test
 ```
 
-This runs integrated Cypress E2E for both dev and preview behavior.
+The coordinator runs integrated Cypress dev + preview E2E checks (including preview runtime reconfiguration without rebuilding).
