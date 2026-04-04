@@ -8,6 +8,8 @@ describe("Module Federation dev", () => {
 
     cy.exec('echo "VITE_MESSAGE=host-updated" > ../host/.env');
 
+    cy.request("/runtime-env.js").its("body").should("contain", "host-updated");
+
     cy.reload();
     cy.contains("HOST: host-updated");
     cy.contains("Remote: host-updated");
