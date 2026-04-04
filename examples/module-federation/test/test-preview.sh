@@ -9,7 +9,7 @@ echo "VITE_MESSAGE=remote-preview-initial" > ../remote/.env
 
 npx start-server-and-test \
   "npm --prefix ../remote run preview" \
-  http://localhost:4174 \
+  http://localhost:4174/mf-manifest.json \
   "npx start-server-and-test 'npm --prefix ../host run preview' http://localhost:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_HOST=host-preview-initial,EXPECTED_REMOTE=remote-preview-initial --spec cypress/e2e/preview.cy.ts'"
 
 echo "VITE_MESSAGE=host-preview-updated" > ../host/.env
@@ -17,5 +17,5 @@ echo "VITE_MESSAGE=remote-preview-updated" > ../remote/.env
 
 npx start-server-and-test \
   "npm --prefix ../remote run preview" \
-  http://localhost:4174 \
+  http://localhost:4174/mf-manifest.json \
   "npx start-server-and-test 'npm --prefix ../host run preview' http://localhost:4173 'npx cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_HOST=host-preview-updated,EXPECTED_REMOTE=remote-preview-updated --spec cypress/e2e/preview.cy.ts'"
