@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "VITE_MESSAGE=host-example" > ../host/.env
+echo "VITE_MESSAGE=remote-example" > ../remote/.env
+
 npx start-server-and-test \
   "npm --prefix ../remote run dev" \
   http://localhost:5174 \
