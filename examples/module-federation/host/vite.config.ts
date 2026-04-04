@@ -4,9 +4,16 @@ import { federation } from "@module-federation/vite";
 import runtimeEnv from "@runtime-env/vite-plugin";
 
 export default defineConfig(({ command }) => {
-  const remoteManifestPort = command === "serve" ? 5174 : 4174;
+  const isDev = command === "serve";
+  const remoteManifestPort = isDev ? 5174 : 4174;
 
   return {
+    server: {
+      origin: "http://localhost:5173",
+    },
+    preview: {
+      origin: "http://localhost:4173",
+    },
     plugins: [
       runtimeEnv(),
       react(),
@@ -17,11 +24,5 @@ export default defineConfig(({ command }) => {
         },
       }),
     ],
-    preview: {
-      "origin": "http://localhost:4173",
-    },
-    server: {
-      "origin": "http://localhost:5173",
-    },
   };
 });
