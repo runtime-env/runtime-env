@@ -4,14 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev:host": "npm --prefix ../host run dev",
-    "dev:remote": "npm --prefix ../remote run dev",
-    "preview:host": "npm --prefix ../host run preview",
-    "preview:remote": "npm --prefix ../remote run preview",
-    "build:apps": "npm --prefix ../host run build && npm --prefix ../remote run build",
-    "test:dev:e2e": "start-server-and-test \"npm run dev:remote\" http://localhost:5174 \"start-server-and-test 'npm run dev:host' http://localhost:5173 'cypress run --config baseUrl=http://localhost:5173 --spec cypress/e2e/dev.cy.ts'\"",
-    "test:preview:e2e": "npm run build:apps && echo \"VITE_MESSAGE=host-preview-initial\" > ../host/.env && echo \"VITE_MESSAGE=remote-preview-initial\" > ../remote/.env && start-server-and-test \"npm run preview:remote\" http://localhost:4174 \"start-server-and-test 'npm run preview:host' http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_HOST=host-preview-initial,EXPECTED_REMOTE=remote-preview-initial --spec cypress/e2e/preview.cy.ts'\" && echo \"VITE_MESSAGE=host-preview-updated\" > ../host/.env && echo \"VITE_MESSAGE=remote-preview-updated\" > ../remote/.env && start-server-and-test \"npm run preview:remote\" http://localhost:4174 \"start-server-and-test 'npm run preview:host' http://localhost:4173 'cypress run --config baseUrl=http://localhost:4173 --env EXPECTED_HOST=host-preview-updated,EXPECTED_REMOTE=remote-preview-updated --spec cypress/e2e/preview.cy.ts'\"",
-    "test": "npm run test:dev:e2e && npm run test:preview:e2e"
+    "test": "./test-dev.sh && ./test-preview.sh"
   },
   "devDependencies": {
     "cypress": "15.13.0",
