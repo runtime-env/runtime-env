@@ -35,8 +35,7 @@ Both apps use the same runtime-env integration pattern:
 
 ### Remote manifest URL used by host
 
-- dev mode: `http://localhost:5174/mf-manifest.json`
-- preview/build mode: `http://localhost:4174/mf-manifest.json`
+- `http://localhost:4174/mf-manifest.json`
 
 ## Create local env files
 
