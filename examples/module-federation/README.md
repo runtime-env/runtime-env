@@ -26,12 +26,12 @@ Both apps use the same runtime-env integration pattern:
 ### Dev ports
 
 - host: `5173` (Vite default)
-- remote: `5174`
+- remote: `3000`
 
 ### Preview ports
 
 - host: `4173` (Vite default)
-- remote: `4174`
+- remote: `3000`
 
 ### Remote manifest URL used by host
 
