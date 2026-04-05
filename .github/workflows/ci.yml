@@ -363,6 +363,55 @@ jobs:
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-initial comprehensive-webpack' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-initial --spec cypress/e2e/docker.cy.js'
           npx start-server-and-test 'docker run -p 3000:80 -e FOO=docker-updated comprehensive-webpack' http://localhost:3000 'npx cypress run --config baseUrl=http://localhost:3000 --env EXPECTED_FOO=docker-updated --spec cypress/e2e/docker.cy.js'
 
+  test-example-module-federation:
+    name: Test Example (Module Federation)
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: actions/download-artifact@v8
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install example dependencies
+        run: |
+          cd examples/module-federation/test
+          npm ci
+          cd ../host
+          npm ci
+          cd ../remote
+          npm ci
+
+      - name: Install local runtime-env tarballs
+        run: |
+          cd examples/module-federation/host
+          npm i ../../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
+          cd ../remote
+          npm i ../../../packages/cli/runtime-env-cli-test.tgz
+          npm i ../../../packages/vite-plugin/runtime-env-vite-plugin-test.tgz
+
+      - name: Test examples/module-federation
+        run: |
+          cd examples/module-federation/test
+          npm test
+
   release:
     if: github.ref_name == 'main'
 
@@ -378,6 +427,7 @@ jobs:
       - test-example-workbox
       - test-example-vite
       - test-example-webpack
+      - test-example-module-federation
 
     runs-on: ubuntu-latest
 
