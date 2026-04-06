@@ -1,28 +1,22 @@
 # Choose your path
 
-Use this page to decide quickly.
+## If you use Vite
 
-## Choose Vite plugin (recommended)
-
-Pick **@runtime-env/vite-plugin** if:
-
-- you use Vite,
-- you want convention-based setup,
-- you want plugin-managed behavior for dev/build/preview/test.
+- Start with `@runtime-env/vite-plugin`.
+- The plugin covers the Vite lifecycle: dev, build, preview, and tests.
+- You should still use the CLI during deployment/startup.
 
 Start here: [Vite quickstart](/vite/quickstart).
 
-## Choose CLI
+## If you do not use Vite
 
-Pick **@runtime-env/cli** if:
-
-- you are framework-agnostic,
-- you need explicit command-level control,
-- you want custom global name or custom generation flow.
+- Use `@runtime-env/cli`.
+- The CLI is framework-agnostic.
+- Use `gen-js`, `gen-ts`, and `interpolate` as needed.
 
 Start here: [CLI quickstart](/cli/quickstart).
 
 ## Rule of thumb
 
-- Vite app: use plugin first.
-- Non-Vite or custom runtime flow: use CLI directly.
+- plugin = Vite lifecycle
+- CLI = deployment/runtime lifecycle

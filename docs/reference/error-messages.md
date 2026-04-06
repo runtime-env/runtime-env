@@ -1,16 +1,12 @@
 # Error messages reference
 
-## Missing script tag
+## Missing script tag (Vite)
 
-- **dev**:
-  - Message indicates `index.html` is missing the runtime script and that runtime values will not be available until it is added.
-  - Shown as an error/overlay during development.
-- **build**:
-  - Treated as a hard failure.
-- **path format**:
-  - default base (`"/"`): `<script src="/runtime-env.js"></script>`
-  - non-root base: `<script src="${base}/runtime-env.js"></script>`
-- Cause: plugin requires runtime script inclusion with a path that matches the resolved Vite base.
+- **dev**: error/overlay indicates `index.html` is missing runtime script and runtime values will not be available.
+- **build/test**: treated as hard failure.
+- **path examples**:
+  - default base: `<script src="/runtime-env.js"></script>`
+  - non-root base example: `<script src="/my-app/runtime-env.js"></script>`
 
 ## Invalid schema
 
@@ -19,14 +15,19 @@
 
 ## Schema prefix mismatch (Vite)
 
-- Cause: schema keys do not align with Vite env prefix expectations.
+- Cause: schema keys do not align with Vite env prefix strategy.
 
 ## Missing env file
 
 - Message prefix: `env file not found:`
-- Cause: wrong `--env-file` path.
+- Cause: incorrect `--env-file` path.
 
 ## Unsupported Node for `--env-file`
 
 - Message: `util.parseEnv is not a function`
 - Cause: Node older than v20.12.0.
+
+## Interpolation input issues
+
+- Cause: missing or wrong interpolation input path.
+- Guidance: use `--input-file` or provide the first positional input argument.

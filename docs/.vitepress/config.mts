@@ -11,7 +11,7 @@ export default defineConfig({
       { text: "Start Here", link: "/start-here/what-is-runtime-env" },
       { text: "Vite", link: "/vite/quickstart" },
       { text: "CLI", link: "/cli/quickstart" },
-      { text: "Deployment", link: "/deployment/docker" },
+      { text: "Deployment", link: "/deployment/production-startup" },
       { text: "Reference", link: "/reference/vite-plugin" },
     ],
     sidebar: {
@@ -33,11 +33,9 @@ export default defineConfig({
           text: "Vite",
           items: [
             { text: "Quickstart", link: "/vite/quickstart" },
-            { text: "Production", link: "/vite/production" },
-            { text: "How it works", link: "/vite/how-it-works" },
-            { text: "index.html", link: "/vite/index-html" },
-            { text: "TypeScript", link: "/vite/typescript" },
-            { text: "Vitest", link: "/vite/vitest" },
+            { text: "Dev", link: "/vite/dev" },
+            { text: "Test", link: "/vite/test" },
+            { text: "Build", link: "/vite/build" },
             { text: "Preview", link: "/vite/preview" },
             { text: "Troubleshooting", link: "/vite/troubleshooting" },
           ],
@@ -48,15 +46,9 @@ export default defineConfig({
           text: "CLI",
           items: [
             { text: "Quickstart", link: "/cli/quickstart" },
-            { text: "Schema", link: "/cli/schema" },
             { text: "gen-js", link: "/cli/gen-js" },
             { text: "gen-ts", link: "/cli/gen-ts" },
             { text: "interpolate", link: "/cli/interpolate" },
-            { text: "Watch mode", link: "/cli/watch-mode" },
-            {
-              text: "Custom global name",
-              link: "/cli/custom-global-name",
-            },
             { text: "Troubleshooting", link: "/cli/troubleshooting" },
           ],
         },
@@ -65,6 +57,7 @@ export default defineConfig({
         {
           text: "Deployment",
           items: [
+            { text: "Production startup", link: "/deployment/production-startup" },
             { text: "Docker", link: "/deployment/docker" },
             {
               text: "Startup generation",
