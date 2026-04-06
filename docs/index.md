@@ -4,9 +4,8 @@ runtime-env helps frontend teams externalize configuration so one build artifact
 
 In Twelve-Factor terms, config should stay separate from code so teams can build once and deploy anywhere.
 
-## Start here
+## Quickstart
 
-- [Start Here](/start-here/what-is-runtime-env)
 - [Vite quickstart](/vite/quickstart)
 - [CLI quickstart](/cli/quickstart)
 
