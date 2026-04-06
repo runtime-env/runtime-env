@@ -46,7 +46,7 @@ If the analytics ID is baked into HTML, teams can easily send data from the wron
 
 ```html
 <script>
-  gtag('config', 'G-PROD123456');
+  gtag("config", "G-PROD123456");
 </script>
 ```
 
@@ -54,7 +54,7 @@ If the analytics ID is baked into HTML, teams can easily send data from the wron
 
 ```html
 <script>
-  gtag('config', '<%= runtimeEnv.GA_MEASUREMENT_ID %>');
+  gtag("config", "<%= runtimeEnv.GA_MEASUREMENT_ID %>");
 </script>
 ```
 
