@@ -18,7 +18,7 @@ runtimeEnv(); // no options
 
 ## Lifecycle coverage
 
-The plugin covers the Vite lifecycle: dev, build, preview, and tests.
+The plugin covers the Vite lifecycle: dev, build, preview, and Vitest.
 
 ## Internal dependency
 
