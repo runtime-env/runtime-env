@@ -62,7 +62,7 @@ console.log(runtimeEnv.VITE_API_BASE_URL);
 ## Next steps
 
 - [Vite dev](/vite/dev)
-- [Vite test](/vite/test)
+- [Vite Vitest](/vite/vitest)
 - [Vite build](/vite/build)
 - [Vite preview](/vite/preview)
 - [Vite builtin env comparison](/vite/builtin-env-comparison)

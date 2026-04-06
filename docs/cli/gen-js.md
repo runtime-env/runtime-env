@@ -30,6 +30,34 @@ Top-level options are passed **before** the subcommand and affect `gen-js` behav
 - if `--output-file` is omitted: output is written to stdout
 - if both env files and process environment are used: process environment wins
 
+This command is useful in local development, custom workflows, and deployment/runtime scenarios.
+
+## Nested JSON example
+
+Schema:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "FEATURE_FLAGS": {
+      "type": "object",
+      "properties": {
+        "betaCheckout": { "type": "boolean" }
+      },
+      "required": ["betaCheckout"]
+    }
+  },
+  "required": ["FEATURE_FLAGS"]
+}
+```
+
+Env value:
+
+```bash
+FEATURE_FLAGS={"betaCheckout":true}
+```
+
 ## Example
 
 ```bash

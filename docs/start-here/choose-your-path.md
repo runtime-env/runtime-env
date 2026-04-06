@@ -3,7 +3,7 @@
 ## If you use Vite
 
 - Start with `@runtime-env/vite-plugin`.
-- The plugin covers dev, build, preview, and tests.
+- The plugin covers dev, build, preview, and Vitest.
 - You need to use the CLI during deployment/startup.
 
 Start here: [Vite quickstart](/vite/quickstart).
@@ -24,4 +24,3 @@ Start here: [CLI quickstart](/cli/quickstart).
 
 - plugin = Vite lifecycle
 - CLI = cross-stack low-level tool
-- CLI also powers deployment/runtime lifecycle
