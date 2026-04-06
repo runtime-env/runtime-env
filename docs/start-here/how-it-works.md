@@ -2,15 +2,21 @@
 
 runtime-env uses a schema-driven model.
 
-1. Define allowed runtime keys in `.runtimeenvschema.json`.
-2. Generate `runtime-env.js` from env values.
-3. Load the script in HTML.
-4. Read values from `globalThis.runtimeEnv`.
+## Schema-driven workflow
 
-Optional: interpolate template placeholders into HTML/text with the CLI `interpolate` command.
+1. Define allowed runtime keys and types in `.runtimeenvschema.json`.
+2. Resolve environment values against that schema.
+3. Produce outputs for browser runtime and/or deployment templates.
 
-## Core outputs
+## Outputs
 
-- JavaScript runtime payload (`gen-js`)
-- TypeScript definitions (`gen-ts`)
-- Interpolated templates (`interpolate`)
+- `gen-js` produces browser-readable runtime config (`runtime-env.js`).
+- `gen-ts` produces TypeScript declarations for `globalThis.runtimeEnv` (or custom global name).
+- `interpolate` substitutes runtime values into HTML/text templates.
+
+## Plugin vs CLI usage
+
+- Use `@runtime-env/vite-plugin` during the Vite lifecycle.
+- Use `@runtime-env/cli` during deployment/runtime lifecycle.
+
+For deploy/startup template substitution, see [interpolate](/cli/interpolate).

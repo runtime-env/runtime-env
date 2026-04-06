@@ -1,28 +1,22 @@
 # What is runtime-env?
 
-Use runtime-env when you need frontend configuration at deploy/startup time instead of build time.
+runtime-env solves the problem of frontend configuration changing between deploys.
 
-## Problem it solves
+## Why it exists
 
-Without runtime-env, frontend env values are usually baked into bundles during build. That forces rebuilds for every environment.
+Frontend values like API URLs, app titles, or feature toggles often differ by environment. If those values are compiled into bundles, each environment requires a new build.
 
-With runtime-env:
+runtime-env separates config from code so you can keep a single build artifact and apply environment values later.
 
-1. Build once.
-2. Generate `runtime-env.js` when the app starts.
-3. Read values from `globalThis.runtimeEnv` in browser code.
+## Build once, deploy anywhere
 
-## Smallest example
+A typical flow is:
 
-```html
-<script src="/runtime-env.js"></script>
-<script type="module" src="/src/main.ts"></script>
-```
+1. Build the app once.
+2. During deployment/startup, generate runtime config from environment variables.
+3. Load runtime config in the browser.
 
-```ts
-console.log(globalThis.runtimeEnv.API_BASE_URL);
-```
+## Two core runtime techniques
 
-## Common mistake
-
-Forgetting to include `runtime-env.js` before your app entry script.
+- **Runtime JS generation**: generate `runtime-env.js` and load it before app startup.
+- **Interpolation**: substitute runtime values into HTML/text templates at deploy/startup time.

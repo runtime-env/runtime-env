@@ -7,3 +7,5 @@ Use `interpolate` for HTML snippets that need runtime URLs.
 ```
 
 Generate interpolated output at startup with CLI `interpolate`.
+
+See command details: [CLI interpolate](/cli/interpolate).
