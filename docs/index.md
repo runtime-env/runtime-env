@@ -8,7 +8,6 @@ In Twelve-Factor terms, config should stay separate from code so teams can build
 
 - [Start Here](/start-here/what-is-runtime-env)
 - [Vite quickstart](/vite/quickstart)
-- [Vite builtin env comparison](/vite/builtin-env-comparison)
 - [CLI quickstart](/cli/quickstart)
 
 ## CLI output examples
