@@ -29,7 +29,28 @@ Top-level options are passed **before** the subcommand and affect `gen-ts` outpu
 - `--watch` default: off
 - if `--output-file` is omitted: output is written to stdout
 
+Schema-driven declarations reduce mismatch risk between docs, code, schema, and runtime data.
+
 ## Example
+
+Firebase-shaped schema key with generated declarations:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "FIREBASE_CONFIG": {
+      "type": "object",
+      "properties": {
+        "projectId": { "type": "string" },
+        "apiKey": { "type": "string" }
+      },
+      "required": ["projectId", "apiKey"]
+    }
+  },
+  "required": ["FIREBASE_CONFIG"]
+}
+```
 
 ```bash
 runtime-env --schema-file .runtimeenvschema.json --global-variable-name runtimeEnv gen-ts --output-file ./src/runtime-env.d.ts

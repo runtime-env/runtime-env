@@ -1,24 +1,18 @@
 # What is runtime-env?
 
-runtime-env solves the problem of frontend configuration changing between deploys.
+runtime-env exists because frontend configuration often changes between deploys.
 
 ## Why it exists
 
-Values such as API URLs, app titles, and feature flags vary by environment. If those values are baked into built assets, every environment change can require a rebuild.
+Values such as API URLs, app titles, feature flags, and third-party IDs vary across environments. When those values are baked into built assets, every change can force another rebuild.
 
-runtime-env separates config from code so you can keep a single build artifact and apply environment-specific values later.
+runtime-env separates config from code so teams can reuse one build artifact and apply environment-specific values later.
 
-## Build once, deploy anywhere
+## Core capabilities
 
-A common flow is:
+runtime-env supports:
 
-1. Build the app once.
-2. Generate runtime values from environment data.
-3. Load runtime values at app start.
-
-## Two core capabilities
-
-- **Runtime JS generation**: generate `runtime-env.js` and load it before app startup.
-- **Interpolation**: substitute runtime values into HTML/text templates.
+- **runtime JS generation** (for example, generating `runtime-env.js`),
+- **interpolation** (substituting runtime values into HTML/text templates).
 
 `@runtime-env/cli` is framework-agnostic and usable in any stack or workflow, not only deployment scripts.
