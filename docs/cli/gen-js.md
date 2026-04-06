@@ -30,7 +30,7 @@ Top-level options are passed **before** the subcommand and affect `gen-js` behav
 - if `--output-file` is omitted: output is written to stdout
 - if both env files and process environment are used: process environment wins
 
-This command is useful in local development, custom workflows, and deployment/runtime scenarios.
+`gen-js` is useful for development, staging, deployment/runtime, and other custom workflows.
 
 ## Nested JSON example
 
@@ -60,6 +60,8 @@ FEATURE_FLAGS={"betaCheckout":true}
 
 ## Example
 
+Stage-specific API URL generated for a local/staging workflow:
+
 ```bash
-runtime-env --schema-file .runtimeenvschema.json gen-js --env-file .env.production --output-file ./dist/runtime-env.js
+runtime-env --schema-file .runtimeenvschema.json gen-js --env-file .env.staging --output-file ./public/runtime/runtime-env.js
 ```
