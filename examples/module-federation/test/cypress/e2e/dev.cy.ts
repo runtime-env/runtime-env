@@ -1,7 +1,5 @@
 describe("Module Federation dev", () => {
   it("renders host value for both host and remote, and updates after .env changes", () => {
-    cy.exec('echo "VITE_MESSAGE=host-example" > ../host/.env');
-
     cy.visit("/");
     cy.contains("HOST: host-example");
     cy.contains("Remote: host-example");
