@@ -11,12 +11,20 @@ runtime-env uses a schema-driven model.
 ## Outputs
 
 - `gen-js` produces browser-readable runtime config (`runtime-env.js`).
-- `gen-ts` produces TypeScript declarations for `globalThis.runtimeEnv` (or custom global name).
+- `gen-ts` produces TypeScript declarations for the generated runtime global.
 - `interpolate` substitutes runtime values into HTML/text templates.
 
 ## Plugin vs CLI usage
 
 - Use `@runtime-env/vite-plugin` during the Vite lifecycle.
-- Use `@runtime-env/cli` during deployment/runtime lifecycle.
+- Use `@runtime-env/cli` for framework-agnostic low-level control across deployment/runtime lifecycle and custom workflows.
 
-For deploy/startup template substitution, see [interpolate](/cli/interpolate).
+For template substitution workflows, see [interpolate](/cli/interpolate).
+
+## Accessing the generated global
+
+The generated runtime script creates a global variable.
+
+- By default, that variable is `runtimeEnv`.
+- If `--global-variable-name` is changed, the access name changes too.
+- For readability, docs examples use `runtimeEnv.FOO` as the main user-facing pattern.

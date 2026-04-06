@@ -1,40 +1,40 @@
 # `interpolate`
 
-`interpolate` replaces template placeholders in HTML/text using runtime values.
+`interpolate` substitutes runtime values into HTML/text templates.
 
 ## Command syntax
 
 ```bash
-runtime-env [top-level options] interpolate [command options] [inputFile]
+runtime-env [top-level options] interpolate [command options] [rawInput]
 ```
 
 ## Top-level options and ordering
 
-Top-level options are passed **before** the subcommand and affect interpolation:
+Top-level options are passed **before** the subcommand and affect interpolation behavior:
 
 - `--schema-file <path>`: defines expected keys used during resolution.
 - `--global-variable-name <name>`: controls placeholder namespace (for example, `runtimeEnv`).
 - `--watch`: reruns interpolation on changes.
 
-Interpolation is a deployment/startup-time capability.
+Interpolation is useful for deployment/startup workflows and for any custom workflow that needs template substitution.
 
 ## `interpolate` command options
 
-- `--input-file <path>`: file to read template content from.
-- `--output-file <path>`: file to write interpolated content to.
-- `--env-file <path...>`: env files to resolve values from.
+- `--input-file <path>`: read template content from a file.
+- `--output-file <path>`: write interpolated content to a file.
+- `--env-file <path...>`: load values from one or more env files.
 
-If `--input-file` is omitted, the first positional argument is treated as the input file.
+Interpolation uses the global variable name in templates (for example, `<%= runtimeEnv.APP_TITLE %>` by default).
 
-## Global-variable placeholder behavior
+## Default behavior
 
-With default global variable name:
-
-```html
-<title><%= runtimeEnv.APP_TITLE %></title>
-```
-
-If you change `--global-variable-name`, update placeholders accordingly.
+- `--schema-file` default: `.runtimeenvschema.json`
+- `--global-variable-name` default: `runtimeEnv`
+- `--watch` default: off
+- if `--env-file` is omitted: values come from the current process environment
+- if `--output-file` is omitted: output is written to stdout
+- if `--input-file` is omitted: the first positional argument is treated as the raw input string, not a file path
+- if both env files and process environment are used: process environment wins
 
 ## Example
 
