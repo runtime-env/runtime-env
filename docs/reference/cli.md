@@ -2,23 +2,26 @@
 
 ## Top-level options
 
-- `--global-variable-name <name>` (default: `runtimeEnv`)
-- `--schema-file <path>` (default: `.runtimeenvschema.json`)
+- `--schema-file <path>`
+- `--global-variable-name <name>`
 - `--watch`
+
+Top-level options are passed before subcommands.
 
 ## Commands
 
-### `gen-js`
+- `gen-js`
+  - `--env-file <path...>`
+  - `--output-file <path>`
+- `gen-ts`
+  - `--output-file <path>`
+- `interpolate`
+  - `--env-file <path...>`
+  - `--input-file <path>`
+  - `--output-file <path>`
 
-- `--env-file <envFile...>`
-- `--output-file <outputFile>`
+## Option mapping
 
-### `gen-ts`
-
-- `--output-file <outputFile>`
-
-### `interpolate`
-
-- `--env-file <envFile...>`
-- `--input-file <inputFile>`
-- `--output-file <outputFile>`
+- `--schema-file` and `--global-variable-name` affect all commands.
+- `--watch` enables repeated regeneration.
+- `--env-file` applies to commands that consume runtime values (`gen-js`, `interpolate`).

@@ -1,11 +1,11 @@
-# Vite preview behavior
+# Vite preview
 
-`vite preview` simulates runtime generation without mutating build artifacts.
+`vite preview` is useful for verification before deployment.
 
-## Behavior
+## What it does during preview
 
-- `runtime-env.js` is generated on request.
-- `dist/index.html` is read and interpolated via temp files.
-- Schema validation still runs.
+- provides dynamic `runtime-env.js` generation,
+- interpolates built HTML at request time,
+- keeps preview behavior close to runtime expectations without mutating source setup.
 
-Use preview to verify startup/runtime behavior before deployment.
+Preview is for verification, not a real production runtime.

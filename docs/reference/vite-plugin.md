@@ -12,13 +12,14 @@ runtimeEnv(); // no options
 
 - schema file: `.runtimeenvschema.json`
 - runtime script path:
-  - default base (`"/"`): `/runtime-env.js`
-  - non-root base: `${base}/runtime-env.js`
-- generated TS path (if TS project): `src/runtime-env.d.ts`
+  - default base: `/runtime-env.js`
+  - non-root base example: `/my-app/runtime-env.js`
+- generated TypeScript declarations (TS projects): `src/runtime-env.d.ts`
 
-## Behavior summary
+## Lifecycle coverage
 
-- Returns plugin set for dev/build/preview/test.
-- Uses `@runtime-env/cli` internally to generate runtime output.
-- Validates schema in each mode.
-- Enforces runtime script tag presence for app correctness.
+The plugin covers the Vite lifecycle: dev, build, preview, and tests.
+
+## Internal dependency
+
+The plugin uses `@runtime-env/cli` internally.

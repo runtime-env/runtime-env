@@ -1,8 +1,16 @@
 # CLI quickstart
 
-Use this for framework-agnostic setup.
+## Introduction
 
-## 1) Create schema
+`@runtime-env/cli` is framework-agnostic and designed for deployment/runtime lifecycle workflows.
+
+## Installation
+
+```bash
+npm i -D @runtime-env/cli
+```
+
+## Minimal setup
 
 `.runtimeenvschema.json`
 
@@ -16,26 +24,29 @@ Use this for framework-agnostic setup.
 }
 ```
 
-## 2) Provide env value
+Generate runtime JavaScript:
 
 ```bash
-export API_BASE_URL=https://api.example.com
+API_BASE_URL=https://api.example.com npx @runtime-env/cli gen-js --output-file ./dist/runtime-env.js
 ```
 
-## 3) Generate runtime file
-
-```bash
-npx @runtime-env/cli gen-js --output-file ./public/runtime-env.js
-```
-
-## 4) Load file in HTML
+Load it in HTML:
 
 ```html
 <script src="/runtime-env.js"></script>
 ```
 
-## 5) Read in app code
+Read it in app code:
 
 ```ts
 console.log(globalThis.runtimeEnv.API_BASE_URL);
 ```
+
+Deeper command behavior is documented in the command pages.
+
+## Next steps
+
+- [gen-js](/cli/gen-js)
+- [gen-ts](/cli/gen-ts)
+- [interpolate](/cli/interpolate)
+- [CLI troubleshooting](/cli/troubleshooting)
