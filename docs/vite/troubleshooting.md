@@ -19,7 +19,7 @@ Guidance: use base-aware absolute paths.
 
 Symptom: errors in dev and hard failures in build/test.
 
-Guidance: verify required keys, data types, and schema shape. See [schema rules](/reference/schema-rules).
+Guidance: verify required keys, data types, and schema shape.
 
 ## Env prefix mismatch
 

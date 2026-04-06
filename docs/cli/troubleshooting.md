@@ -22,7 +22,7 @@ Guidance: use Node.js v20.12.0 or newer for `--env-file` support.
 
 Symptom: command reports schema/key/type issues.
 
-Guidance: align schema keys, required fields, and provided values. See [schema rules](/reference/schema-rules).
+Guidance: align schema keys, required fields, and provided values.
 
 ## Interpolation input issues
 
