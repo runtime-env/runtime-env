@@ -1,14 +1,18 @@
 # Vite quickstart
 
-Use this for the fastest working Vite setup.
+## Introduction
 
-## Install
+Use this path when your app uses Vite. `@runtime-env/vite-plugin` is the high-level Vite integration, and it invokes `@runtime-env/cli` internally.
+
+## Installation
 
 ```bash
 npm i -D @runtime-env/vite-plugin @runtime-env/cli
 ```
 
-## Add plugin
+## Minimal setup
+
+`vite.config.ts`
 
 ```ts
 import { defineConfig } from "vite";
@@ -18,8 +22,6 @@ export default defineConfig({
   plugins: [runtimeEnv()],
 });
 ```
-
-## Create schema
 
 `.runtimeenvschema.json`
 
@@ -33,27 +35,35 @@ export default defineConfig({
 }
 ```
 
-## Create env
-
 `.env`
 
 ```bash
 VITE_API_BASE_URL=https://api.example.com
 ```
 
-## Add runtime script to `index.html`
+`index.html`
 
 ```html
+<!-- default base -->
 <script src="/runtime-env.js"></script>
+
+<!-- non-root base example -->
+<script src="/my-app/runtime-env.js"></script>
+
 <script type="module" src="/src/main.ts"></script>
 ```
 
-## Read value in app code
+`src/main.ts`
 
 ```ts
-console.log(globalThis.runtimeEnv.VITE_API_BASE_URL);
+console.log(runtimeEnv.VITE_API_BASE_URL);
 ```
 
-## Common mistake
+## Next steps
 
-Missing `<script src="/runtime-env.js"></script>` or putting it after the app entry script.
+- [Vite dev](/vite/dev)
+- [Vite Vitest](/vite/vitest)
+- [Vite build](/vite/build)
+- [Vite preview](/vite/preview)
+- [Vite builtin env comparison](/vite/builtin-env-comparison)
+- [Vite troubleshooting](/vite/troubleshooting)

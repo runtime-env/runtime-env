@@ -2,16 +2,30 @@
 
 ## Schema file not found
 
-Use `--schema-file` with the correct path.
+Symptom: command exits because schema path cannot be resolved.
+
+Guidance: confirm `--schema-file` path or default `.runtimeenvschema.json` exists.
 
 ## Env file not found
 
-Check each `--env-file` path.
+Symptom: command exits with env file path errors.
 
-## `util.parseEnv is not a function`
+Guidance: verify every `--env-file` path and load order.
 
-`--env-file` requires Node.js v20.12.0+.
+## Unsupported Node for `--env-file`
 
-## Validation errors
+Symptom: `util.parseEnv is not a function`.
 
-Inspect schema structure and required keys. See [schema rules](/reference/schema-rules).
+Guidance: use Node.js v20.12.0 or newer for `--env-file` support.
+
+## Schema validation failures
+
+Symptom: command reports schema/key/type issues.
+
+Guidance: align schema keys, required fields, and provided values.
+
+## Interpolation input issues
+
+Symptom: interpolation runs against the wrong file or no file.
+
+Guidance: set `--input-file` explicitly, or pass the intended input as the first positional argument.

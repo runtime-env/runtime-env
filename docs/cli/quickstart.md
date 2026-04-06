@@ -1,8 +1,18 @@
 # CLI quickstart
 
-Use this for framework-agnostic setup.
+## Introduction
 
-## 1) Create schema
+`@runtime-env/cli` is framework-agnostic and usable in any tech stack or workflow, not only deployment/startup scripts.
+
+It works for non-Vite stacks, custom CI/CD pipelines, local development flows, and standalone runtime/template generation tasks.
+
+## Installation
+
+```bash
+npm i -D @runtime-env/cli
+```
+
+## Minimal setup
 
 `.runtimeenvschema.json`
 
@@ -16,26 +26,31 @@ Use this for framework-agnostic setup.
 }
 ```
 
-## 2) Provide env value
+Generate runtime JavaScript:
 
 ```bash
-export API_BASE_URL=https://api.example.com
+API_BASE_URL=https://api.example.com npx @runtime-env/cli gen-js --output-file ./dist/runtime-env.js
 ```
 
-## 3) Generate runtime file
-
-```bash
-npx @runtime-env/cli gen-js --output-file ./public/runtime-env.js
-```
-
-## 4) Load file in HTML
+Load it in HTML:
 
 ```html
 <script src="/runtime-env.js"></script>
 ```
 
-## 5) Read in app code
+Read it in app code:
 
 ```ts
-console.log(globalThis.runtimeEnv.API_BASE_URL);
+console.log(runtimeEnv.API_BASE_URL);
 ```
+
+For static hosting and test pipelines, this same pattern can be run before serving assets or before executing tests.
+
+Deeper command behavior is documented in the command pages.
+
+## Next steps
+
+- [gen-js](/cli/gen-js)
+- [gen-ts](/cli/gen-ts)
+- [interpolate](/cli/interpolate)
+- [CLI troubleshooting](/cli/troubleshooting)

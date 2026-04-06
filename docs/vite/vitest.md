@@ -1,11 +1,16 @@
-# Vite + Vitest
+# Vite Vitest
 
-In test mode, the plugin generates a runtime payload and injects it into Vitest setup.
+In Vitest mode, the plugin keeps test runtime config behavior aligned with app runtime expectations.
 
-## What you get
+## What it does in Vitest
 
-- Schema validation before tests.
-- `runtime-env.js` generation for runtime access in tests.
-- Auto setup-file injection.
+- validates schema before tests run,
+- generates runtime setup data for tests,
+- injects setup-file configuration automatically,
+- generates `src/runtime-env.d.ts` for TypeScript projects.
 
-If tests fail due to env/schema mismatch, validate `.runtimeenvschema.json` and test env values first.
+## Testing guidance
+
+- If runtime values are missing in tests, verify your schema keys and env values first.
+- Keep test env inputs explicit to avoid hidden machine-level differences.
+- For non-Vite tests or custom runners, use the CLI directly to generate runtime data before tests.

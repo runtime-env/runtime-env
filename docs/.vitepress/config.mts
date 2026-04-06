@@ -11,7 +11,7 @@ export default defineConfig({
       { text: "Start Here", link: "/start-here/what-is-runtime-env" },
       { text: "Vite", link: "/vite/quickstart" },
       { text: "CLI", link: "/cli/quickstart" },
-      { text: "Deployment", link: "/deployment/docker" },
+      { text: "Deployment", link: "/deployment/caching" },
       { text: "Reference", link: "/reference/vite-plugin" },
     ],
     sidebar: {
@@ -33,12 +33,14 @@ export default defineConfig({
           text: "Vite",
           items: [
             { text: "Quickstart", link: "/vite/quickstart" },
-            { text: "Production", link: "/vite/production" },
-            { text: "How it works", link: "/vite/how-it-works" },
-            { text: "index.html", link: "/vite/index-html" },
-            { text: "TypeScript", link: "/vite/typescript" },
+            { text: "Dev", link: "/vite/dev" },
             { text: "Vitest", link: "/vite/vitest" },
+            { text: "Build", link: "/vite/build" },
             { text: "Preview", link: "/vite/preview" },
+            {
+              text: "Builtin env comparison",
+              link: "/vite/builtin-env-comparison",
+            },
             { text: "Troubleshooting", link: "/vite/troubleshooting" },
           ],
         },
@@ -48,15 +50,9 @@ export default defineConfig({
           text: "CLI",
           items: [
             { text: "Quickstart", link: "/cli/quickstart" },
-            { text: "Schema", link: "/cli/schema" },
             { text: "gen-js", link: "/cli/gen-js" },
             { text: "gen-ts", link: "/cli/gen-ts" },
             { text: "interpolate", link: "/cli/interpolate" },
-            { text: "Watch mode", link: "/cli/watch-mode" },
-            {
-              text: "Custom global name",
-              link: "/cli/custom-global-name",
-            },
             { text: "Troubleshooting", link: "/cli/troubleshooting" },
           ],
         },
@@ -65,35 +61,10 @@ export default defineConfig({
         {
           text: "Deployment",
           items: [
-            { text: "Docker", link: "/deployment/docker" },
-            {
-              text: "Startup generation",
-              link: "/deployment/startup-generation",
-            },
             { text: "Caching", link: "/deployment/caching" },
             {
               text: "PWA + Service Worker",
               link: "/deployment/pwa-service-worker",
-            },
-          ],
-        },
-      ],
-      "/recipes/": [
-        {
-          text: "Recipes",
-          items: [
-            {
-              text: "Nested JSON config",
-              link: "/recipes/nested-json-config",
-            },
-            {
-              text: "Third-party script URLs",
-              link: "/recipes/third-party-script-urls",
-            },
-            { text: "Static site", link: "/recipes/static-site" },
-            {
-              text: "Testing runtime values",
-              link: "/recipes/testing-runtime-values",
             },
           ],
         },
