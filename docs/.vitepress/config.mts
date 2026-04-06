@@ -8,26 +8,11 @@ export default defineConfig({
   lastUpdated: true,
   themeConfig: {
     nav: [
-      { text: "Start Here", link: "/start-here/what-is-runtime-env" },
       { text: "Vite", link: "/vite/quickstart" },
       { text: "CLI", link: "/cli/quickstart" },
       { text: "Deployment", link: "/deployment/caching" },
-      { text: "Reference", link: "/reference/vite-plugin" },
     ],
     sidebar: {
-      "/start-here/": [
-        {
-          text: "Start Here",
-          items: [
-            {
-              text: "What is runtime-env?",
-              link: "/start-here/what-is-runtime-env",
-            },
-            { text: "Choose your path", link: "/start-here/choose-your-path" },
-            { text: "How it works", link: "/start-here/how-it-works" },
-          ],
-        },
-      ],
       "/vite/": [
         {
           text: "Vite",
@@ -66,17 +51,6 @@ export default defineConfig({
               text: "PWA + Service Worker",
               link: "/deployment/pwa-service-worker",
             },
-          ],
-        },
-      ],
-      "/reference/": [
-        {
-          text: "Reference",
-          items: [
-            { text: "Vite plugin", link: "/reference/vite-plugin" },
-            { text: "CLI", link: "/reference/cli" },
-            { text: "Schema rules", link: "/reference/schema-rules" },
-            { text: "Error messages", link: "/reference/error-messages" },
           ],
         },
       ],
