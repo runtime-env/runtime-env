@@ -8,6 +8,8 @@ Use this for the fastest working Vite setup.
 npm i -D @runtime-env/vite-plugin @runtime-env/cli
 ```
 
+`@runtime-env/vite-plugin` relies on the CLI internally, so install both packages.
+
 ## Add plugin
 
 ```ts
@@ -44,7 +46,12 @@ VITE_API_BASE_URL=https://api.example.com
 ## Add runtime script to `index.html`
 
 ```html
+<!-- base "/" -->
 <script src="/runtime-env.js"></script>
+
+<!-- non-root base -->
+<script src="${base}/runtime-env.js"></script>
+
 <script type="module" src="/src/main.ts"></script>
 ```
 
@@ -56,4 +63,4 @@ console.log(globalThis.runtimeEnv.VITE_API_BASE_URL);
 
 ## Common mistake
 
-Missing `<script src="/runtime-env.js"></script>` or putting it after the app entry script.
+Missing the runtime script tag (`/runtime-env.js` for base `/`, `${base}/runtime-env.js` for non-root base) or putting it after the app entry script.
