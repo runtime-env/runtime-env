@@ -11,7 +11,7 @@ export default defineConfig({
       { text: "Start Here", link: "/start-here/what-is-runtime-env" },
       { text: "Vite", link: "/vite/quickstart" },
       { text: "CLI", link: "/cli/quickstart" },
-      { text: "Deployment", link: "/deployment/production-startup" },
+      { text: "Deployment", link: "/deployment/caching" },
       { text: "Reference", link: "/reference/vite-plugin" },
     ],
     sidebar: {
@@ -34,7 +34,7 @@ export default defineConfig({
           items: [
             { text: "Quickstart", link: "/vite/quickstart" },
             { text: "Dev", link: "/vite/dev" },
-            { text: "Test", link: "/vite/test" },
+            { text: "Vitest", link: "/vite/vitest" },
             { text: "Build", link: "/vite/build" },
             { text: "Preview", link: "/vite/preview" },
             {
@@ -61,36 +61,10 @@ export default defineConfig({
         {
           text: "Deployment",
           items: [
-            { text: "Production startup", link: "/deployment/production-startup" },
-            { text: "Docker", link: "/deployment/docker" },
-            {
-              text: "Startup generation",
-              link: "/deployment/startup-generation",
-            },
             { text: "Caching", link: "/deployment/caching" },
             {
               text: "PWA + Service Worker",
               link: "/deployment/pwa-service-worker",
-            },
-          ],
-        },
-      ],
-      "/recipes/": [
-        {
-          text: "Recipes",
-          items: [
-            {
-              text: "Nested JSON config",
-              link: "/recipes/nested-json-config",
-            },
-            {
-              text: "Third-party script URLs",
-              link: "/recipes/third-party-script-urls",
-            },
-            { text: "Static site", link: "/recipes/static-site" },
-            {
-              text: "Testing runtime values",
-              link: "/recipes/testing-runtime-values",
             },
           ],
         },

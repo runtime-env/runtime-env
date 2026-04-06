@@ -5,9 +5,15 @@ During `vite build`, the plugin enforces runtime config correctness for build ou
 ## What it does during build
 
 - validates schema,
-- enforces the required runtime script tag and base-aware path,
+- enforces required runtime script tag rules,
 - generates `src/runtime-env.d.ts` for TypeScript projects.
 
 Build is the end of the Vite lifecycle.
 
-Real deployment/runtime generation and interpolation are handled later by the CLI.
+After build, runtime config is handled outside Vite.
+
+Use the CLI when you need generation/interpolation after build:
+
+- [CLI quickstart](/cli/quickstart)
+- [gen-js](/cli/gen-js)
+- [interpolate](/cli/interpolate)

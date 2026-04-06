@@ -40,6 +40,8 @@ This is intentional because many real production runtime environments do not sup
 
 Vite documents env expansion support (including reverse-order expansion), but also recommends avoiding reliance on it because shell scripts and tools like Docker Compose do not support that behavior consistently and future warnings may be added.
 
+Reference: https://vite.dev/guide/env-and-mode
+
 ## When to use which
 
 - Use `import.meta.env` for normal Vite build-time env replacement.
