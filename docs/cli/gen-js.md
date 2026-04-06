@@ -19,7 +19,7 @@ Top-level options are passed **before** the subcommand and affect `gen-js` behav
 ## `gen-js` command options
 
 - `--output-file <path>`: write generated JS to a file.
-- `--env-file <path...>`: load env values from one or more env files.
+- `--env-file <path>`: load env values from one or more env files.
 
 ## Default behavior
 
