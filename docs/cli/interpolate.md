@@ -22,7 +22,7 @@ This command is useful for general HTML/text substitution flows, deployment/star
 
 - `--input-file <path>`: read template content from a file.
 - `--output-file <path>`: write interpolated content to a file.
-- `--env-file <path...>`: load values from one or more env files.
+- `--env-file <path>`: load values from one or more env files.
 
 Interpolation uses the global variable name in templates (for example, `<%= runtimeEnv.APP_TITLE %>` by default).
 
