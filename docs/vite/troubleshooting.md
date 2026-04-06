@@ -4,7 +4,10 @@
 
 Symptom: runtime values are undefined.
 
-Fix: add `<script src="/runtime-env.js"></script>` before entry script.
+Fix: add the runtime script before entry script.
+
+- For default Vite base (`"/"`), use `<script src="/runtime-env.js"></script>`.
+- For non-root Vite base, use `<script src="${base}/runtime-env.js"></script>`.
 
 ## Schema validation failed
 
