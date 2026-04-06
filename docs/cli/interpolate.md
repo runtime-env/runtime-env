@@ -16,7 +16,7 @@ Top-level options are passed **before** the subcommand and affect interpolation 
 - `--global-variable-name <name>`: controls placeholder namespace (for example, `runtimeEnv`).
 - `--watch`: reruns interpolation on changes.
 
-This command is useful for HTML/text substitution in any workflow, including deployment/startup, local template generation, and custom pipelines.
+This command is useful for general HTML/text substitution flows, deployment/startup, and custom workflows.
 
 ## `interpolate` command options
 
@@ -41,11 +41,15 @@ Interpolation uses the global variable name in templates (for example, `<%= runt
 Template snippet:
 
 ```html
-<script async src="https://www.googletagmanager.com/gtag/js?id=<%= runtimeEnv.GA_MEASUREMENT_ID %>"></script>
+<script
+  async
+  src="https://www.googletagmanager.com/gtag/js?id=<%= runtimeEnv.GA_MEASUREMENT_ID %>"
+></script>
+<script src="<%= runtimeEnv.THIRD_PARTY_SCRIPT_URL %>"></script>
 ```
 
 ## Example
 
 ```bash
-runtime-env --schema-file .runtimeenvschema.json interpolate --env-file .env.production --input-file ./dist/index.html --output-file ./dist/index.html
+runtime-env --schema-file .runtimeenvschema.json interpolate --env-file .env.staging --input-file ./templates/index.template.html --output-file ./out/index.html
 ```
