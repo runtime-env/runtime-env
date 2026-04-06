@@ -1,24 +1,28 @@
 # runtime-env docs
 
-runtime-env lets you ship one frontend build and inject environment-specific values later in the real production environment.
+runtime-env helps frontend teams externalize runtime configuration so one build artifact can be reused across environments.
 
-Like Twelve-Factor config, runtime settings should be externalized so you can build once and deploy anywhere without rebuilding for each environment.
+In Twelve-Factor terms, config should stay separate from code so you can build once and deploy anywhere.
 
-@runtime-env/vite-plugin is the high-level Vite integration for dev, build, preview, and tests, while @runtime-env/cli is the low-level, framework-agnostic runtime tool for generating config, TypeScript declarations, and interpolated HTML/text during deployment or startup.
+@runtime-env/vite-plugin is the high-level Vite integration for dev, build, preview, and tests, while @runtime-env/cli is the low-level, framework-agnostic runtime tool for generating config, TypeScript declarations, and interpolated HTML/text across deployment, startup, and custom workflows.
 
-## Two lifecycles
+## Vite lifecycle
 
-### Vite lifecycle
-
-Use the plugin to support local development, test runs, build-time checks, and preview validation.
+Use the plugin during the Vite lifecycle for local development, build checks, preview verification, and tests.
 
 - [Start Here](/start-here/what-is-runtime-env)
 - [Vite quickstart](/vite/quickstart)
+- [Vite builtin env comparison](/vite/builtin-env-comparison)
 
-### Deployment/runtime lifecycle
+## Deployment/runtime lifecycle
 
-After build output exists, use the CLI at deploy/startup time to generate runtime config and interpolate HTML/text as needed.
+After build output exists, real production environment work happens at deploy/startup time.
+
+- [Production startup](/deployment/production-startup)
+
+## CLI for any stack or workflow
+
+The CLI is also usable outside deployment/runtime scripts, including custom pipelines, non-Vite stacks, and general schema-driven template substitution workflows.
 
 - [CLI quickstart](/cli/quickstart)
-- [Production startup](/deployment/production-startup)
-- [Interpolate command](/cli/interpolate)
+- [CLI interpolate](/cli/interpolate)

@@ -10,7 +10,7 @@ runtime-env [top-level options] gen-js [command options]
 
 ## Top-level options and ordering
 
-Top-level options are passed **before** the subcommand and apply to `gen-js` behavior:
+Top-level options are passed **before** the subcommand and affect `gen-js` behavior:
 
 - `--schema-file <path>`: choose schema source.
 - `--global-variable-name <name>`: controls generated global object name.
@@ -18,10 +18,19 @@ Top-level options are passed **before** the subcommand and apply to `gen-js` beh
 
 ## `gen-js` command options
 
-- `--output-file <path>`: write generated JS to this file.
-- `--env-file <path...>`: load env values from one or more files.
+- `--output-file <path>`: write generated JS to a file.
+- `--env-file <path...>`: load env values from one or more env files.
 
-## Typical deploy/startup usage
+## Default behavior
+
+- `--schema-file` default: `.runtimeenvschema.json`
+- `--global-variable-name` default: `runtimeEnv`
+- `--watch` default: off
+- if `--env-file` is omitted: values come from the current process environment
+- if `--output-file` is omitted: output is written to stdout
+- if both env files and process environment are used: process environment wins
+
+## Example
 
 ```bash
 runtime-env --schema-file .runtimeenvschema.json gen-js --env-file .env.production --output-file ./dist/runtime-env.js

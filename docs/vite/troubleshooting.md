@@ -2,7 +2,7 @@
 
 ## Missing runtime script tag
 
-Symptom: `globalThis.runtimeEnv` values are missing.
+Symptom: `runtimeEnv` values are missing.
 
 Guidance: add the runtime script before the app entry script.
 

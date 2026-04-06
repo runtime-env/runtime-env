@@ -23,3 +23,5 @@ The plugin covers the Vite lifecycle: dev, build, preview, and tests.
 ## Internal dependency
 
 The plugin uses `@runtime-env/cli` internally.
+
+Related: [Vite builtin env comparison](/vite/builtin-env-comparison).

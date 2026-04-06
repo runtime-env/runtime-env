@@ -37,6 +37,10 @@ export default defineConfig({
             { text: "Test", link: "/vite/test" },
             { text: "Build", link: "/vite/build" },
             { text: "Preview", link: "/vite/preview" },
+            {
+              text: "Builtin env comparison",
+              link: "/vite/builtin-env-comparison",
+            },
             { text: "Troubleshooting", link: "/vite/troubleshooting" },
           ],
         },
