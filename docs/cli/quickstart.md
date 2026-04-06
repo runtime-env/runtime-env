@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`@runtime-env/cli` is framework-agnostic and designed for deployment/runtime lifecycle workflows.
+`@runtime-env/cli` is framework-agnostic and usable in any stack or workflow, not only deployment/startup scripts.
 
 ## Installation
 
@@ -39,7 +39,7 @@ Load it in HTML:
 Read it in app code:
 
 ```ts
-console.log(globalThis.runtimeEnv.API_BASE_URL);
+console.log(runtimeEnv.API_BASE_URL);
 ```
 
 Deeper command behavior is documented in the command pages.

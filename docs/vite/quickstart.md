@@ -56,7 +56,7 @@ VITE_API_BASE_URL=https://api.example.com
 `src/main.ts`
 
 ```ts
-console.log(globalThis.runtimeEnv.VITE_API_BASE_URL);
+console.log(runtimeEnv.VITE_API_BASE_URL);
 ```
 
 ## Next steps
@@ -65,4 +65,5 @@ console.log(globalThis.runtimeEnv.VITE_API_BASE_URL);
 - [Vite test](/vite/test)
 - [Vite build](/vite/build)
 - [Vite preview](/vite/preview)
+- [Vite builtin env comparison](/vite/builtin-env-comparison)
 - [Vite troubleshooting](/vite/troubleshooting)
