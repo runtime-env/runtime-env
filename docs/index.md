@@ -1,30 +1,64 @@
-# runtime-env docs
+# runtime-env
 
 runtime-env helps frontend teams externalize configuration so one build artifact can be reused across environments.
 
 In Twelve-Factor terms, config should stay separate from code so teams can build once and deploy anywhere.
 
+## What runtime-env aims to solve
+
+### Different stages need different API URLs
+
+If the API URL is baked into the build, teams often rebuild for every stage or risk shipping the wrong backend URL.
+
+#### Before
+
+```ts
+const response = await fetch(`${process.env.API_BASE_URL}/users`);
+```
+
+#### After
+
+```ts
+const response = await fetch(`${runtimeEnv.API_BASE_URL}/users`);
+```
+
+### Different environments use different Firebase projects
+
+If deployment tooling swaps the wrong Firebase config, schema-driven declarations help catch the mismatch earlier and keep app code typed.
+
+#### Before
+
+```ts
+const app = initializeApp(JSON.parse(process.env.FIREBASE_CONFIG!));
+```
+
+#### After
+
+```ts
+const app = initializeApp(runtimeEnv.FIREBASE_CONFIG);
+```
+
+### Different stages should report to different analytics properties
+
+If the analytics ID is baked into HTML, teams can easily send data from the wrong stage to the wrong property.
+
+#### Before
+
+```html
+<script>
+  gtag('config', 'G-PROD123456');
+</script>
+```
+
+#### After
+
+```html
+<script>
+  gtag('config', '<%= runtimeEnv.GA_MEASUREMENT_ID %>');
+</script>
+```
+
 ## Quickstart
 
 - [Vite quickstart](/vite/quickstart)
 - [CLI quickstart](/cli/quickstart)
-
-## CLI output examples
-
-### `gen-js` example — API URL (`API_BASE_URL`)
-
-API URLs usually differ between local, staging, and production. If `API_BASE_URL` is baked into the build, teams often rebuild the entire frontend for every stage. That creates extra release friction and increases the chance that the wrong artifact is promoted.
-
-A wrong API URL in production can send traffic to the wrong backend, causing broken behavior or downtime. `gen-js` avoids that by generating runtime config after build so each stage can supply the correct `API_BASE_URL` without rebuilding.
-
-### `gen-ts` example — Firebase config (`FIREBASE_CONFIG`)
-
-Firebase config also varies by environment or service. In multi-project setups, deployment tooling can accidentally swap in the wrong Firebase project settings.
-
-Using `gen-ts` with a schema helps validate the expected shape ahead of deployment and gives typed access in app code. This lowers the chance of shipping the wrong `FIREBASE_CONFIG` and connecting to the wrong service.
-
-### `interpolate` example — analytics id (`GA_MEASUREMENT_ID`)
-
-Analytics IDs differ across stages. If the wrong `GA_MEASUREMENT_ID` is served, data is sent to the wrong property and teams lose trustworthy reporting.
-
-This commonly happens when analytics config is baked into a build or when the wrong template values are swapped during release. `interpolate` avoids rebuilds and helps reduce wrong-stage configuration issues by substituting values at runtime/template-processing time.
