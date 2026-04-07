@@ -7,7 +7,7 @@
     "test": "./test-dev.sh && ./test-preview.sh"
   },
   "devDependencies": {
-    "cypress": "15.13.0",
+    "cypress": "15.13.1",
     "start-server-and-test": "3.0.0",
     "typescript": "6.0.2"
   }
