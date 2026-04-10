@@ -9,7 +9,7 @@
     "cypress": "15.13.1",
     "html-webpack-plugin": "5.6.6",
     "start-server-and-test": "3.0.0",
-    "webpack": "5.106.0",
+    "webpack": "5.106.1",
     "webpack-cli": "7.0.2",
     "workbox-webpack-plugin": "7.4.0"
   }
