@@ -12,7 +12,7 @@
       "enabled": false
     },
     {
-      "matchPaths": ["packages/vite-plugin/package.json"],
+      "matchFileNames": ["packages/vite-plugin/package.json"],
       "matchDepTypes": ["devDependencies"],
       "rangeStrategy": "bump"
     }
