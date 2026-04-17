@@ -9,6 +9,6 @@
   "devDependencies": {
     "cypress": "15.13.1",
     "start-server-and-test": "3.0.2",
-    "typescript": "6.0.2"
+    "typescript": "6.0.3"
   }
 }
