@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.5...vite-plugin0.2.0) (2026-04-29)
+
+
+### Features
+
+* **docs:** add VitePress site and GitHub Pages deploy ([#684](https://github.com/runtime-env/runtime-env/issues/684)) ([3de3974](https://github.com/runtime-env/runtime-env/commit/3de397476749aad3d9a3203936579f2fc9737ae7))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @runtime-env/cli bumped from ^1.1.2 to ^1.2.0
+  * peerDependencies
+    * @runtime-env/cli bumped from * to 1.2.0
+
 ## [0.1.5](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.4...vite-plugin0.1.5) (2026-04-03)
 
 
