@@ -40,6 +40,7 @@ FOO='<script>'
 <!DOCTYPE html>
 <html>
   <body>
+    <script>const markdown = docs.map((doc) => \`- \${doc}\`).join("\\n");</script>
     <div><%= runtimeEnv.FOO %></div>
   </body>
 </html>
@@ -50,6 +51,7 @@ FOO='<script>'
      "<!DOCTYPE html>
      <html>
        <body>
+         <script>const markdown = docs.map((doc) => \`- \${doc}\`).join("\\n");</script>
          <div><script></div>
        </body>
      </html>"

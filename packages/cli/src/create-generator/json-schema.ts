@@ -25,6 +25,7 @@ export const createGeneratorForJSONSchema: CreateGenerator = async ({
       const data = convertEnvToData(parsedEnv);
       const serializedData = serializeLeafNodes(data);
       const content = template(input, {
+        interpolate: /<%=([\s\S]+?)%>/g,
         variable: globalVariableName,
       })(serializedData);
       return content;
