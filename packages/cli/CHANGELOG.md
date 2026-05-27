@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/runtime-env/runtime-env/compare/cli1.1.2...cli1.2.0) (2026-05-27)
+
+
+### Bug Fixes
+
+* **cli:** preserve JS template literals during interpolation ([#807](https://github.com/runtime-env/runtime-env/issues/807)) ([014fb51](https://github.com/runtime-env/runtime-env/commit/014fb51443abcaf4e6390493df4c1a1bb295047c))
+* **deps:** update dependency ajv to v8.20.0 ([#750](https://github.com/runtime-env/runtime-env/issues/750)) ([2c823a7](https://github.com/runtime-env/runtime-env/commit/2c823a76218d0186c9d164f8c7ac515ac87c3ba1))
+* **deps:** update dependency prettier to v3.8.2 ([#721](https://github.com/runtime-env/runtime-env/issues/721)) ([a762c5e](https://github.com/runtime-env/runtime-env/commit/a762c5e30e23cba424b295ea8a2923a7c49d7fd3))
+* **deps:** update dependency prettier to v3.8.3 ([#730](https://github.com/runtime-env/runtime-env/issues/730)) ([77d568a](https://github.com/runtime-env/runtime-env/commit/77d568aa392fa1f625e71afe3863c69c66cce07e))
+
 ## [1.1.2](https://github.com/runtime-env/runtime-env/compare/cli1.1.1...cli1.1.2) (2026-04-03)
 
 
