@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "@types/node": "24.12.4",
-    "concurrently": "10.0.1",
+    "concurrently": "10.0.3",
     "cypress": "15.16.0",
     "start-server-and-test": "3.0.5",
     "typescript": "6.0.3",
