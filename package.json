@@ -14,7 +14,7 @@
     "packages/vite-plugin"
   ],
   "devDependencies": {
-    "prettier": "3.8.3",
+    "prettier": "3.8.4",
     "vitepress": "1.6.4"
   }
 }
