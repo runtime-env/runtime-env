@@ -10,7 +10,7 @@
     "test": "vitest --run"
   },
   "devDependencies": {
-    "@types/node": "24.13.2",
+    "@types/node": "24.13.3",
     "concurrently": "10.0.3",
     "cypress": "15.18.1",
     "start-server-and-test": "3.0.11",
