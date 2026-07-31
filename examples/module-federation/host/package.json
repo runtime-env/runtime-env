@@ -14,8 +14,8 @@
   },
   "devDependencies": {
     "@module-federation/vite": "1.16.13",
-    "@types/react": "19.2.17",
-    "@types/react-dom": "19.2.3",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.4",
     "@vitejs/plugin-react": "6.0.5",
     "typescript": "6.0.3",
     "vite": "8.1.5"
