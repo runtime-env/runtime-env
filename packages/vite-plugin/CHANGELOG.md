@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.0.0](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.5...vite-plugin1.0.0) (2026-08-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* project directory may not be src ([#935](https://github.com/runtime-env/runtime-env/issues/935))
+* generated runtime-env.d.ts is moved to project root
+
+### Features
+
+* **docs:** add VitePress site and GitHub Pages deploy ([#684](https://github.com/runtime-env/runtime-env/issues/684)) ([3de3974](https://github.com/runtime-env/runtime-env/commit/3de397476749aad3d9a3203936579f2fc9737ae7))
+
+
+### Bug Fixes
+
+* [#745](https://github.com/runtime-env/runtime-env/issues/745) ([b978b75](https://github.com/runtime-env/runtime-env/commit/b978b7541b011188e56d40776ae23f2bf6c89916))
+* project directory may not be src ([#935](https://github.com/runtime-env/runtime-env/issues/935)) ([b978b75](https://github.com/runtime-env/runtime-env/commit/b978b7541b011188e56d40776ae23f2bf6c89916))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @runtime-env/cli bumped from ^1.1.2 to ^1.2.1
+  * peerDependencies
+    * @runtime-env/cli bumped from * to 1.2.1
+
 ## [0.1.5](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.4...vite-plugin0.1.5) (2026-04-03)
 
 
