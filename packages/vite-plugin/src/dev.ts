@@ -45,10 +45,7 @@ export function devPlugin(): Plugin {
         }
 
         if (isTypeScriptProject(server.config.root)) {
-          const tsResult = runRuntimeEnvCommand(
-            "gen-ts",
-            "src/runtime-env.d.ts",
-          );
+          const tsResult = runRuntimeEnvCommand("gen-ts", "runtime-env.d.ts");
           if (!tsResult.success) {
             logError(
               server.config.logger,

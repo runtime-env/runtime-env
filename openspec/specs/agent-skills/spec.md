@@ -52,8 +52,8 @@ The system SHALL provide a skill to guide agents on `runtime-env` usage with Vit
 - **AND** agents MUST NOT use the `default` keyword in `.runtimeenvschema.json`.
 - **AND** any existing Vite-specific environment variable type definitions (typically found in `src/vite-env.d.ts` as `interface ImportMetaEnv` or `interface ImportMeta`) MUST be removed to prevent conflicts and ensure a single source of truth via `runtimeEnv`
 - **AND** agents MUST NOT manually add types for environment variables in any other files
-- **AND** the generated type file (e.g., `src/runtime-env.d.ts`) SHOULD be added to `.gitignore`
-- **AND** agents MUST explicitly run `npx runtime-env gen-ts --output-file src/runtime-env.d.ts` to ensure types are available immediately after setup
+- **AND** the generated type file (`runtime-env.d.ts`, in the project root) SHOULD be added to `.gitignore`
+- **AND** agents MUST explicitly run `npx runtime-env gen-ts --output-file runtime-env.d.ts` to ensure types are available immediately after setup
 - **AND** agents MUST TRUST the CLI output for file generation and NOT attempt manual verification if the file is gitignored.
 - **AND** the `build` script in `package.json` SHOULD be updated to run `vite build` before `tsc` (e.g., `"build": "vite build && tsc"`) to ensure types are generated before type-checking occurs
 - **AND** agents MUST keep existing environment files (e.g., `.env`, `.env.development`, `.env.local`) intact as they are required for the plugin to read values
@@ -65,7 +65,7 @@ The system SHALL provide a skill to guide agents on `runtime-env` usage with Vit
 - **THEN** agents MUST define them in `.runtimeenvschema.json`
 - **AND** agents MUST NOT use the `default` keyword in `.runtimeenvschema.json`.
 - **AND** agents MUST NOT manually add types for environment variables in any other files
-- **AND** agents MUST explicitly run `npx runtime-env gen-ts --output-file src/runtime-env.d.ts` to ensure types are updated in the IDE and for compilers
+- **AND** agents MUST explicitly run `npx runtime-env gen-ts --output-file runtime-env.d.ts` to ensure types are updated in the IDE and for compilers
 - **AND** agents MUST NOT manually verify the generated file if it is gitignored; they MUST trust the CLI's success output.
 - **AND** agents MUST perform deep schema discovery by following the `02-discovery` workflow step, carefully searching how an environment variable is being used in the source code
 - **AND** for environment variables that are parsed or transformed in the source code (e.g., `parseInt(env.VAR)`, `JSON.parse(env.VAR)`, or boolean checks like `env.VAR === 'true'`), they MUST be defined with their appropriate non-string "parsed" types in the schema (e.g., `number`, `object`, `boolean`) by following the "String Trap" pattern guide.
