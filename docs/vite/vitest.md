@@ -7,7 +7,7 @@ In Vitest mode, the plugin keeps test runtime config behavior aligned with app r
 - validates schema before tests run,
 - generates runtime setup data for tests,
 - injects setup-file configuration automatically,
-- generates `src/runtime-env.d.ts` for TypeScript projects.
+- generates `runtime-env.d.ts` for TypeScript projects.
 
 ## Testing guidance
 

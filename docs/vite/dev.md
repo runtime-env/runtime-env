@@ -9,7 +9,7 @@ In `vite dev`, the plugin handles runtime config and guardrails for local develo
 - interpolates HTML during dev requests,
 - watches env/schema files and reacts to changes,
 - triggers reload/overlay behavior when configuration issues occur,
-- generates `src/runtime-env.d.ts` when a TypeScript project is detected.
+- generates `runtime-env.d.ts` when a TypeScript project is detected.
 
 ## Required script tag
 

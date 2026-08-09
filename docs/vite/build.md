@@ -6,7 +6,7 @@ During `vite build`, the plugin enforces runtime config correctness for build ou
 
 - validates schema,
 - enforces required runtime script tag rules,
-- generates `src/runtime-env.d.ts` for TypeScript projects.
+- generates `runtime-env.d.ts` for TypeScript projects.
 
 Build is the end of the Vite lifecycle.
 

@@ -102,7 +102,7 @@ The `@runtime-env/vite-plugin` SHALL maintain a clean project root by using temp
 
 - **GIVEN** the `@runtime-env/vite-plugin` is active in any mode.
 - **WHEN** the plugin needs to generate temporary files (e.g., for HTML interpolation, backups, or serving via middleware).
-- **THEN** it SHALL NOT create any visible files or directories in the project root, except for the intentional output file `src/runtime-env.d.ts` if a `tsconfig.json` is present.
+- **THEN** it SHALL NOT create any visible files or directories in the project root, except for the intentional output file `runtime-env.d.ts` if a `tsconfig.json` is present.
 - **AND** `dist/runtime-env.js` and `dist/index.html.backup` are ALLOWED in the `dist` directory as they are used for preview mode.
 - **AND** all other temporary artifacts SHALL be stored within `node_modules/.runtime-env` to keep the project root clean.
 
@@ -118,7 +118,7 @@ A new Vite-native plugin, `@runtime-env/vite-plugin`, SHALL be provided to simpl
 - **AND** it SHALL automatically detect and use Vite's standard environment files (`.env`, `.env.local`, `.env.[mode]`, `.env.[mode].local`) based on the current Vite mode and `envDir`.
 - **AND** it SHALL validate that all variable keys in the schema comply with Vite's `envPrefix` configuration (defaulting to `VITE_`).
 - **AND** it SHALL use default values for `schemaFile` (`.runtimeenvschema.json`) and `globalVariableName` (`runtimeEnv`).
-- **AND** the `gen-ts` sub-command SHALL be automatically executed if a `tsconfig.json` file is found in the project root, with a fixed output file `src/runtime-env.d.ts`.
+- **AND** the `gen-ts` sub-command SHALL be automatically executed if a `tsconfig.json` file is found in the project root, with a fixed output file `runtime-env.d.ts` in the project root.
 - **AND** the `runtimeEnv` function SHALL NOT accept any arguments.
 - **AND** the plugin SHALL provide public documentation (e.g., `README.md`) explaining installation, usage, and how it respects `envDir` and `envPrefix`.
 

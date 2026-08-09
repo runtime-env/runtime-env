@@ -21,7 +21,7 @@ Update `.runtimeenvschema.json` with all identified variables and their correct 
 
 Sync the TypeScript definitions with the new schema.
 
-- **Action**: `npx runtime-env gen-ts --output-file src/runtime-env.d.ts`
+- **Action**: `npx runtime-env gen-ts --output-file runtime-env.d.ts`
 - **Note**: Trust the CLI success output; do not attempt to verify the file if it is gitignored.
 
 ### 3. Migrate JS/TS Code

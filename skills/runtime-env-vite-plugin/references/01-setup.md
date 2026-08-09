@@ -70,8 +70,8 @@ Create a `.runtimeenvschema.json` file at the project root.
 
 Generate the initial TypeScript definitions to satisfy the compiler.
 
-- **Action**: `npx runtime-env gen-ts --output-file src/runtime-env.d.ts`
-- **Action**: Add `src/runtime-env.d.ts` to `.gitignore`.
+- **Action**: `npx runtime-env gen-ts --output-file runtime-env.d.ts`
+- **Action**: Add `runtime-env.d.ts` to `.gitignore`.
 - **Note**: Trust the CLI output. If it reports success, do not attempt to manually read the file if it is gitignored.
 
 ### 7. Update Build Script
@@ -88,5 +88,5 @@ Before proceeding to `02-discovery.md`, verify:
 - [ ] `vite.config.ts` includes `runtimeEnv()`.
 - [ ] `index.html` has `<script src="/runtime-env.js"></script>` before the app entry.
 - [ ] `.runtimeenvschema.json` exists.
-- [ ] `src/runtime-env.d.ts` is in `.gitignore`.
+- [ ] `runtime-env.d.ts` is in `.gitignore`.
 - [ ] No `ImportMetaEnv` definitions remain in `src/vite-env.d.ts`.

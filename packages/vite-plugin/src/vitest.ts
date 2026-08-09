@@ -56,7 +56,7 @@ export function vitestPlugin(): Plugin {
 
       // Generate runtime-env.d.ts for Vitest type checking
       if (isTypeScriptProject(root)) {
-        const result = runRuntimeEnvCommand("gen-ts", "src/runtime-env.d.ts");
+        const result = runRuntimeEnvCommand("gen-ts", "runtime-env.d.ts");
         if (!result.success) {
           logError(
             config.logger,
