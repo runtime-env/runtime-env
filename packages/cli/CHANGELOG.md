@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.1](https://github.com/runtime-env/runtime-env/compare/cli1.2.0...cli1.2.1) (2026-08-09)
+
+
+### Bug Fixes
+
+* **deps:** update dependency commander to v15 ([#815](https://github.com/runtime-env/runtime-env/issues/815)) ([c6459aa](https://github.com/runtime-env/runtime-env/commit/c6459aab7c209befa598442ded2a9e9274b2de3b))
+* **deps:** update dependency prettier to v3.8.4 ([#841](https://github.com/runtime-env/runtime-env/issues/841)) ([75b2abf](https://github.com/runtime-env/runtime-env/commit/75b2abf67bee01a84d77358060a972d1e170f29b))
+* **deps:** update dependency prettier to v3.8.5 ([#867](https://github.com/runtime-env/runtime-env/issues/867)) ([7516d40](https://github.com/runtime-env/runtime-env/commit/7516d40128a276a1f700dd23d17b14c61ac96ef2))
+
 ## [1.2.0](https://github.com/runtime-env/runtime-env/compare/cli1.1.2...cli1.2.0) (2026-05-27)
 
 
