@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.2](https://github.com/runtime-env/runtime-env/compare/cli1.2.1...cli1.2.2) (2026-09-04)
+
+
+### Bug Fixes
+
+* **deps:** update dependency json-schema-to-typescript to v16 ([#956](https://github.com/runtime-env/runtime-env/issues/956)) ([39eb3b0](https://github.com/runtime-env/runtime-env/commit/39eb3b0540ec9f6c765b34e41f92e383b34fb3bc))
+
 ## [1.2.1](https://github.com/runtime-env/runtime-env/compare/cli1.2.0...cli1.2.1) (2026-08-09)
 
 
