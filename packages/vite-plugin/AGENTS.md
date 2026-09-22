@@ -10,3 +10,4 @@ When you receive a request that will result in code changes in this directory, y
 - Test examples/comprehensive-vite (test)
 - Test examples/comprehensive-vite (preview)
 - Test examples/comprehensive-vite (docker)
+- Test tests/\*\*

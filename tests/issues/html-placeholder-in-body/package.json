@@ -1,0 +1,11 @@
+{
+  "name": "issue-html-placeholder-in-body",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "./test.sh"
+  },
+  "devDependencies": {
+    "vite": "6.3.5"
+  }
+}

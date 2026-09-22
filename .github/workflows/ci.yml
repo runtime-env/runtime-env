@@ -412,6 +412,44 @@ jobs:
           cd examples/module-federation/test
           npm test
 
+  test-tests:
+    name: Test Tests
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - uses: actions/download-artifact@v8.0.1
+        with:
+          name: artifact
+
+      - name: Install node
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Test tests
+        run: |
+          for package in $(find tests -name package.json -not -path "*/node_modules/*" | sort); do
+            dir=$(dirname "$package")
+            echo "::group::$dir"
+            (
+              cd "$dir"
+              npm ci
+              npm i "$GITHUB_WORKSPACE/packages/cli/runtime-env-cli-test.tgz"
+              npm i "$GITHUB_WORKSPACE/packages/vite-plugin/runtime-env-vite-plugin-test.tgz"
+              npm test
+            )
+            echo "::endgroup::"
+          done
+
   release:
     if: github.ref_name == 'main'
 
@@ -428,6 +466,7 @@ jobs:
       - test-example-vite
       - test-example-webpack
       - test-example-module-federation
+      - test-tests
 
     runs-on: ubuntu-latest
 
