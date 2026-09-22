@@ -1,9 +1,9 @@
 import type { Plugin, PreviewServer } from "vite";
 import { resolve } from "path";
-import { readFileSync, writeFileSync, existsSync, rmSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import {
   runRuntimeEnvCommand,
-  getTempDir,
+  createTempDir,
   getViteEnvFiles,
   validateSchema,
   logError,
@@ -21,6 +21,8 @@ export function previewPlugin(): Plugin {
     },
 
     configurePreviewServer(server: PreviewServer) {
+      const tempDir = createTempDir();
+
       server.middlewares.use((req, res, next) => {
         const base = server.config.base || "/";
         const url = req.url?.split("?")[0] || "";
@@ -54,28 +56,23 @@ export function previewPlugin(): Plugin {
             return;
           }
 
-          const tmpDir = getTempDir("preview-gen-js");
-          const tmpPath = resolve(tmpDir, "runtime-env.js");
-          try {
-            const result = runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
-            if (!result.success) {
-              logError(
-                server.config.logger,
-                "Failed to generate runtime-env.js",
-                result.stderr || result.stdout,
-              );
-              next();
-              return;
-            }
+          const tmpPath = resolve(tempDir.dir, "runtime-env.js");
+          const result = runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
+          if (!result.success) {
+            logError(
+              server.config.logger,
+              "Failed to generate runtime-env.js",
+              result.stderr || result.stdout,
+            );
+            next();
+            return;
+          }
 
-            if (existsSync(tmpPath)) {
-              const content = readFileSync(tmpPath, "utf8");
-              res.setHeader("Content-Type", "application/javascript");
-              res.end(content);
-              return;
-            }
-          } finally {
-            rmSync(tmpDir, { recursive: true, force: true });
+          if (existsSync(tmpPath)) {
+            const content = readFileSync(tmpPath, "utf8");
+            res.setHeader("Content-Type", "application/javascript");
+            res.end(content);
+            return;
           }
         }
 
@@ -100,37 +97,32 @@ export function previewPlugin(): Plugin {
             "index.html",
           );
           if (existsSync(distIndexHtml)) {
-            const tmpDir = getTempDir("preview-interpolate");
-            try {
-              const tmpHtmlPath = resolve(tmpDir, "index.html");
-              const originalHtml = readFileSync(distIndexHtml, "utf8");
-              writeFileSync(tmpHtmlPath, originalHtml, "utf8");
+            const tmpHtmlPath = resolve(tempDir.dir, "index.html");
+            const originalHtml = readFileSync(distIndexHtml, "utf8");
+            writeFileSync(tmpHtmlPath, originalHtml, "utf8");
 
-              const result = runRuntimeEnvCommand(
-                "interpolate",
-                tmpHtmlPath,
-                envFiles,
-                tmpHtmlPath,
+            const result = runRuntimeEnvCommand(
+              "interpolate",
+              tmpHtmlPath,
+              envFiles,
+              tmpHtmlPath,
+            );
+
+            if (!result.success) {
+              logError(
+                server.config.logger,
+                "Failed to interpolate index.html",
+                result.stderr || result.stdout,
               );
-
-              if (!result.success) {
-                logError(
-                  server.config.logger,
-                  "Failed to interpolate index.html",
-                  result.stderr || result.stdout,
-                );
-                res.setHeader("Content-Type", "text/html");
-                res.end(originalHtml);
-                return;
-              }
-
-              const interpolatedHtml = readFileSync(tmpHtmlPath, "utf8");
               res.setHeader("Content-Type", "text/html");
-              res.end(interpolatedHtml);
+              res.end(originalHtml);
               return;
-            } finally {
-              rmSync(tmpDir, { recursive: true, force: true });
             }
+
+            const interpolatedHtml = readFileSync(tmpHtmlPath, "utf8");
+            res.setHeader("Content-Type", "text/html");
+            res.end(interpolatedHtml);
+            return;
           }
         }
 
