@@ -1,10 +1,10 @@
 import type { Plugin, ViteDevServer } from "vite";
 import { resolve } from "path";
-import { writeFileSync, readFileSync, rmSync, existsSync } from "fs";
+import { writeFileSync, readFileSync, existsSync } from "fs";
 import {
   isTypeScriptProject,
   runRuntimeEnvCommand,
-  getTempDir,
+  createTempDir,
   getViteEnvFiles,
   validateSchema,
   logError,
@@ -15,6 +15,8 @@ import {
 const schemaFile = ".runtimeenvschema.json";
 
 export function devPlugin(): Plugin {
+  let tempDir: ReturnType<typeof createTempDir> | undefined;
+
   return {
     name: "runtime-env-dev",
 
@@ -26,6 +28,8 @@ export function devPlugin(): Plugin {
       const envDir = server.config.envDir || server.config.root;
       const envFiles = getViteEnvFiles(server.config.mode, envDir);
       const watchFiles = [resolve(server.config.root, schemaFile), ...envFiles];
+      tempDir = createTempDir();
+      const devOutputPath = resolve(tempDir.dir, "runtime-env.js");
       let hadError = false;
 
       function run() {
@@ -58,8 +62,6 @@ export function devPlugin(): Plugin {
           }
         }
 
-        const devOutputDir = getTempDir("dev");
-        const devOutputPath = resolve(devOutputDir, "runtime-env.js");
         const jsResult = runRuntimeEnvCommand(
           "gen-js",
           devOutputPath,
@@ -92,8 +94,6 @@ export function devPlugin(): Plugin {
         const targetPath = (base + "/runtime-env.js").replace(/\/+/g, "/");
 
         if (path === targetPath) {
-          const devOutputDir = getTempDir("dev");
-          const devOutputPath = resolve(devOutputDir, "runtime-env.js");
           if (existsSync(devOutputPath)) {
             res.setHeader("Content-Type", "application/javascript");
             res.end(readFileSync(devOutputPath, "utf8"));
@@ -112,7 +112,7 @@ export function devPlugin(): Plugin {
     },
 
     transformIndexHtml(html, ctx) {
-      if (ctx.server) {
+      if (ctx.server && tempDir) {
         const envDir = ctx.server.config.envDir || ctx.server.config.root;
         const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
 
@@ -126,33 +126,32 @@ export function devPlugin(): Plugin {
           );
         }
 
-        const tmpDir = getTempDir("dev-interpolate");
-        try {
-          const htmlFile = resolve(tmpDir, "index.html");
-          writeFileSync(htmlFile, html, "utf8");
-          const result = runRuntimeEnvCommand(
-            "interpolate",
-            htmlFile,
-            envFiles,
-            htmlFile,
+        const htmlFile = resolve(tempDir.dir, "index.html");
+        writeFileSync(htmlFile, html, "utf8");
+        const result = runRuntimeEnvCommand(
+          "interpolate",
+          htmlFile,
+          envFiles,
+          htmlFile,
+        );
+
+        if (!result.success) {
+          logError(
+            ctx.server.config.logger,
+            "Failed to interpolate index.html",
+            result.stderr || result.stdout,
+            ctx.server,
           );
-
-          if (!result.success) {
-            logError(
-              ctx.server.config.logger,
-              "Failed to interpolate index.html",
-              result.stderr || result.stdout,
-              ctx.server,
-            );
-            return html;
-          }
-
-          html = readFileSync(htmlFile, "utf8");
           return html;
-        } finally {
-          rmSync(tmpDir, { recursive: true, force: true });
         }
+
+        html = readFileSync(htmlFile, "utf8");
+        return html;
       }
+    },
+
+    closeBundle() {
+      tempDir?.remove();
     },
   };
 }

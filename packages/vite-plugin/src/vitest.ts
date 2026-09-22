@@ -1,10 +1,9 @@
 import type { Plugin, UserConfig, ResolvedConfig } from "vite";
 import { resolve } from "path";
-import { rmSync } from "fs";
 import {
   isTypeScriptProject,
   runRuntimeEnvCommand,
-  getTempDir,
+  createTempDir,
   getViteEnvFiles,
   validateSchema,
   logError,
@@ -15,6 +14,8 @@ interface VitestConfig {
 }
 
 export function vitestPlugin(): Plugin {
+  let vitestOutputPath: string | undefined;
+
   return {
     name: "runtime-env-vitest",
 
@@ -24,8 +25,7 @@ export function vitestPlugin(): Plugin {
 
     config(config: UserConfig) {
       // Generate runtime-env.js for Vitest runtime access
-      const vitestOutputDir = getTempDir("vitest");
-      const vitestOutputPath = resolve(vitestOutputDir, "runtime-env.js");
+      vitestOutputPath = resolve(createTempDir().dir, "runtime-env.js");
 
       // Automatically inject setupFiles for Vitest
       const vitestConfig = (config as { test?: VitestConfig }).test || {};
@@ -70,14 +70,11 @@ export function vitestPlugin(): Plugin {
       const envDir = config.envDir || root;
       const envFiles = getViteEnvFiles(config.mode, envDir);
 
+      if (!vitestOutputPath) {
+        return;
+      }
+
       // Generate runtime-env.js for Vitest runtime access
-      const vitestOutputDir = getTempDir("vitest");
-      const vitestOutputPath = resolve(vitestOutputDir, "runtime-env.js");
-
-      // Ensure directory is clean
-      rmSync(vitestOutputDir, { recursive: true, force: true });
-      getTempDir("vitest"); // Re-create it clean
-
       const result = runRuntimeEnvCommand("gen-js", vitestOutputPath, envFiles);
       if (!result.success) {
         logError(

@@ -1,7 +1,8 @@
-import { existsSync, mkdirSync, readFileSync } from "fs";
-import { resolve } from "path";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "fs";
+import { resolve, sep } from "path";
 import { spawnSync } from "child_process";
 import { createRequire } from "module";
+import { onExit } from "signal-exit";
 import type { Logger, ViteDevServer } from "vite";
 
 const require = createRequire(import.meta.url);
@@ -175,11 +176,19 @@ export function runRuntimeEnvCommand(
   };
 }
 
-export function getTempDir(subDir: string): string {
-  const root = process.cwd();
-  const tempDir = resolve(root, "node_modules", ".runtime-env", subDir);
-  mkdirSync(tempDir, { recursive: true });
-  return tempDir;
+export function createTempDir(): { dir: string; remove: () => void } {
+  const root = resolve(process.cwd(), "node_modules", ".runtime-env");
+  mkdirSync(root, { recursive: true });
+  const dir = mkdtempSync(root + sep);
+  const removeDir = () => rmSync(dir, { recursive: true, force: true });
+  const removeExitHandler = onExit(removeDir);
+  return {
+    dir,
+    remove() {
+      removeExitHandler();
+      removeDir();
+    },
+  };
 }
 
 export function hasRuntimeEnvScript(html: string, base: string): boolean {
