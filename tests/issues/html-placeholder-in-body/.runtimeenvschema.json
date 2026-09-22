@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "properties": {
+    "VITE_FOO": {
+      "type": "string"
+    }
+  },
+  "required": ["VITE_FOO"]
+}

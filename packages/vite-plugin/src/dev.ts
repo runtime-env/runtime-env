@@ -111,43 +111,46 @@ export function devPlugin(): Plugin {
       });
     },
 
-    transformIndexHtml(html, ctx) {
-      if (ctx.server && tempDir) {
-        const envDir = ctx.server.config.envDir || ctx.server.config.root;
-        const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
+    transformIndexHtml: {
+      order: "pre",
+      handler(html, ctx) {
+        if (ctx.server && tempDir) {
+          const envDir = ctx.server.config.envDir || ctx.server.config.root;
+          const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
 
-        if (!hasRuntimeEnvScript(html, ctx.server.config.base)) {
-          logError(
-            ctx.server.config.logger,
-            `index.html is missing <script src="${ctx.server.config.base === "/" ? "" : ctx.server.config.base}/runtime-env.js"></script>. ` +
-              "Runtime values will not be available. Please add the script tag.",
-            undefined,
-            ctx.server,
+          if (!hasRuntimeEnvScript(html, ctx.server.config.base)) {
+            logError(
+              ctx.server.config.logger,
+              `index.html is missing <script src="${ctx.server.config.base === "/" ? "" : ctx.server.config.base}/runtime-env.js"></script>. ` +
+                "Runtime values will not be available. Please add the script tag.",
+              undefined,
+              ctx.server,
+            );
+          }
+
+          const htmlFile = resolve(tempDir.dir, "index.html");
+          writeFileSync(htmlFile, html, "utf8");
+          const result = runRuntimeEnvCommand(
+            "interpolate",
+            htmlFile,
+            envFiles,
+            htmlFile,
           );
-        }
 
-        const htmlFile = resolve(tempDir.dir, "index.html");
-        writeFileSync(htmlFile, html, "utf8");
-        const result = runRuntimeEnvCommand(
-          "interpolate",
-          htmlFile,
-          envFiles,
-          htmlFile,
-        );
+          if (!result.success) {
+            logError(
+              ctx.server.config.logger,
+              "Failed to interpolate index.html",
+              result.stderr || result.stdout,
+              ctx.server,
+            );
+            return html;
+          }
 
-        if (!result.success) {
-          logError(
-            ctx.server.config.logger,
-            "Failed to interpolate index.html",
-            result.stderr || result.stdout,
-            ctx.server,
-          );
+          html = readFileSync(htmlFile, "utf8");
           return html;
         }
-
-        html = readFileSync(htmlFile, "utf8");
-        return html;
-      }
+      },
     },
 
     closeBundle() {
