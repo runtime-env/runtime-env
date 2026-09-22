@@ -22,6 +22,61 @@ export function previewPlugin(): Plugin {
 
     configurePreviewServer(server: PreviewServer) {
       const tempDir = createTempDir();
+      const envDir = server.config.envDir || server.config.root;
+      const envFiles = getViteEnvFiles(server.config.mode, envDir);
+
+      const validation = validateSchema(
+        server.config.root,
+        server.config.envPrefix,
+      );
+      if (!validation.success) {
+        logError(
+          server.config.logger,
+          "Schema validation failed",
+          validation.message,
+        );
+      }
+
+      let runtimeEnvJs: string | undefined;
+      if (validation.success) {
+        const tmpPath = resolve(tempDir.dir, "runtime-env.js");
+        const result = runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
+        if (!result.success) {
+          logError(
+            server.config.logger,
+            "Failed to generate runtime-env.js",
+            result.stderr || result.stdout,
+          );
+        } else if (existsSync(tmpPath)) {
+          runtimeEnvJs = readFileSync(tmpPath, "utf8");
+        }
+      }
+
+      let indexHtml: string | undefined;
+      const outDir = server.config.build.outDir || "dist";
+      const distIndexHtml = resolve(server.config.root, outDir, "index.html");
+      if (existsSync(distIndexHtml)) {
+        const tmpHtmlPath = resolve(tempDir.dir, "index.html");
+        indexHtml = readFileSync(distIndexHtml, "utf8");
+        writeFileSync(tmpHtmlPath, indexHtml, "utf8");
+
+        const result = runRuntimeEnvCommand(
+          "interpolate",
+          tmpHtmlPath,
+          envFiles,
+          tmpHtmlPath,
+        );
+
+        if (!result.success) {
+          logError(
+            server.config.logger,
+            "Failed to interpolate index.html",
+            result.stderr || result.stdout,
+          );
+        } else {
+          indexHtml = readFileSync(tmpHtmlPath, "utf8");
+        }
+      }
 
       server.middlewares.use((req, res, next) => {
         const base = server.config.base || "/";
@@ -37,93 +92,21 @@ export function previewPlugin(): Plugin {
         }
         path = path.replace(/\/+/g, "/");
 
-        const envDir = server.config.envDir || server.config.root;
-        const envFiles = getViteEnvFiles(server.config.mode, envDir);
-
         // Serve runtime-env.js
-        if (path === "/runtime-env.js") {
-          const validation = validateSchema(
-            server.config.root,
-            server.config.envPrefix,
-          );
-          if (!validation.success) {
-            logError(
-              server.config.logger,
-              "Schema validation failed",
-              validation.message,
-            );
-            next();
-            return;
-          }
-
-          const tmpPath = resolve(tempDir.dir, "runtime-env.js");
-          const result = runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
-          if (!result.success) {
-            logError(
-              server.config.logger,
-              "Failed to generate runtime-env.js",
-              result.stderr || result.stdout,
-            );
-            next();
-            return;
-          }
-
-          if (existsSync(tmpPath)) {
-            const content = readFileSync(tmpPath, "utf8");
-            res.setHeader("Content-Type", "application/javascript");
-            res.end(content);
-            return;
-          }
+        if (path === "/runtime-env.js" && runtimeEnvJs !== undefined) {
+          res.setHeader("Content-Type", "application/javascript");
+          res.end(runtimeEnvJs);
+          return;
         }
 
         // Intercept index.html
-        if (path === "/" || path === "/index.html") {
-          const validation = validateSchema(
-            server.config.root,
-            server.config.envPrefix,
-          );
-          if (!validation.success) {
-            logError(
-              server.config.logger,
-              "Schema validation failed",
-              validation.message,
-            );
-          }
-
-          const outDir = server.config.build.outDir || "dist";
-          const distIndexHtml = resolve(
-            server.config.root,
-            outDir,
-            "index.html",
-          );
-          if (existsSync(distIndexHtml)) {
-            const tmpHtmlPath = resolve(tempDir.dir, "index.html");
-            const originalHtml = readFileSync(distIndexHtml, "utf8");
-            writeFileSync(tmpHtmlPath, originalHtml, "utf8");
-
-            const result = runRuntimeEnvCommand(
-              "interpolate",
-              tmpHtmlPath,
-              envFiles,
-              tmpHtmlPath,
-            );
-
-            if (!result.success) {
-              logError(
-                server.config.logger,
-                "Failed to interpolate index.html",
-                result.stderr || result.stdout,
-              );
-              res.setHeader("Content-Type", "text/html");
-              res.end(originalHtml);
-              return;
-            }
-
-            const interpolatedHtml = readFileSync(tmpHtmlPath, "utf8");
-            res.setHeader("Content-Type", "text/html");
-            res.end(interpolatedHtml);
-            return;
-          }
+        if (
+          (path === "/" || path === "/index.html") &&
+          indexHtml !== undefined
+        ) {
+          res.setHeader("Content-Type", "text/html");
+          res.end(indexHtml);
+          return;
         }
 
         next();
