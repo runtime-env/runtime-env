@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.0.1](https://github.com/runtime-env/runtime-env/compare/vite-plugin1.0.0...vite-plugin1.0.1) (2026-09-22)
+
+
+### Bug Fixes
+
+* isolate vite-plugin temp directories per run ([#988](https://github.com/runtime-env/runtime-env/issues/988)) ([239648c](https://github.com/runtime-env/runtime-env/commit/239648c893f0573200ac9d40c628472cb2a5fd1c))
+* support placeholders in html body text ([#989](https://github.com/runtime-env/runtime-env/issues/989)) ([6dae54f](https://github.com/runtime-env/runtime-env/commit/6dae54fed5089f3d070ad5379fea904376e768b0))
+
+
+### Performance Improvements
+
+* generate preview runtime-env.js and index.html once at startup ([#991](https://github.com/runtime-env/runtime-env/issues/991)) ([a8420a4](https://github.com/runtime-env/runtime-env/commit/a8420a4206acf2052a7ac08d18ee3e990e8f3951))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @runtime-env/cli bumped from ^1.2.1 to ^1.2.2
+  * peerDependencies
+    * @runtime-env/cli bumped from * to 1.2.2
+
 ## [1.0.0](https://github.com/runtime-env/runtime-env/compare/vite-plugin0.1.5...vite-plugin1.0.0) (2026-08-09)
 
 
