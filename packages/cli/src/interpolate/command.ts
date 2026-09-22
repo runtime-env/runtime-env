@@ -45,8 +45,10 @@ export default () => {
               `input file not found: no such file, open '${inputFile}'`,
             );
           }
-        } else {
+        } else if (args.length > 0) {
           input = args[0];
+        } else {
+          input = readFileSync(0, "utf8");
         }
 
         const { output } = await act({

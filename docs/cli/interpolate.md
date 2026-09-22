@@ -34,6 +34,7 @@ Interpolation uses the global variable name in templates (for example, `<%= runt
 - if `--env-file` is omitted: values come from the current process environment
 - if `--output-file` is omitted: output is written to stdout
 - if `--input-file` is omitted: the first positional argument is treated as the raw input string, not a file path
+- if both `--input-file` and the positional argument are omitted: input is read from stdin
 - if both env files and process environment are used: process environment wins
 
 ## GA / third-party script example

@@ -1,9 +1,8 @@
 import type { Plugin, PreviewServer } from "vite";
 import { resolve } from "path";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import {
   runRuntimeEnvCommand,
-  createTempDir,
   getViteEnvFiles,
   validateSchema,
   logError,
@@ -21,7 +20,6 @@ export function previewPlugin(): Plugin {
     },
 
     configurePreviewServer(server: PreviewServer) {
-      const tempDir = createTempDir();
       const envDir = server.config.envDir || server.config.root;
       const envFiles = getViteEnvFiles(server.config.mode, envDir);
 
@@ -39,16 +37,15 @@ export function previewPlugin(): Plugin {
 
       let runtimeEnvJs: string | undefined;
       if (validation.success) {
-        const tmpPath = resolve(tempDir.dir, "runtime-env.js");
-        const result = runRuntimeEnvCommand("gen-js", tmpPath, envFiles);
+        const result = runRuntimeEnvCommand("gen-js", envFiles);
         if (!result.success) {
           logError(
             server.config.logger,
             "Failed to generate runtime-env.js",
             result.stderr || result.stdout,
           );
-        } else if (existsSync(tmpPath)) {
-          runtimeEnvJs = readFileSync(tmpPath, "utf8");
+        } else {
+          runtimeEnvJs = result.stdout;
         }
       }
 
@@ -56,16 +53,9 @@ export function previewPlugin(): Plugin {
       const outDir = server.config.build.outDir || "dist";
       const distIndexHtml = resolve(server.config.root, outDir, "index.html");
       if (existsSync(distIndexHtml)) {
-        const tmpHtmlPath = resolve(tempDir.dir, "index.html");
         indexHtml = readFileSync(distIndexHtml, "utf8");
-        writeFileSync(tmpHtmlPath, indexHtml, "utf8");
 
-        const result = runRuntimeEnvCommand(
-          "interpolate",
-          tmpHtmlPath,
-          envFiles,
-          tmpHtmlPath,
-        );
+        const result = runRuntimeEnvCommand("interpolate", envFiles, indexHtml);
 
         if (!result.success) {
           logError(
@@ -74,7 +64,7 @@ export function previewPlugin(): Plugin {
             result.stderr || result.stdout,
           );
         } else {
-          indexHtml = readFileSync(tmpHtmlPath, "utf8");
+          indexHtml = result.stdout;
         }
       }
 

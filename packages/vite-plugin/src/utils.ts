@@ -1,8 +1,7 @@
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "fs";
-import { resolve, sep } from "path";
+import { existsSync, readFileSync } from "fs";
+import { resolve } from "path";
 import { spawnSync } from "child_process";
 import { createRequire } from "module";
-import { onExit } from "signal-exit";
 import type { Logger, ViteDevServer } from "vite";
 
 const require = createRequire(import.meta.url);
@@ -121,9 +120,7 @@ export function getViteEnvFiles(mode: string, envDir: string): string[] {
 
 export function getRuntimeEnvCommandLineArgs(
   command: string,
-  outputFile: string,
   envFiles: string[] = [],
-  inputFile?: string,
 ): string[] {
   let args: string[] = [
     "--schema-file",
@@ -134,13 +131,9 @@ export function getRuntimeEnvCommandLineArgs(
   ];
 
   if (command === "gen-ts") {
-    args.push("--output-file", outputFile);
-  } else if (command === "gen-js") {
+    args.push("--output-file", "runtime-env.d.ts");
+  } else {
     args.push(...envFiles.map((file) => ["--env-file", file]).flat());
-    args.push("--output-file", outputFile);
-  } else if (command === "interpolate" && inputFile) {
-    args.push(...envFiles.map((file) => ["--env-file", file]).flat());
-    args.push("--input-file", inputFile, "--output-file", outputFile);
   }
 
   return args;
@@ -148,16 +141,10 @@ export function getRuntimeEnvCommandLineArgs(
 
 export function runRuntimeEnvCommand(
   command: string,
-  outputFile: string,
   envFiles: string[] = [],
-  inputFile?: string,
+  input?: string,
 ): { success: boolean; stdout: string; stderr: string } {
-  const args = getRuntimeEnvCommandLineArgs(
-    command,
-    outputFile,
-    envFiles,
-    inputFile,
-  );
+  const args = getRuntimeEnvCommandLineArgs(command, envFiles);
 
   let cliPath: string;
   try {
@@ -167,27 +154,15 @@ export function runRuntimeEnvCommand(
     cliPath = resolve("node_modules", ".bin", "runtime-env");
   }
 
-  const result = spawnSync("node", [cliPath, ...args], { encoding: "utf8" });
+  const result = spawnSync("node", [cliPath, ...args], {
+    encoding: "utf8",
+    input,
+  });
 
   return {
     success: result.status === 0,
     stdout: result.stdout,
     stderr: result.stderr,
-  };
-}
-
-export function createTempDir(): { dir: string; remove: () => void } {
-  const root = resolve(process.cwd(), "node_modules", ".runtime-env");
-  mkdirSync(root, { recursive: true });
-  const dir = mkdtempSync(root + sep);
-  const removeDir = () => rmSync(dir, { recursive: true, force: true });
-  const removeExitHandler = onExit(removeDir);
-  return {
-    dir,
-    remove() {
-      removeExitHandler();
-      removeDir();
-    },
   };
 }
 

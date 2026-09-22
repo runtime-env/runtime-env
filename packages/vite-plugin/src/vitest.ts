@@ -1,9 +1,7 @@
 import type { Plugin, UserConfig, ResolvedConfig } from "vite";
-import { resolve } from "path";
 import {
   isTypeScriptProject,
   runRuntimeEnvCommand,
-  createTempDir,
   getViteEnvFiles,
   validateSchema,
   logError,
@@ -13,8 +11,10 @@ interface VitestConfig {
   setupFiles?: string | string[];
 }
 
+const runtimeEnvModuleId = "virtual:runtime-env.js";
+
 export function vitestPlugin(): Plugin {
-  let vitestOutputPath: string | undefined;
+  let runtimeEnvJs = "";
 
   return {
     name: "runtime-env-vitest",
@@ -24,19 +24,16 @@ export function vitestPlugin(): Plugin {
     },
 
     config(config: UserConfig) {
-      // Generate runtime-env.js for Vitest runtime access
-      vitestOutputPath = resolve(createTempDir().dir, "runtime-env.js");
-
       // Automatically inject setupFiles for Vitest
       const vitestConfig = (config as { test?: VitestConfig }).test || {};
       const setupFiles = vitestConfig.setupFiles || [];
 
       if (Array.isArray(setupFiles)) {
-        if (!setupFiles.includes(vitestOutputPath)) {
-          setupFiles.push(vitestOutputPath);
+        if (!setupFiles.includes(runtimeEnvModuleId)) {
+          setupFiles.push(runtimeEnvModuleId);
         }
       } else {
-        vitestConfig.setupFiles = [setupFiles, vitestOutputPath];
+        vitestConfig.setupFiles = [setupFiles, runtimeEnvModuleId];
       }
 
       (config as { test?: VitestConfig }).test = {
@@ -56,7 +53,7 @@ export function vitestPlugin(): Plugin {
 
       // Generate runtime-env.d.ts for Vitest type checking
       if (isTypeScriptProject(root)) {
-        const result = runRuntimeEnvCommand("gen-ts", "runtime-env.d.ts");
+        const result = runRuntimeEnvCommand("gen-ts");
         if (!result.success) {
           logError(
             config.logger,
@@ -70,12 +67,8 @@ export function vitestPlugin(): Plugin {
       const envDir = config.envDir || root;
       const envFiles = getViteEnvFiles(config.mode, envDir);
 
-      if (!vitestOutputPath) {
-        return;
-      }
-
       // Generate runtime-env.js for Vitest runtime access
-      const result = runRuntimeEnvCommand("gen-js", vitestOutputPath, envFiles);
+      const result = runRuntimeEnvCommand("gen-js", envFiles);
       if (!result.success) {
         logError(
           config.logger,
@@ -83,6 +76,19 @@ export function vitestPlugin(): Plugin {
           result.stderr || result.stdout,
         );
         process.exit(1);
+      }
+      runtimeEnvJs = result.stdout;
+    },
+
+    resolveId(id) {
+      if (id.endsWith(runtimeEnvModuleId)) {
+        return "\0" + runtimeEnvModuleId;
+      }
+    },
+
+    load(id) {
+      if (id === "\0" + runtimeEnvModuleId) {
+        return runtimeEnvJs;
       }
     },
   };
