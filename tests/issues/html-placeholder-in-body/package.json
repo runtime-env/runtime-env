@@ -6,6 +6,6 @@
     "test": "./test.sh"
   },
   "devDependencies": {
-    "vite": "6.3.5"
+    "vite": "6.4.3"
   }
 }
