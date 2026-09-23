@@ -28,4 +28,4 @@ Guidance: align schema keys, required fields, and provided values.
 
 Symptom: interpolation runs against the wrong file or no file.
 
-Guidance: set `--input-file` explicitly, or pass the intended input as the first positional argument.
+Guidance: set `--input-file` explicitly, pass the intended input as the first positional argument, or pipe it to stdin.

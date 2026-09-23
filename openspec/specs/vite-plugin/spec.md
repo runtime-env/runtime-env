@@ -29,7 +29,7 @@ The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boil
 - **AND** a `tsconfig.json` file exists in the project root.
 - **WHEN** the user runs `vitest`.
 - **THEN** the plugin SHALL automatically run `gen-ts` for type checking in the test environment.
-- **AND** it SHALL automatically generate `runtime-env.js` (using environment files detected from `envDir`) in a temporary directory and append it to `config.test.setupFiles`.
+- **AND** it SHALL automatically generate `runtime-env.js` (using environment files detected from `envDir`) in memory and append the virtual module `virtual:runtime-env.js`, which serves it, to `config.test.setupFiles`.
 - **AND** it SHALL NOT interfere with the test runner's execution.
 
 #### Scenario: Vite build mode
@@ -45,7 +45,9 @@ The `@runtime-env/vite-plugin` plugin SHALL provide a seamless, zero-script-boil
 - **GIVEN** a Vite project has been built using `vite build`.
 - **AND** the `@runtime-env/vite-plugin` plugin is active.
 - **WHEN** the user runs `vite preview` (or `npm run preview`).
-- **THEN** the plugin hooks into the preview server to perform runtime generation for `gen-js` and `interpolateIndexHtml`.
+- **THEN** the plugin SHALL run `gen-js` and `interpolateIndexHtml` once when the preview server starts.
+- **AND** the plugin SHALL serve the generated results for the lifetime of the preview server, without regenerating them per request.
+- **AND** changes to `.env` files or the schema file SHALL take effect only after the preview server restarts.
 - **AND** the plugin SHALL serve `runtime-env.js` and the interpolated `index.html` via middleware, without modifying the `dist` directory.
 - **AND** it SHALL automatically detect environment files from `envDir` suitable for the preview environment.
 - **AND** the `package.json` `preview` script is simply `"preview": "vite preview"`.
@@ -96,32 +98,20 @@ The `@runtime-env/vite-plugin` SHALL be implemented following Vite's official pl
 
 ### Requirement: Clean Project Root
 
-The `@runtime-env/vite-plugin` SHALL maintain a clean project root by using temporary directories for all internal artifacts.
+The `@runtime-env/vite-plugin` SHALL maintain a clean project root by keeping all internal artifacts in memory.
 
 #### Scenario: No visible artifacts in project root
 
 - **GIVEN** the `@runtime-env/vite-plugin` is active in any mode.
-- **WHEN** the plugin needs to generate temporary files (e.g., for HTML interpolation, backups, or serving via middleware).
+- **WHEN** the plugin generates `runtime-env.js` or interpolates `index.html`.
 - **THEN** it SHALL NOT create any visible files or directories in the project root, except for the intentional output file `runtime-env.d.ts` if a `tsconfig.json` is present.
-- **AND** `dist/runtime-env.js` and `dist/index.html.backup` are ALLOWED in the `dist` directory as they are used for preview mode.
-- **AND** all other temporary artifacts SHALL be stored within `node_modules/.runtime-env` to keep the project root clean.
 
-#### Scenario: Temp directory isolated per run
+#### Scenario: No temp files
 
-- **GIVEN** multiple dev servers, preview servers, and/or Vitest runs are started from the same working directory.
-- **WHEN** each run generates temporary files.
-- **THEN** each run SHALL create its own uniquely named directory `node_modules/.runtime-env/<random>/`.
-- **AND** it SHALL write the generated `runtime-env.js` to `<random>/runtime-env.js`.
-- **AND** dev and preview servers SHALL write the interpolated HTML to `<random>/index.html`.
-- **AND** a run SHALL NOT read, write, or delete another run's directory.
-- **AND** the directory SHALL persist for the lifetime of the run, with files overwritten in place instead of the directory being deleted after each transform or request.
-
-#### Scenario: Temp directories removed properly
-
-- **GIVEN** a dev server, preview server, or Vitest run has created a temp directory.
-- **WHEN** the process exits, including on `SIGINT`, `SIGHUP`, or `SIGTERM`.
-- **THEN** the plugin SHALL remove the directory.
-- **AND** a dev server SHALL also remove its directory in the `closeBundle` hook when it closes, including when Vite restarts it (e.g., after an `.env` change).
+- **GIVEN** a dev server, preview server, or Vitest run.
+- **WHEN** the plugin runs `gen-js` or `interpolate`.
+- **THEN** it SHALL pass input through stdin and read the result from stdout.
+- **AND** it SHALL NOT write any file other than `runtime-env.d.ts`, so no file is left behind when the process is interrupted or killed.
 
 ### Requirement: Simplified and Documented Vite Integration
 

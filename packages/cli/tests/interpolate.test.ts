@@ -114,6 +114,29 @@ describe("integration - interpolate", () => {
     `);
   });
 
+  test("stdin", () => {
+    const result = spawnSync("node", ["../bin/runtime-env.js", "interpolate"], {
+      encoding: "utf8",
+      stdio: "pipe",
+      input: fs.readFileSync(path.resolve(__dirname, "input-file.html")),
+      env: {
+        ...process.env,
+        ...requiredEnv,
+      },
+      cwd: __dirname,
+    });
+    expect(result.status).toBe(0);
+    expect(result.output).toMatchInlineSnapshot(`
+     [
+       null,
+       "123 inline 456
+
+     ",
+       "",
+     ]
+    `);
+  });
+
   test("inputFile - invalid", () => {
     const result = spawnSync(
       "node",

@@ -26,7 +26,7 @@ export function buildPlugin(): Plugin {
       }
 
       if (isTypeScriptProject(config.root)) {
-        const result = runRuntimeEnvCommand("gen-ts", "runtime-env.d.ts");
+        const result = runRuntimeEnvCommand("gen-ts");
         if (!result.success) {
           logError(
             config.logger,

@@ -1,10 +1,8 @@
 import type { Plugin, ViteDevServer } from "vite";
 import { resolve } from "path";
-import { writeFileSync, readFileSync, existsSync } from "fs";
 import {
   isTypeScriptProject,
   runRuntimeEnvCommand,
-  createTempDir,
   getViteEnvFiles,
   validateSchema,
   logError,
@@ -15,8 +13,6 @@ import {
 const schemaFile = ".runtimeenvschema.json";
 
 export function devPlugin(): Plugin {
-  let tempDir: ReturnType<typeof createTempDir> | undefined;
-
   return {
     name: "runtime-env-dev",
 
@@ -28,8 +24,7 @@ export function devPlugin(): Plugin {
       const envDir = server.config.envDir || server.config.root;
       const envFiles = getViteEnvFiles(server.config.mode, envDir);
       const watchFiles = [resolve(server.config.root, schemaFile), ...envFiles];
-      tempDir = createTempDir();
-      const devOutputPath = resolve(tempDir.dir, "runtime-env.js");
+      let runtimeEnvJs: string | undefined;
       let hadError = false;
 
       function run() {
@@ -49,7 +44,7 @@ export function devPlugin(): Plugin {
         }
 
         if (isTypeScriptProject(server.config.root)) {
-          const tsResult = runRuntimeEnvCommand("gen-ts", "runtime-env.d.ts");
+          const tsResult = runRuntimeEnvCommand("gen-ts");
           if (!tsResult.success) {
             logError(
               server.config.logger,
@@ -62,11 +57,7 @@ export function devPlugin(): Plugin {
           }
         }
 
-        const jsResult = runRuntimeEnvCommand(
-          "gen-js",
-          devOutputPath,
-          envFiles,
-        );
+        const jsResult = runRuntimeEnvCommand("gen-js", envFiles);
 
         if (!jsResult.success) {
           logError(
@@ -78,6 +69,8 @@ export function devPlugin(): Plugin {
           hadError = true;
           return;
         }
+
+        runtimeEnvJs = jsResult.stdout;
 
         if (hadError) {
           clearLastError();
@@ -94,9 +87,9 @@ export function devPlugin(): Plugin {
         const targetPath = (base + "/runtime-env.js").replace(/\/+/g, "/");
 
         if (path === targetPath) {
-          if (existsSync(devOutputPath)) {
+          if (runtimeEnvJs !== undefined) {
             res.setHeader("Content-Type", "application/javascript");
-            res.end(readFileSync(devOutputPath, "utf8"));
+            res.end(runtimeEnvJs);
             return;
           }
         }
@@ -114,7 +107,7 @@ export function devPlugin(): Plugin {
     transformIndexHtml: {
       order: "pre",
       handler(html, ctx) {
-        if (ctx.server && tempDir) {
+        if (ctx.server) {
           const envDir = ctx.server.config.envDir || ctx.server.config.root;
           const envFiles = getViteEnvFiles(ctx.server.config.mode, envDir);
 
@@ -128,14 +121,7 @@ export function devPlugin(): Plugin {
             );
           }
 
-          const htmlFile = resolve(tempDir.dir, "index.html");
-          writeFileSync(htmlFile, html, "utf8");
-          const result = runRuntimeEnvCommand(
-            "interpolate",
-            htmlFile,
-            envFiles,
-            htmlFile,
-          );
+          const result = runRuntimeEnvCommand("interpolate", envFiles, html);
 
           if (!result.success) {
             logError(
@@ -147,14 +133,9 @@ export function devPlugin(): Plugin {
             return html;
           }
 
-          html = readFileSync(htmlFile, "utf8");
-          return html;
+          return result.stdout;
         }
       },
-    },
-
-    closeBundle() {
-      tempDir?.remove();
     },
   };
 }
