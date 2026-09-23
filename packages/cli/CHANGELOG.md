@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.3](https://github.com/runtime-env/runtime-env/compare/cli1.2.2...cli1.2.3) (2026-09-23)
+
+
+### Bug Fixes
+
+* stop leaking vite-plugin temp dirs on Ctrl+C by piping CLI output through stdin/stdout ([#993](https://github.com/runtime-env/runtime-env/issues/993)) ([b42fea6](https://github.com/runtime-env/runtime-env/commit/b42fea6eae1611a5cbd13d0960cc291849ae56e3))
+
 ## [1.2.2](https://github.com/runtime-env/runtime-env/compare/cli1.2.1...cli1.2.2) (2026-09-22)
 
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.0.2](https://github.com/runtime-env/runtime-env/compare/vite-plugin1.0.1...vite-plugin1.0.2) (2026-09-23)
+
+
+### Bug Fixes
+
+* stop leaking vite-plugin temp dirs on Ctrl+C by piping CLI output through stdin/stdout ([#993](https://github.com/runtime-env/runtime-env/issues/993)) ([b42fea6](https://github.com/runtime-env/runtime-env/commit/b42fea6eae1611a5cbd13d0960cc291849ae56e3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @runtime-env/cli bumped from ^1.2.2 to ^1.2.3
+  * peerDependencies
+    * @runtime-env/cli bumped from * to 1.2.3
+
 ## [1.0.1](https://github.com/runtime-env/runtime-env/compare/vite-plugin1.0.0...vite-plugin1.0.1) (2026-09-22)
 
 
