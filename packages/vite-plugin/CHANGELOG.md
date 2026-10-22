@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.0.3](https://github.com/runtime-env/runtime-env/compare/vite-plugin1.0.2...vite-plugin1.0.3) (2026-10-22)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * devDependencies
+    * @runtime-env/cli bumped from ^1.2.3 to ^1.2.4
+  * peerDependencies
+    * @runtime-env/cli bumped from * to 1.2.4
+
 ## [1.0.2](https://github.com/runtime-env/runtime-env/compare/vite-plugin1.0.1...vite-plugin1.0.2) (2026-09-23)
 
 
