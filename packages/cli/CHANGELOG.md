@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.4](https://github.com/runtime-env/runtime-env/compare/cli1.2.3...cli1.2.4) (2026-10-30)
+
+
+### Bug Fixes
+
+* **deps:** update dependency chokidar to v6 ([#1027](https://github.com/runtime-env/runtime-env/issues/1027)) ([514bcef](https://github.com/runtime-env/runtime-env/commit/514bcefbfb05bbc1bf921348d4a0ce720b8fd1fb))
+
 ## [1.2.3](https://github.com/runtime-env/runtime-env/compare/cli1.2.2...cli1.2.3) (2026-09-23)
 
 
