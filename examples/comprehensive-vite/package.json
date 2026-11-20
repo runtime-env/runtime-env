@@ -12,7 +12,7 @@
   "devDependencies": {
     "@types/node": "26.6.6",
     "concurrently": "10.0.7",
-    "cypress": "15.21.2",
+    "cypress": "16.3.0",
     "start-server-and-test": "3.0.13",
     "typescript": "6.0.3",
     "vite": "8.3.8",
